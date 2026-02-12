@@ -1,0 +1,154 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{amsmath, amssymb}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  urlcolor=blue!60!black,
+  citecolor=blue!60!black
+}
+
+\title{Topic Modeling: A Comparative Report on LDA, NMF, BERTopic, and TNT-LLM}
+\author{Xingxu Chai}
+\date{2025.11.11}
+
+\begin{document}
+\maketitle
+
+% \begin{abstract}
+% We compare four topic modeling / labeling approaches for \emph{cross-technology causal classification} across 29 distinct technologies: \textbf{LDA}, \textbf{NMF}, \textbf{BERTopic}, and \textbf{TNT-LLM}. A key challenge is \textbf{technology-domain leakage}: models drift toward domain-driven clusters (e.g., \emph{smartphone}, \emph{video}, \emph{AI}, \emph{cloud}) rather than causal categories. To mitigate this (for all methods except TNT-LLM), we remove a curated tech-keyword list and also remove tokens that co-occur with the list and have cosine similarity $\ge 0.75$. Overall, \textbf{TNT-LLM} remains the strongest in readability and cross-domain alignment; \textbf{NMF} improves interpretability over LDA but shows \textbf{unbalanced cluster sizes}; \textbf{BERTopic} has strong semantic grouping yet more easily picks up domain features if not constrained.
+% \end{abstract}
+
+\section{Overall}
+\textbf{Problem}: Because we want to discover \textbf{cross-technology} \emph{CAUSE} drivers and \emph{EFFECT} outcomes from short texts spanning 29 technologies. The common self-referential phrases (e.g., “release of video content promotes video”) often contain domain cues; If we use raw materials, models will cluster by \emph{technology domain} causes/effects instead of \emph{cross-technology} causes/effects.
+
+\paragraph{Preprocess}
+\begin{itemize}
+  \item \textbf{Deduplicates}: Keep unique phrases for causes and effects (for all methods)
+  \item \textbf{Keyword list removal}: delete the words apeared in the keyword list.(except for tnt-llm)
+  \item \textbf{Similarity filtering}: drop tokens that highly co-occur with the list and have cosine similarity $\ge 0.75$.(except for tnt-llm)
+\end{itemize}
+
+\section{Results and Analysis}
+\subsection{High-Level Takeaways}
+\begin{itemize}
+  \item \textbf{LDA}: Weakest. This method seems don't fit short-text tasks. It generates fuzzy topic boundaries and poor causal interpretability.
+  \item \textbf{NMF}: Interpretability is better. But very \textbf{imbalanced clusters} (e.g., a large generic topic accounts for over 20\% among 20 topics ).
+  \item \textbf{BERTopic}: Strong semantics. However, \emph{more susceptible to domain cues} even though after filtering.
+  \item \textbf{TNT-LLM}: \textbf{Overall is best}. We can add 'cross-technology' requirement in prompt. An LLM proposes the unified label space and short definitions; a light classifier (e.g., Logistic/MLP) can then assign labels to the full corpus. Best readability and alignment across domains.
+
+\end{itemize}
+
+\section{Suggestions}
+TNT-LLM. We can add 'cross-technology' requirement in prompt and generate the labels, labeling on sample.
+
+\section{Examples}
+
+\subsection{LDA: Examples and Issues}
+LDA top-terms are broad and overlapping; category boundaries are unclear (excerpt):
+\begin{quote}\small
+\textbf{0} new, development, product, innovation, sales, ecosystem, across, revenue, operations, improved, time, unique, teams, legacy, chinese \\
+\textbf{1} adoption, transition, increasing, increase, features, training, implementation, offering, million, enhanced, operating, users, demands, desire, robust \\
+\textbf{2} business, team, optimization, initiatives, multi, related, like, automation, generation, workloads, analytics, moving, ip, premium, policy \\
+\textbf{3} investment, strategic, industry, marketing, efforts, partners, existing, significant, continued, scaling, talent, regulations, advertising, expanded, capex \\
+\textbf{4} high, cost, focus, performance, needs, prices, regulatory, tools, brand, engineering, projects, trend, events, material, base \\
+\textbf{...}
+\end{quote}
+
+\subsection{NMF: Better Interpretability, But Unbalanced Clusters}
+\begin{table}[h]
+\centering
+\caption{NMF ($K=20$), CAUSE side (excerpt)}
+\begin{tabular}{@{}r r r p{8.5cm}@{}}
+\toprule
+\textbf{topic} & \textbf{num\_docs} & \textbf{doc\_share} & \textbf{top\_terms (truncated)} \\
+\midrule
+17 & 40416 & 0.2047 & increased, cost, requirements, increased demand, supply, increased investment, supply chain, capacity, reduction, sales \\
+13 & 33977 & 0.1721 & new, product, technologies, launch, new products, applications, features, product launches \\
+12 & 14942 & 0.0757 & market, market demand, shift, expansion, market growth, share, china, market adoption \\
+16 & 13423 & 0.0680 & platform, integration, capabilities, platform development, software platform, deployment \\
+7  & 10659 & 0.0540 & data, data center, analytics, data availability, infrastructure \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Interpretability is improved versus LDA, pointing to business/operational themes. However, Topic 17’s share is high ($\sim 20\%$), suggesting a need for \emph{regularization or post-hoc split} (e.g., hierarchical NMF, penalties, or reclustering within that topic).
+
+\subsection{BERTopic: Strong Semantics, but more Domain-Prone. And also exist note MECE categories}
+\begin{longtable}{@{}r r r p{8.6cm} p{5.2cm}@{}}
+\caption{BERTopic (KMeans = 20), CAUSE side with LLM labels (all topics; top-terms truncated)}\label{tab:bertopic-full}\\
+\toprule
+\textbf{topic} & \textbf{num\_docs} & \textbf{doc\_share} & \textbf{top\_terms (truncated)} & \textbf{LLM label (short)} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{topic} & \textbf{num\_docs} & \textbf{doc\_share} & \textbf{top\_terms (truncated)} & \textbf{LLM label (short)} \\
+\midrule
+\endhead
+0  & 21502 & 0.1088 & supply constraints, supply chain, production capacity, inventory, delivery, delays, cost reduction, issues, \dots & Supply Chain Efficiency Challenges \\
+1  & 21345 & 0.1080 & customer demand, growing demand, customer needs, demand services, customer base, customer adoption, \dots & Growing Customer Demand \\
+2  & 18111 & 0.0917 & vertical integration, integration, platform development, implementation, design wins, scalability, \dots & Product Development Integration \\
+3  & 17702 & 0.0896 & investment, technology investments, innovation, capital investment, strategic investments, development, \dots & Strategic Investment in Innovation \\
+4  & 13233 & 0.0670 & energy prices, oil prices, energy, gas prices, renewables, electricity, emissions, \dots & Energy Price Dynamics \\
+5  & 13313 & 0.0674 & penetration, data traffic, bandwidth, coverage, low latency, connected devices, 802, \dots & Growing Connectivity Demand \\
+6  & 10827 & 0.0548 & marketing efforts, marketing campaigns, strategy, spend, advertising, promotion, initiatives, \dots & Marketing Investment Growth \\
+7  & 9296  & 0.0470 & partnership, partnerships, collaboration, strategic partnership, partnering, partners, \dots & Strategic Partnership Development \\
+8  & 8953  & 0.0453 & regulatory requirements, compliance, approvals, regulations, standards, certifications, \dots & Regulatory Compliance Drivers \\
+9  & 9144  & 0.0463 & migrating, migration, customer migration, on-premise, deployment, transformation, \dots & Customer Migration Strategies \\
+10 & 8609  & 0.0436 & security requirements, security concerns, privacy, data protection, threats, sovereignty, \dots & Data Security Compliance \\
+11 & 7482  & 0.0379 & computing power, low-power, power consumption, hardware, semiconductors, processors, \dots & Supply and Demand Dynamics \\
+12 & 6858  & 0.0347 & ip portfolio, intellectual property, patent portfolio, licensing, ownership, proprietary, \dots & Intellectual Property Dynamics \\
+13 & 7247  & 0.0367 & optimization, algorithms, ranking, distribution, recommendation, content management, \dots & Content Strategy Optimization \\
+14 & 6275  & 0.0318 & competition, competitive environment, competitive pressure, pricing, competitive advantage, \dots & Intense Competitive Pressure \\
+15 & 5308  & 0.0269 & lidar technology, lasers, optical, scanning, detection, phosphorescent materials, \dots & Advanced Detection and Visibility \\
+16 & 3998  & 0.0202 & subsidies china, tariffs, government subsidies, china market, manufacturers, \dots & Government Subsidy Impact \\
+17 & 3864  & 0.0196 & acquisition, acquisitions, acquiring, company acquisition, acquisition strategy, \dots & Strategic Business Acquisitions \\
+18 & 2769  & 0.0140 & generative, ai-powered, ai-driven, machine intelligence, LLM, algorithms, \dots & Emerging Generative Capabilities \\
+19 & 1757  & 0.0089 & covid pandemic, pandemic, lockdown, crisis, restrictions, \dots & Pandemic Impact and Response \\
+\bottomrule
+\end{longtable}
+
+\subsection{TNT-LLM: Seems best fit overall}
+\begin{longtable}{@{}r p{5.2cm} p{9.6cm}@{}}
+\caption{TNT-LLM label space and concise definitions (all rows)}\label{tab:tnt-llm-full}\\
+\toprule
+\textbf{index} & \textbf{label\_name} & \textbf{definition ($\le$ 30 words)} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{index} & \textbf{label\_name} & \textbf{definition ($\le$ 30 words)} \\
+\midrule
+\endhead
+1  & Acquisition of companies          & Purchase or integration of other firms to gain technology, market share, or capabilities. \\
+2  & Partnership or alliance            & Collaboration with external entities to enhance offerings or market access. \\
+3  & Market demand shift                & Changes in consumer or business preferences driving adoption of new technologies. \\
+4  & Regulatory or policy change        & Government actions or standards creating needs for new technology solutions. \\
+5  & Technological advancement          & Breakthroughs improving performance, efficiency, or feasibility of technologies. \\
+6  & Operational efficiency need        & Desire to reduce costs or improve processes through technology adoption. \\
+7  & Product launch or phase            & Introduction of new products requiring supporting technologies or capabilities. \\
+8  & Supply chain factors               & Disruptions or constraints necessitating resilient technology approaches. \\
+9  & Competitive differentiation        & Efforts to stand out via innovation or unique capabilities in the market. \\
+10 & Customer-driven requirement        & Direct client demands for specific features or integration needs. \\
+11 & Strategic business transformation  & Shifts in business models enabled by new technology adoption. \\
+12 & Data and analytics capability      & Investments in data platforms or analysis to drive decisions and performance. \\
+13 & Infrastructure scaling             & Expansion of IT or production infrastructure to handle growth. \\
+14 & Security and compliance need       & Requirements for security, privacy, or regulatory compliance driving upgrades. \\
+15 & Energy and sustainability focus    & Environmental goals or energy factors prompting adoption of eco-friendly tech. \\
+16 & User behavior change               & Shifts in how users consume services, like mobile or streaming usage. \\
+17 & Expertise and resource availability& In-house skills or dedicated teams facilitating technology implementation. \\
+18 & Investment and funding initiative  & Capital investments, funding, or financial strategies enabling technology projects. \\
+19 & Marketing and brand initiative     & Campaigns or branding efforts requiring supporting technology platforms. \\
+20 & Undefined                          & Catch-all for outliers not fitting other categories. \\
+\bottomrule
+\end{longtable}
+
+\end{document}

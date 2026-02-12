@@ -1,16 +1,17 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
-Quality Scoring System for Academic Course Materials
+Quality Scoring System for Empirical Finance Research
 
 Calculates objective quality scores (0-100) based on defined rubrics.
 Enforces quality gates: 80 (commit), 90 (PR), 95 (excellence).
 
+Supports: Python scripts (.py), Stata do-files (.do), LaTeX manuscripts (.tex)
+
 Usage:
-    python scripts/quality_score.py Quarto/Lecture6_Topic.qmd
-    python scripts/quality_score.py Quarto/Lecture6_Topic.qmd --summary
-    python scripts/quality_score.py Quarto/*.qmd
-    python scripts/quality_score.py Slides/Lecture01_Topic.tex
-    python scripts/quality_score.py scripts/R/Lecture06_simulations.R
+    python scripts/quality_score.py src/py/01_clean.py
+    python scripts/quality_score.py src/stata/01_setup.do
+    python scripts/quality_score.py Overleaf/main.tex
+    python scripts/quality_score.py src/py/*.py --summary
 """
 
 import sys
@@ -22,60 +23,62 @@ import re
 import json
 
 # ==============================================================================
-# SCORING RUBRIC (from .claude/rules/quality-gates.md)
+# SCORING RUBRICS (from .claude/rules/quality-gates.md)
 # ==============================================================================
 
-QUARTO_RUBRIC = {
-    'critical': {
-        'compilation_failure': {'points': 100, 'auto_fail': True},
-        'equation_overflow': {'points': 20},
-        'broken_citation': {'points': 15},
-        'typo_in_equation': {'points': 10},
-        'missing_plotly_chart': {'points': 10},
-    },
-    'major': {
-        'text_overflow': {'points': 5},
-        'tikz_label_overlap': {'points': 5},
-        'notation_inconsistency': {'points': 3},
-        'missing_box_separation': {'points': 2},
-        'color_contrast_low': {'points': 3},
-    },
-    'minor': {
-        'font_size_reduction': {'points': 1},
-        'missing_forward_ref': {'points': 1},
-        'missing_framing_sentence': {'points': 1},
-    }
-}
-
-R_SCRIPT_RUBRIC = {
+PYTHON_RUBRIC = {
     'critical': {
         'syntax_error': {'points': 100, 'auto_fail': True},
         'hardcoded_path': {'points': 20},
-        'missing_library': {'points': 10},
+        'overwrites_raw_data': {'points': 20},
+        'domain_bug': {'points': 30},
     },
     'major': {
-        'missing_set_seed': {'points': 10},
-        'missing_figure': {'points': 5},
-        'missing_rds': {'points': 5},
+        'missing_seed': {'points': 10},
+        'missing_manifest': {'points': 10},
+        'missing_log': {'points': 5},
+        'missing_error_handling': {'points': 5},
     },
     'minor': {
         'style_violation': {'points': 1},
-        'missing_roxygen': {'points': 1},
+        'missing_docstring': {'points': 2},
+        'long_line': {'points': 1},
     }
 }
 
-BEAMER_RUBRIC = {
+STATA_RUBRIC = {
+    'critical': {
+        'does_not_run': {'points': 100, 'auto_fail': True},
+        'missing_version': {'points': 15},
+        'overwrites_raw_data': {'points': 20},
+        'wrong_clustering': {'points': 30},
+    },
+    'major': {
+        'missing_set_more_off': {'points': 10},
+        'missing_log': {'points': 10},
+        'unchecked_merge': {'points': 10},
+        'hardcoded_path': {'points': 10},
+    },
+    'minor': {
+        'missing_header': {'points': 3},
+        'missing_comments': {'points': 1},
+    }
+}
+
+MANUSCRIPT_RUBRIC = {
     'critical': {
         'compilation_failure': {'points': 100, 'auto_fail': True},
         'undefined_citation': {'points': 15},
-        'overfull_hbox': {'points': 10},
+        'equation_typo': {'points': 10},
     },
     'major': {
-        'text_overflow': {'points': 5},
-        'notation_inconsistency': {'points': 3},
+        'overfull_hbox': {'points': 5},
+        'notation_inconsistency': {'points': 5},
+        'missing_table_notes': {'points': 3},
     },
     'minor': {
-        'font_size_reduction': {'points': 1},
+        'grammar_typo': {'points': 1},
+        'citation_style_inconsistency': {'points': 1},
     }
 }
 
@@ -86,139 +89,18 @@ THRESHOLDS = {
 }
 
 # ==============================================================================
-# ISSUE DETECTION (Lightweight checks - full agents run separately)
+# ISSUE DETECTION
 # ==============================================================================
 
 class IssueDetector:
     """Detect common issues for quality scoring."""
 
     @staticmethod
-    def check_quarto_compilation(filepath: Path) -> Tuple[bool, str]:
-        """Check if Quarto file compiles successfully."""
+    def check_python_syntax(filepath: Path) -> Tuple[bool, str]:
+        """Check if Python file has syntax errors via py_compile."""
         try:
             result = subprocess.run(
-                ['quarto', 'render', str(filepath), '--to', 'html'],
-                capture_output=True,
-                text=True,
-                timeout=120,
-                cwd=filepath.parent
-            )
-            if result.returncode != 0:
-                return False, result.stderr
-            return True, ""
-        except subprocess.TimeoutExpired:
-            return False, "Compilation timeout (>2min)"
-        except FileNotFoundError:
-            return False, "Quarto not installed"
-
-    @staticmethod
-    def check_equation_overflow(content: str) -> List[int]:
-        """Detect displayed equations with single lines likely to overflow.
-
-        Flags equations only when a SINGLE LINE within a math block exceeds
-        120 characters. Multi-line equations properly broken across lines
-        are not flagged even if the total block is long.
-
-        Checks:
-        - $$ ... $$ blocks (Quarto/LaTeX)
-        - \\begin{equation} ... \\end{equation} blocks
-        - \\begin{align} ... \\end{align} blocks
-        - \\begin{gather} ... \\end{gather} blocks
-        """
-        overflows = []
-        lines = content.split('\n')
-        in_math = False
-        math_start = 0
-        math_delim = None  # Track which delimiter opened the block
-
-        for i, line in enumerate(lines, 1):
-            stripped = line.strip()
-
-            # Check for $$ delimiter (toggle)
-            if '$$' in stripped and math_delim != 'env':
-                if not in_math:
-                    in_math = True
-                    math_start = i
-                    math_delim = '$$'
-                    # Handle single-line $$ ... $$ (both delimiters on same line)
-                    if stripped.count('$$') >= 2:
-                        inner = stripped.split('$$')[1]
-                        if len(inner.strip()) > 120:
-                            overflows.append(i)
-                        in_math = False
-                        math_delim = None
-                    continue
-                else:
-                    in_math = False
-                    math_delim = None
-                    continue
-
-            # Check for \begin{equation/align/gather/...}
-            env_begin = re.match(
-                r'\\begin\{(equation|align|gather|multline|eqnarray)\*?\}', stripped
-            )
-            if env_begin and not in_math:
-                in_math = True
-                math_start = i
-                math_delim = 'env'
-                continue
-
-            # Check for \end{equation/align/gather/...}
-            if re.match(r'\\end\{(equation|align|gather|multline|eqnarray)\*?\}', stripped):
-                in_math = False
-                math_delim = None
-                continue
-
-            # Inside a math block: check individual line length
-            if in_math:
-                # Strip LaTeX comments before measuring
-                code_part = line.split('%')[0] if '%' in line else line
-                if len(code_part.strip()) > 120:
-                    overflows.append(i)
-
-        return overflows
-
-    @staticmethod
-    def check_broken_citations(content: str, bib_file: Path) -> List[str]:
-        """Check for LaTeX citation keys not in bibliography.
-
-        Matches \\cite{}, \\citep{}, \\citet{}, \\citeauthor{}, \\citeyear{}, etc.
-        """
-        cite_pattern = r'\\cite[a-z]*\{([^}]+)\}'
-        cited_keys = set()
-        for match in re.finditer(cite_pattern, content):
-            keys = match.group(1).split(',')
-            cited_keys.update(k.strip() for k in keys)
-
-        if not bib_file.exists():
-            return list(cited_keys)
-
-        bib_content = bib_file.read_text(encoding='utf-8')
-        bib_keys = set(re.findall(r'@\w+\{([^,]+),', bib_content))
-
-        broken = cited_keys - bib_keys
-        return list(broken)
-
-    @staticmethod
-    def check_plotly_widgets(html_file: Path, expected: int = None) -> Tuple[int, bool]:
-        """Check if plotly charts rendered in HTML."""
-        if not html_file.exists():
-            return 0, False
-
-        html_content = html_file.read_text(encoding='utf-8')
-        actual_count = html_content.count('htmlwidget')
-
-        if expected is None:
-            return actual_count, True
-
-        return actual_count, (actual_count >= expected)
-
-    @staticmethod
-    def check_r_syntax(filepath: Path) -> Tuple[bool, str]:
-        """Check R script for syntax errors."""
-        try:
-            result = subprocess.run(
-                ['Rscript', '-e', f'parse("{filepath}")'],
+                ['python', '-m', 'py_compile', str(filepath)],
                 capture_output=True,
                 text=True,
                 timeout=10
@@ -229,44 +111,124 @@ class IssueDetector:
         except subprocess.TimeoutExpired:
             return False, "Syntax check timeout"
         except FileNotFoundError:
-            return False, "Rscript not installed"
+            return False, "Python not found"
 
     @staticmethod
     def check_hardcoded_paths(content: str) -> List[int]:
-        """Detect absolute paths in R scripts."""
+        """Detect absolute paths in code."""
         issues = []
         lines = content.split('\n')
 
         for i, line in enumerate(lines, 1):
-            if re.search(r'["\'][/\\]|["\'][A-Za-z]:[/\\]', line):
-                if not re.search(r'http:|https:|file://|/tmp/', line):
+            # Skip comments
+            stripped = line.strip()
+            if stripped.startswith('#') or stripped.startswith('*') or stripped.startswith('//'):
+                continue
+            # Check for Windows absolute paths or Unix absolute paths
+            if re.search(r'["\'][A-Za-z]:[/\\]', line):
+                if not re.search(r'http:|https:', line):
                     issues.append(i)
+            # Also check for Unix-style absolute paths in non-comment context
+            if re.search(r'["\']/(?:Users|home|tmp|var)', line):
+                issues.append(i)
 
         return issues
 
     @staticmethod
-    def check_latex_syntax(content: str) -> List[Dict]:
-        """Check for common LaTeX syntax issues without compiling.
+    def check_python_seed(content: str) -> bool:
+        """Check if SEED is defined at module top."""
+        lines = content.split('\n')
+        # Check first 30 lines for SEED definition
+        header = '\n'.join(lines[:30])
+        return bool(re.search(r'^SEED\s*=\s*\d+', header, re.MULTILINE))
 
-        Looks for:
-        - Unmatched braces
-        - Unclosed environments
-        - Common typos in commands
-        """
+    @staticmethod
+    def check_python_manifest(content: str) -> bool:
+        """Check if script writes a manifest JSON."""
+        return 'manifest' in content.lower() and 'json' in content.lower()
+
+    @staticmethod
+    def check_python_raw_data_writes(content: str) -> List[int]:
+        """Check for writes to the raw data/ directory."""
+        issues = []
+        lines = content.split('\n')
+        for i, line in enumerate(lines, 1):
+            if re.search(r'\.to_csv|\.to_parquet|\.to_excel|\.to_stata|write_text|open\(', line):
+                if re.search(r'["\']data/', line) and not re.search(r'data_processed', line):
+                    issues.append(i)
+        return issues
+
+    @staticmethod
+    def check_python_docstring(content: str) -> bool:
+        """Check if module has a docstring."""
+        stripped = content.lstrip()
+        return stripped.startswith('"""') or stripped.startswith("'''")
+
+    @staticmethod
+    def check_stata_version(content: str) -> bool:
+        """Check if do-file starts with version declaration."""
+        lines = content.split('\n')
+        for line in lines[:10]:
+            if re.match(r'\s*version\s+\d+', line.strip()):
+                return True
+        return False
+
+    @staticmethod
+    def check_stata_set_more_off(content: str) -> bool:
+        """Check for set more off."""
+        return 'set more off' in content
+
+    @staticmethod
+    def check_stata_log(content: str) -> bool:
+        """Check if do-file creates a log."""
+        return 'log using' in content
+
+    @staticmethod
+    def check_stata_unchecked_merge(content: str) -> List[int]:
+        """Check for merge commands without subsequent _merge check."""
+        issues = []
+        lines = content.split('\n')
+        for i, line in enumerate(lines, 1):
+            stripped = line.strip()
+            if stripped.startswith('merge ') or stripped.startswith('merge\t'):
+                # Look ahead 5 lines for _merge check
+                lookahead = '\n'.join(lines[i:i+5])
+                if '_merge' not in lookahead:
+                    issues.append(i)
+        return issues
+
+    @staticmethod
+    def check_stata_raw_data_writes(content: str) -> List[int]:
+        """Check for saves to raw data/ directory."""
+        issues = []
+        lines = content.split('\n')
+        for i, line in enumerate(lines, 1):
+            if re.search(r'save\s+.*["\']?\$?.*data/', line, re.IGNORECASE):
+                if 'data_processed' not in line and 'DATA_PROCESSED' not in line:
+                    issues.append(i)
+        return issues
+
+    @staticmethod
+    def check_stata_header(content: str) -> bool:
+        """Check for header block with purpose, author, date."""
+        header = '\n'.join(content.split('\n')[:20])
+        has_purpose = bool(re.search(r'purpose|Purpose|PURPOSE', header, re.IGNORECASE))
+        has_author = bool(re.search(r'author|Author|AUTHOR', header, re.IGNORECASE))
+        return has_purpose and has_author
+
+    @staticmethod
+    def check_latex_syntax(content: str) -> List[Dict]:
+        """Check for common LaTeX syntax issues without compiling."""
         issues = []
         lines = content.split('\n')
 
-        # Track open environments
         env_stack = []
         for i, line in enumerate(lines, 1):
-            # Skip comments
             stripped = line.split('%')[0] if '%' in line else line
 
-            # Check for \begin{env}
             for match in re.finditer(r'\\begin\{(\w+)\}', stripped):
                 env_stack.append((match.group(1), i))
 
-            # Check for \end{env}
             for match in re.finditer(r'\\end\{(\w+)\}', stripped):
                 env_name = match.group(1)
                 if env_stack and env_stack[-1][0] == env_name:
@@ -284,7 +246,6 @@ class IssueDetector:
                         'description': f'\\end{{{env_name}}} without matching \\begin',
                     })
 
-        # Report unclosed environments
         for env_name, line_num in env_stack:
             issues.append({
                 'line': line_num,
@@ -294,70 +255,16 @@ class IssueDetector:
         return issues
 
     @staticmethod
-    def check_overfull_hbox_risk(content: str) -> List[int]:
-        """Detect lines in LaTeX source likely to cause overfull hbox.
-
-        Checks for very long lines inside text and math environments
-        that are likely to overflow the slide width.
-        """
-        issues = []
-        lines = content.split('\n')
-        in_frame = False
-
-        for i, line in enumerate(lines, 1):
-            stripped = line.split('%')[0] if '%' in line else line
-
-            # Track frame environments for context
-            if r'\begin{frame}' in stripped:
-                in_frame = True
-            elif r'\end{frame}' in stripped:
-                in_frame = False
-
-            # Flag very long content lines inside frames
-            # Strip leading whitespace and LaTeX commands for length check
-            if in_frame and len(stripped.strip()) > 120:
-                # Skip lines that are just comments or common long commands
-                if stripped.strip().startswith('%'):
-                    continue
-                # Skip includegraphics, input, and similar path-based commands
-                if re.match(r'\s*\\(includegraphics|input|bibliography|usepackage)', stripped):
-                    continue
-                issues.append(i)
-
-        return issues
-
-    @staticmethod
-    def check_quarto_citations(content: str, bib_file: Path) -> List[str]:
-        """Check Quarto-style citation keys against bibliography.
-
-        Supports patterns: @key, [@key], [@key1; @key2]
-        """
+    def check_broken_citations(content: str, bib_file: Path) -> List[str]:
+        """Check for citation keys not in bibliography."""
+        cite_pattern = r'\\cite[a-z]*\{([^}]+)\}'
         cited_keys = set()
-
-        # Pattern 1: [@key] or [@key1; @key2; ...]
-        bracket_pattern = r'\[([^\]]*@[^\]]+)\]'
-        for match in re.finditer(bracket_pattern, content):
-            inner = match.group(1)
-            # Extract individual @key references from within brackets
-            for key_match in re.finditer(r'@([\w:.#$%&\-+?<>~/]+)', inner):
-                cited_keys.add(key_match.group(1))
-
-        # Pattern 2: standalone @key (not inside brackets, not email addresses)
-        # Match @key that is preceded by start-of-line or whitespace or punctuation
-        # but NOT preceded by characters that indicate an email address
-        standalone_pattern = r'(?<![.\w])@([\w:.#$%&\-+?<>~/]+)'
-        for match in re.finditer(standalone_pattern, content):
-            key = match.group(1)
-            # Skip if it looks like a Quarto directive or special syntax
-            if key.startswith('{') or key in ('fig', 'tbl', 'sec', 'eq', 'lst'):
-                continue
-            cited_keys.add(key)
-
-        if not cited_keys:
-            return []
+        for match in re.finditer(cite_pattern, content):
+            keys = match.group(1).split(',')
+            cited_keys.update(k.strip() for k in keys)
 
         if not bib_file.exists():
-            return list(cited_keys)
+            return list(cited_keys) if cited_keys else []
 
         bib_content = bib_file.read_text(encoding='utf-8')
         bib_keys = set(re.findall(r'@\w+\{([^,]+),', bib_content))
@@ -365,12 +272,60 @@ class IssueDetector:
         broken = cited_keys - bib_keys
         return list(broken)
 
+    @staticmethod
+    def check_equation_overflow(content: str) -> List[int]:
+        """Detect equations with single lines likely to overflow."""
+        overflows = []
+        lines = content.split('\n')
+        in_math = False
+        math_delim = None
+
+        for i, line in enumerate(lines, 1):
+            stripped = line.strip()
+
+            if '$$' in stripped and math_delim != 'env':
+                if not in_math:
+                    in_math = True
+                    math_delim = '$$'
+                    if stripped.count('$$') >= 2:
+                        inner = stripped.split('$$')[1]
+                        if len(inner.strip()) > 120:
+                            overflows.append(i)
+                        in_math = False
+                        math_delim = None
+                    continue
+                else:
+                    in_math = False
+                    math_delim = None
+                    continue
+
+            env_begin = re.match(
+                r'\\begin\{(equation|align|gather|multline|eqnarray)\*?\}', stripped
+            )
+            if env_begin and not in_math:
+                in_math = True
+                math_delim = 'env'
+                continue
+
+            if re.match(r'\\end\{(equation|align|gather|multline|eqnarray)\*?\}', stripped):
+                in_math = False
+                math_delim = None
+                continue
+
+            if in_math:
+                code_part = line.split('%')[0] if '%' in line else line
+                if len(code_part.strip()) > 120:
+                    overflows.append(i)
+
+        return overflows
+
+
 # ==============================================================================
 # QUALITY SCORER
 # ==============================================================================
 
 class QualityScorer:
-    """Calculate quality scores for course materials."""
+    """Calculate quality scores for research project files."""
 
     def __init__(self, filepath: Path, verbose: bool = False):
         self.filepath = filepath
@@ -383,80 +338,17 @@ class QualityScorer:
         }
         self.auto_fail = False
 
-    def score_quarto(self) -> Dict:
-        """Score Quarto lecture slides."""
-        content = self.filepath.read_text(encoding='utf-8')
-
-        # Check compilation
-        compiles, error = IssueDetector.check_quarto_compilation(self.filepath)
-        if not compiles:
-            self.auto_fail = True
-            self.issues['critical'].append({
-                'type': 'compilation_failure',
-                'description': 'Quarto compilation failed',
-                'details': error[:200],
-                'points': 100
-            })
-            self.score = 0
-            return self._generate_report()
-
-        # Check equation overflow (heuristic)
-        equation_overflows = IssueDetector.check_equation_overflow(content)
-        for line in equation_overflows:
-            self.issues['critical'].append({
-                'type': 'equation_overflow',
-                'description': f'Potential equation overflow at line {line}',
-                'details': 'Single equation line >120 chars may overflow slide',
-                'points': 20
-            })
-            self.score -= 20
-
-        # Check broken citations (LaTeX-style \cite patterns)
-        bib_file = self.filepath.parent.parent / 'Bibliography_base.bib'
-        broken_citations = IssueDetector.check_broken_citations(content, bib_file)
-
-        # Also check Quarto-style @key citations
-        quarto_broken = IssueDetector.check_quarto_citations(content, bib_file)
-        # Merge both sets, avoiding duplicates
-        all_broken = set(broken_citations) | set(quarto_broken)
-        for key in all_broken:
-            self.issues['critical'].append({
-                'type': 'broken_citation',
-                'description': f'Citation key not in bibliography: {key}',
-                'details': 'Add to Bibliography_base.bib or fix key',
-                'points': 15
-            })
-            self.score -= 15
-
-        # Check plotly widgets (if HTML exists)
-        html_file = self.filepath.parent.parent / 'docs' / 'slides' / self.filepath.with_suffix('.html').name
-        if html_file.exists():
-            widget_count, _ = IssueDetector.check_plotly_widgets(html_file)
-            expected_plotly = content.count('plotly::plot_ly')
-            if expected_plotly > 0 and widget_count < expected_plotly:
-                missing = expected_plotly - widget_count
-                self.issues['critical'].append({
-                    'type': 'missing_plotly_chart',
-                    'description': f'{missing} plotly chart(s) failed to render',
-                    'details': f'Expected {expected_plotly}, found {widget_count}',
-                    'points': 10 * missing
-                })
-                self.score -= 10 * missing
-
-        self.score = max(0, self.score)
-        return self._generate_report()
-
-    def score_r_script(self) -> Dict:
-        """Score R script quality."""
+    def score_python(self) -> Dict:
+        """Score Python script quality."""
         content = self.filepath.read_text(encoding='utf-8')
 
         # Check syntax
-        is_valid, error = IssueDetector.check_r_syntax(self.filepath)
+        is_valid, error = IssueDetector.check_python_syntax(self.filepath)
         if not is_valid:
             self.auto_fail = True
             self.issues['critical'].append({
                 'type': 'syntax_error',
-                'description': 'R syntax error',
+                'description': 'Python syntax error',
                 'details': error[:200],
                 'points': 100
             })
@@ -469,34 +361,145 @@ class QualityScorer:
             self.issues['critical'].append({
                 'type': 'hardcoded_path',
                 'description': f'Hardcoded absolute path at line {line}',
-                'details': 'Use relative paths or here::here()',
+                'details': 'Use Path(__file__).resolve().parents[2] for repo root',
                 'points': 20
             })
             self.score -= 20
 
-        # Check for set.seed() if randomness detected
-        has_random = any(fn in content for fn in ['rnorm', 'runif', 'sample', 'rbinom', 'rnbinom'])
-        has_seed = 'set.seed' in content
-        if has_random and not has_seed:
+        # Check for raw data overwrites
+        raw_writes = IssueDetector.check_python_raw_data_writes(content)
+        for line in raw_writes:
+            self.issues['critical'].append({
+                'type': 'overwrites_raw_data',
+                'description': f'Writes to raw data/ directory at line {line}',
+                'details': 'Write to data_processed/ or results/ instead',
+                'points': 20
+            })
+            self.score -= 20
+
+        # Check SEED
+        has_random = any(fn in content for fn in [
+            'random.seed', 'np.random', 'sample(', 'shuffle', 'choice('
+        ])
+        if has_random and not IssueDetector.check_python_seed(content):
             self.issues['major'].append({
-                'type': 'missing_set_seed',
-                'description': 'Missing set.seed() for reproducibility',
-                'details': 'Add set.seed(YYYYMMDD) after library() calls',
+                'type': 'missing_seed',
+                'description': 'Missing SEED = 42 at module top',
+                'details': 'Add SEED = 42 at top and use for all random operations',
                 'points': 10
             })
             self.score -= 10
 
+        # Check manifest
+        if not IssueDetector.check_python_manifest(content):
+            self.issues['major'].append({
+                'type': 'missing_manifest',
+                'description': 'No manifest JSON pattern detected',
+                'details': 'Write manifest to results/runs/ on every execution',
+                'points': 10
+            })
+            self.score -= 10
+
+        # Check docstring
+        if not IssueDetector.check_python_docstring(content):
+            self.issues['minor'].append({
+                'type': 'missing_docstring',
+                'description': 'Missing module docstring',
+                'details': 'Add docstring with title, purpose, inputs, outputs',
+                'points': 2
+            })
+            self.score -= 2
+
         self.score = max(0, self.score)
         return self._generate_report()
 
-    def score_beamer(self) -> Dict:
-        """Score Beamer/LaTeX lecture slides."""
+    def score_stata(self) -> Dict:
+        """Score Stata do-file quality."""
         content = self.filepath.read_text(encoding='utf-8')
 
-        # Check for LaTeX syntax issues (without compiling)
+        # Check version declaration
+        if not IssueDetector.check_stata_version(content):
+            self.issues['critical'].append({
+                'type': 'missing_version',
+                'description': 'Missing version 19.5 declaration',
+                'details': 'Add "version 19.5" as first line of do-file',
+                'points': 15
+            })
+            self.score -= 15
+
+        # Check for raw data overwrites
+        raw_writes = IssueDetector.check_stata_raw_data_writes(content)
+        for line in raw_writes:
+            self.issues['critical'].append({
+                'type': 'overwrites_raw_data',
+                'description': f'Writes to raw data/ directory at line {line}',
+                'details': 'Save to data_processed/ or results/ instead',
+                'points': 20
+            })
+            self.score -= 20
+
+        # Check hardcoded paths
+        path_issues = IssueDetector.check_hardcoded_paths(content)
+        for line in path_issues:
+            self.issues['major'].append({
+                'type': 'hardcoded_path',
+                'description': f'Hardcoded absolute path at line {line}',
+                'details': 'Use globals for directory structure',
+                'points': 10
+            })
+            self.score -= 10
+
+        # Check set more off
+        if not IssueDetector.check_stata_set_more_off(content):
+            self.issues['major'].append({
+                'type': 'missing_set_more_off',
+                'description': 'Missing "set more off"',
+                'details': 'Add "set more off" after version declaration',
+                'points': 10
+            })
+            self.score -= 10
+
+        # Check log file
+        if not IssueDetector.check_stata_log(content):
+            self.issues['major'].append({
+                'type': 'missing_log',
+                'description': 'No log file created',
+                'details': 'Add log using "logs/[script_name].log", replace',
+                'points': 10
+            })
+            self.score -= 10
+
+        # Check unchecked merges
+        unchecked = IssueDetector.check_stata_unchecked_merge(content)
+        for line in unchecked:
+            self.issues['major'].append({
+                'type': 'unchecked_merge',
+                'description': f'Merge without _merge check at line {line}',
+                'details': 'Add tab _merge and assert after every merge',
+                'points': 10
+            })
+            self.score -= 10
+
+        # Check header
+        if not IssueDetector.check_stata_header(content):
+            self.issues['minor'].append({
+                'type': 'missing_header',
+                'description': 'Missing header block (purpose, author, date)',
+                'details': 'Add header with title, author, date, purpose, inputs, outputs',
+                'points': 3
+            })
+            self.score -= 3
+
+        self.score = max(0, self.score)
+        return self._generate_report()
+
+    def score_manuscript(self) -> Dict:
+        """Score LaTeX manuscript quality."""
+        content = self.filepath.read_text(encoding='utf-8')
+
+        # Check for LaTeX syntax issues
         syntax_issues = IssueDetector.check_latex_syntax(content)
         if syntax_issues:
-            # Mismatched environments are treated as compilation risk
             for issue in syntax_issues:
                 self.issues['critical'].append({
                     'type': 'compilation_failure',
@@ -508,42 +511,30 @@ class QualityScorer:
             self.score = 0
             return self._generate_report()
 
-        # Check for undefined/broken citations (\cite, \citep, \citet patterns)
-        bib_file = self.filepath.parent.parent / 'Bibliography_base.bib'
+        # Check for undefined citations
+        bib_file = self.filepath.parent / 'references.bib'
         if not bib_file.exists():
-            # Also check same directory
-            bib_file = self.filepath.parent / 'Bibliography_base.bib'
+            bib_file = self.filepath.parent.parent / 'Overleaf' / 'references.bib'
         broken_citations = IssueDetector.check_broken_citations(content, bib_file)
         for key in broken_citations:
             self.issues['critical'].append({
                 'type': 'undefined_citation',
                 'description': f'Citation key not in bibliography: {key}',
-                'details': 'Add to Bibliography_base.bib or fix key',
+                'details': 'Add to Overleaf/references.bib or fix key',
                 'points': 15
             })
             self.score -= 15
 
-        # Check for lines likely to cause overfull hbox
-        overfull_lines = IssueDetector.check_overfull_hbox_risk(content)
-        for line in overfull_lines:
-            self.issues['critical'].append({
-                'type': 'overfull_hbox',
-                'description': f'Potential overfull hbox at line {line}',
-                'details': 'Line >120 chars inside frame may overflow slide width',
-                'points': 10
-            })
-            self.score -= 10
-
-        # Check equation overflow (same heuristic as Quarto)
+        # Check for equation overflow risk
         equation_overflows = IssueDetector.check_equation_overflow(content)
         for line_num in equation_overflows:
-            self.issues['critical'].append({
+            self.issues['major'].append({
                 'type': 'overfull_hbox',
                 'description': f'Potential equation overflow at line {line_num}',
-                'details': 'Single equation line >120 chars likely to overflow',
-                'points': 10
+                'details': 'Single equation line >120 chars may cause overfull hbox',
+                'points': 5
             })
-            self.score -= 10
+            self.score -= 5
 
         self.score = max(0, self.score)
         return self._generate_report()
@@ -664,7 +655,7 @@ class QualityScorer:
             print(f"Need +{points_needed} points to reach {THRESHOLDS['pr']}/100")
             if report['issues']['counts']['major'] > 0:
                 print("Fix major issues listed above to improve score")
-            print(f"\n**Estimated time:** 10-20 minutes\n")
+
 
 # ==============================================================================
 # CLI INTERFACE
@@ -672,32 +663,32 @@ class QualityScorer:
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Calculate quality scores for course materials',
+        description='Calculate quality scores for research project files',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Score a single Quarto file
-  python scripts/quality_score.py Quarto/Lecture6_Topic.qmd
+  # Score a Python script
+  python scripts/quality_score.py src/py/01_clean.py
+
+  # Score a Stata do-file
+  python scripts/quality_score.py src/stata/01_setup.do
+
+  # Score the LaTeX manuscript
+  python scripts/quality_score.py Overleaf/main.tex
 
   # Score multiple files
-  python scripts/quality_score.py Quarto/*.qmd
+  python scripts/quality_score.py src/py/*.py
 
-  # Score a Beamer/LaTeX file
-  python scripts/quality_score.py Slides/Lecture01_Topic.tex
+  # Summary only
+  python scripts/quality_score.py src/py/01_clean.py --summary
 
-  # Score an R script
-  python scripts/quality_score.py scripts/R/Lecture06_simulations.R
-
-  # Summary only (no detailed issues)
-  python scripts/quality_score.py Quarto/Lecture6.qmd --summary
-
-  # Verbose output (include minor issues)
-  python scripts/quality_score.py Quarto/Lecture6.qmd --verbose
+  # JSON output
+  python scripts/quality_score.py src/py/01_clean.py --json
 
 Quality Thresholds:
   80/100 = Commit threshold (blocks if below)
   90/100 = PR threshold (warning if below)
-  95/100 = Excellence (aspirational)
+  95/100 = Excellence (publication-ready)
 
 Exit Codes:
   0 = Score >= 80 (commit allowed)
@@ -725,14 +716,15 @@ Exit Codes:
         try:
             scorer = QualityScorer(filepath, verbose=args.verbose)
 
-            if filepath.suffix == '.qmd':
-                report = scorer.score_quarto()
-            elif filepath.suffix == '.R':
-                report = scorer.score_r_script()
+            if filepath.suffix == '.py':
+                report = scorer.score_python()
+            elif filepath.suffix == '.do':
+                report = scorer.score_stata()
             elif filepath.suffix == '.tex':
-                report = scorer.score_beamer()
+                report = scorer.score_manuscript()
             else:
-                print(f"Error: Unsupported file type: {filepath.suffix}")
+                print(f"Error: Unsupported file type: {filepath.suffix} "
+                      f"(supported: .py, .do, .tex)")
                 continue
 
             results.append(report)

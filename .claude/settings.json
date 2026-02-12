@@ -22,48 +22,45 @@
       "Bash(gh pr merge *)",
       "Bash(gh pr create *)",
       "Bash(gh repo *)",
-      "Bash(xelatex *)",
-      "Bash(TEXINPUTS=*)",
-      "Bash(BIBINPUTS=*)",
-      "Bash(latexmk *)",
+      "Bash(conda run *)",
+      "Bash(conda activate *)",
+      "Bash(conda env *)",
+      "Bash(python *)",
+      "Bash(pytest *)",
+      "Bash(black *)",
+      "Bash(flake8 *)",
+      "Bash(pip *)",
+      "Bash(pdflatex *)",
       "Bash(bibtex *)",
+      "Bash(latexmk *)",
       "Bash(pdfinfo *)",
-      "Bash(pdf2svg *)",
-      "Bash(quarto render *)",
-      "Bash(Rscript *)",
       "Bash(python3 *)",
-      "Bash(./scripts/sync_to_docs.sh *)",
-      "Bash(./scripts/sync_to_docs.sh)",
+      "Bash(powershell *)",
+      "Bash(pwsh *)",
       "Bash(chmod *)",
-      "Bash(open *)",
       "Bash(ls *)",
       "Bash(wc *)",
       "Bash(sort *)",
       "Bash(for *)",
-      "Bash(gs *)",
-      "Bash(pdftk *)",
-      "Bash(mkdir *)"
+      "Bash(mkdir *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(grep *)",
+      "Bash(find *)",
+      "Bash(stata *)",
+      "Bash(& $env:STATA_EXE *)",
+      "Bash(D:\\StataSE-64.exe *)"
     ]
   },
   "hooks": {
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/notify.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "Edit|Write",
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect-files.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect-files.sh",
             "timeout": 5
           }
         ]
@@ -74,7 +71,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pre-compact.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pre-compact.sh",
             "timeout": 5
           }
         ]
@@ -85,7 +82,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/log-reminder.py",
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/log-reminder.py",
             "timeout": 10
           }
         ]

@@ -1,13 +1,13 @@
 ---
 paths:
-  - "scripts/**/*.R"
+  - "src/**/*.py"
+  - "src/**/*.do"
   - "explorations/**"
-  - "Figures/**/*.R"
 ---
 
 # Research Project Orchestrator (Simplified)
 
-**For R scripts, simulations, and data analysis** -- use this simplified loop instead of the full multi-agent orchestrator.
+**For Python scripts, Stata do-files, and data analysis** -- use this simplified loop instead of the full multi-agent orchestrator.
 
 ## The Simple Loop
 
@@ -17,9 +17,10 @@ Plan approved → orchestrator activates
   Step 1: IMPLEMENT — Execute plan steps
   │
   Step 2: VERIFY — Run code, check outputs
-  │         R scripts: Rscript runs without error
-  │         Simulations: set.seed reproducibility
-  │         Plots: PDF/PNG created, correct format
+  │         Python: conda run -n Technology python [script]
+  │         Stata: & $env:STATA_EXE /e do "[dofile]"
+  │         Manifests: JSON written to results/runs/
+  │         Plots: PDF/PNG created in Figures/
   │         If verification fails → fix → re-verify
   │
   Step 3: SCORE — Apply quality-gates rubric
@@ -34,9 +35,11 @@ Plan approved → orchestrator activates
 ## Verification Checklist
 
 - [ ] Script runs without errors
-- [ ] All packages loaded at top
+- [ ] All imports/packages at top
 - [ ] No hardcoded absolute paths
-- [ ] `set.seed()` once at top if stochastic
+- [ ] `SEED = 42` at top (Python) or `set seed 42` (Stata)
 - [ ] Output files created at expected paths
+- [ ] Manifest JSON written to `results/runs/` (Python)
+- [ ] Log file created in `logs/` (Stata)
 - [ ] Tolerance checks pass (if applicable)
 - [ ] Quality score >= 80

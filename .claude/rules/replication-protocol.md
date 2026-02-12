@@ -1,7 +1,7 @@
 ---
 paths:
-  - "scripts/**/*.R"
-  - "Figures/**/*.R"
+  - "src/**/*.py"
+  - "src/**/*.do"
 ---
 
 # Replication-First Protocol
@@ -12,10 +12,10 @@ paths:
 
 ## Phase 1: Inventory & Baseline
 
-Before writing any R code:
+Before writing any analysis code:
 
-- [ ] Read the paper's replication README
-- [ ] Inventory replication package: language, data files, scripts, outputs
+- [ ] Read the paper's methodology section and any replication notes
+- [ ] Inventory data files, variable definitions, and sample restrictions
 - [ ] Record gold standard numbers from the paper:
 
 ```markdown
@@ -23,30 +23,30 @@ Before writing any R code:
 
 | Target | Table/Figure | Value | SE/CI | Notes |
 |--------|-------------|-------|-------|-------|
-| Main ATT | Table 2, Col 3 | -1.632 | (0.584) | Primary specification |
+| Main effect | Table V, Col 3 | 0.632 | (0.084) | Primary specification |
 ```
 
-- [ ] Store targets in `quality_reports/LectureNN_replication_targets.md` or as RDS
+- [ ] Store targets in `quality_reports/replication_targets_[table].md`
 
 ---
 
-## Phase 2: Translate & Execute
+## Phase 2: Implement & Execute
 
-- [ ] Follow `r-code-conventions.md` for all R coding standards
-- [ ] Translate line-by-line initially -- don't "improve" during replication
+- [ ] Follow `python-code-conventions.md` for Python scripts
+- [ ] Follow `stata-code-conventions.md` for Stata do-files
 - [ ] Match original specification exactly (covariates, sample, clustering, SE computation)
-- [ ] Save all intermediate results as RDS
+- [ ] Document every specification choice with inline comments
+- [ ] Save all intermediate results (Python: to `data_processed/`, Stata: as .dta)
+- [ ] Write manifest JSON on every run
 
-### Stata to R Translation Pitfalls
+### Cross-Language Pitfalls
 
-<!-- Customize: Add pitfalls specific to your field -->
-
-| Stata | R | Trap |
-|-------|---|------|
-| `reg y x, cluster(id)` | `feols(y ~ x, cluster = ~id)` | Stata clusters df-adjust differently from some R packages |
-| `areg y x, absorb(id)` | `feols(y ~ x \| id)` | Check demeaning method matches |
-| `probit` for PS | `glm(family=binomial(link="probit"))` | R default logit != Stata default in some commands |
-| `bootstrap, reps(999)` | Depends on method | Match seed, reps, and bootstrap type exactly |
+| Python (statsmodels/linearmodels) | Stata | Trap |
+|-----------------------------------|-------|------|
+| `PanelOLS(..., entity_effects=True)` | `reghdfe y x, absorb(firm_id)` | Different singleton handling |
+| `cluster_entity=True` | `cluster(firm_id)` | Small-sample df adjustment may differ |
+| `pd.merge(how='left')` | `merge m:1 ... using` | Default NA handling differs |
+| `np.log()` on zeros | `gen ln_y = ln(y)` | Both produce NaN/missing, but silently |
 
 ---
 
@@ -57,10 +57,10 @@ Before writing any R code:
 | Type | Tolerance | Rationale |
 |------|-----------|-----------|
 | Integers (N, counts) | Exact match | No reason for any difference |
-| Point estimates | < 0.01 | Rounding in paper display |
-| Standard errors | < 0.05 | Bootstrap/clustering variation |
-| P-values | Same significance level | Exact p may differ slightly |
-| Percentages | < 0.1pp | Display rounding |
+| Point estimates | 1e-6 | Numerical precision |
+| Standard errors | 1e-4 | Clustering variability |
+| R-squared | 1e-4 | FE precision |
+| Variance shares (Table V) | 0.01pp | Display rounding |
 
 ### If Mismatch
 
@@ -68,13 +68,12 @@ Before writing any R code:
 
 ### Replication Report
 
-Save to `quality_reports/LectureNN_replication_report.md`:
+Save to `quality_reports/replication_report_[table].md`:
 
 ```markdown
-# Replication Report: [Paper Author (Year)]
+# Replication Report: [Table/Figure]
 **Date:** [YYYY-MM-DD]
-**Original language:** [Stata/R/etc.]
-**R translation:** [script path]
+**Scripts:** [Python/Stata paths]
 
 ## Summary
 - **Targets checked / Passed / Failed:** N / M / K
@@ -89,7 +88,9 @@ Save to `quality_reports/LectureNN_replication_report.md`:
 - **Target:** X | **Investigation:** ... | **Resolution:** ...
 
 ## Environment
-- R version, key packages (with versions), data source
+- Python version, key packages (with versions)
+- Stata version, ado packages
+- Data source and date
 ```
 
 ---
@@ -98,6 +99,6 @@ Save to `quality_reports/LectureNN_replication_report.md`:
 
 After replication is verified (all targets PASS):
 
-- [ ] Commit replication script: "Replicate [Paper] Table X -- all targets match"
-- [ ] Now extend with course-specific modifications (different estimators, new figures, etc.)
+- [ ] Commit replication script: "Replicate Table X — all targets match"
+- [ ] Now extend with robustness checks, alternative specifications, etc.
 - [ ] Each extension builds on the verified baseline

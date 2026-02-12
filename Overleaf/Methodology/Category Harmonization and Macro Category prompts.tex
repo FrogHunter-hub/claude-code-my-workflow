@@ -1,0 +1,315 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+
+% Tables and floats
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{caption}
+\usepackage{xcolor}
+
+% Code block formatting
+\usepackage{fvextra}
+\fvset{
+  fontsize=\small,
+  commandchars=\\\{\},
+  breaklines=true,
+  breakanywhere=true,
+  breaksymbol=\textcolor{gray}{\tiny\ensuremath{\hookrightarrow}},
+  breaksymbolsep=2pt
+}
+
+\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=blue}
+\setlist[itemize]{leftmargin=1.2em}
+\titleformat{\section}{\large\bfseries}{}{0em}{}
+
+\title{Prompts for Harmonization and Aggregation Task}
+\author{Xingxu Chai}
+\date{2025.11.22}
+
+\begin{document}
+\maketitle
+
+\section{System Prompt}
+\begin{Verbatim}
+You are a careful assistant. Always follow the user's prompt format exactly. 
+Reply in English only.
+\end{Verbatim}
+
+\section{I.Canonicalize Cross-Tech categories}
+
+% \subsection{For CAUSE side}
+\begin{Verbatim}
+<instruction>
+**Goal**: Cluster the input items into a concise set of canonical labels for 
+the given use case.
+</instruction>
+
+<use_case>
+Create a conservative set of canonical labels to harmonize technology-adoption 
+causes across technologies.
+</use_case>
+
+<requirements>
+### Format
+- Return the canonical groups as a **markdown table** with each row as a label, 
+  with the following columns:
+  - **canonical_id**: index starting from 1 in an incremental manner.
+  - **canonical_name**: within 5 words.
+  - **canonical_description**: within 30 words.
+- Here is an example of your output:
+```markdown
+|canonical_id|canonical_name|canonical_description|
+|-|-|-|
+|1|...|...|
+```
+- Output table should be in English only.
+- Normalize " & " to " and " in names.
+
+### Quality
+- No overlap or contradiction among the categories.
+- Names are concise and specific; descriptions differentiate categories.
+- Categories can accurately and consistently classify new data without ambiguity.
+- No vague buckets such as Other, General, Unclear, Miscellaneous, Undefined.
+- Be conservative: merge only when the names mean almost the same thing and 
+  have the same scope.
+- When the name or description has a technology-specific meaning, keep it 
+  separate.
+</requirements>
+
+<data>
+Format per line: technology||category_id||name||description
+TECH_A||1||Category Name A||Description A
+TECH_B||2||Category Name B||Description B
+</data>
+
+<questions>
+Q1: Produce the canonical group table that meets all requirements.
+</questions>
+
+<output>
+<canonical_groups>
+|canonical_id|canonical_name|canonical_description|
+|-|-|-|
+</canonical_groups>
+</output>
+\end{Verbatim}
+
+
+\section{II.Membership Mapping}
+
+% \subsection{For CAUSE side}
+\begin{Verbatim}
+<instruction>
+Goal: Review the reference table and produce a membership mapping for the 
+given use case.
+Decide primarily by NAME and DESCRIPTION; use examples for secondary validation.
+</instruction>
+
+<use_case>
+Harmonize per-technology cause labels to canonical labels when the names mean 
+almost the same thing and have the same scope; otherwise KEEP. Preserve 
+technology-specific meaning.
+</use_case>
+
+<requirements>
+### Format
+- Output the mapping as a **markdown table** with each row as a source label, 
+  with the following columns:
+  - **technology**: technology name.
+  - **category_id**: id from the per-technology table.
+  - **original_name**: original label name.
+  - **original_description**: original description.
+  - **decision**: either HARMONIZE or KEEP.
+  - **canonical_id**: id from the canonical table (blank if KEEP).
+  - **new_name**: final label name (if KEEP, then it remains original_name; 
+    if HARMONIZE, then it changes to canonical_name).
+  - **new_description**: final description (if KEEP, then it remains 
+    original_description; if HARMONIZE, then it changes to canonical_description).
+  - **rationale**: \leq 20 words; brief justification of the chosen category.
+
+Here is an example of your output:
+```markdown
+|technology|category_id|original_name|original_description|decision|canonical_id|new_name|new_description|rationale|
+|-|-|-|-|-|-|-|-|-|
+|TECH_A|12|...|...|HARMONIZE|1|...|...|...|
+```
+- Output table should be in English only.
+- Normalize " & " to " and " in names.
+
+### Quality
+- **No overlap or contradiction** among the categories.
+- **Names** are concise and specific; descriptions differentiate categories.
+- **Categories** can accurately and consistently classify new data without 
+  ambiguity.
+- No vague buckets such as Other, General, Unclear, Miscellaneous, Undefined.
+- When a label has a technology-specific meaning, default to KEEP unless the 
+  chosen canonical has the same scope.
+- Be conservative: if uncertain, select KEEP.
+- Do not change per-technology ids or counts.
+- Within the same technology and the same canonical label, keep at most one 
+  HARMONIZE.
+</requirements>
+
+<reference_table>
+|canonical_id|canonical_name|canonical_description|
+|-|-|-|
+|1|...|...|
+</reference_table>
+
+<data>
+Format per line: technology||category_id||name||description||semicolon-separated examples
+TECH_A||1||Name A||Desc A||example1; example2
+TECH_B||2||Name B||Desc B||example3; example4
+</data>
+
+<questions>
+Q1: Generate the membership mapping table that meets all requirements.
+</questions>
+
+<output>
+|technology|category_id|original_name|original_description|decision|canonical_id|new_name|new_description|rationale|
+|-|-|-|-|-|-|-|-|-|
+</output>
+\end{Verbatim}
+
+
+\section{III.Macro Categories Design}
+
+\subsection{For CAUSE side}
+\begin{Verbatim}
+<instruction>
+Goal: Cluster the input items into a compact macro taxonomy for the given 
+use case.
+</instruction>
+
+<use_case>
+Design a small set of macro categories with clear economic meaning for 
+technology-adoption causes.
+</use_case>
+
+<requirements>
+### Format
+Output clusters as a markdown table with each row as a category, with the 
+following columns:
+- **id**: category index starting from 1 in an incremental manner.
+- **name**: category name should be within 5 words. It can be either verb phrase 
+  or noun phrase, whichever is more appropriate.
+- **description**: category description should be within 30 words.
+- **pos_examples**: up to 3 phrases copied verbatim from the provided input data 
+  that clearly belong to this category; semicolon-separated.
+
+Here is an example of your output:
+```markdown
+|id|name|description|pos_examples|
+|-|-|-|-|
+|1|...|...|ex1; ex2|
+```
+Total number of categories must be \leq 10.
+- Output table should be in English only.
+- Normalize " & " to " and " in names.
+
+### Quality
+- **No overlap or contradiction** among the categories.
+- **Names** are concise and specific; descriptions differentiate categories.
+- **Categories** can accurately and consistently classify new data without 
+  ambiguity.
+- No vague buckets such as Other, General, Unclear, Miscellaneous, Undefined.
+- Keep categories economically meaningful.
+</requirements>
+
+<data>
+Format per line: technology||category_id||name||description||semicolon-separated examples
+TECH_A||1||Name A||Desc A||ex1; ex2
+TECH_B||2||Name B||Desc B||ex3; ex4
+</data>
+
+<questions>
+Q1: Generate the macro taxonomy table that meets all requirements.
+Q2: Briefly explain (\leq 80 words) how the boundaries are economically 
+meaningful.
+</questions>
+
+<output>
+<cluster_table>
+|id|name|description|pos_examples|
+|-|-|-|-|
+</cluster_table>
+<explanation></explanation>
+</output>
+\end{Verbatim}
+
+
+\section{IV.Macro Mapping}
+
+% \subsection{For CAUSE side}
+\begin{Verbatim}
+<instruction>
+Use the reference taxonomy to assign each item to ONE best-fitting macro 
+category id.
+If none fits perfectly, choose the closest by the definitions.
+Return ONLY the assignments table below.
+</instruction>
+
+<use_case>
+Assign harmonized cause labels to one best-fitting macro category.
+</use_case>
+
+<requirements>
+### Format
+- Output the assignments as a **markdown table** with each row as an assignment, 
+  with the following columns:
+  - **technology**: technology name.
+  - **category_id**: id from the harmonized per-technology table.
+  - **category_name**: name from the harmonized per-technology table.
+  - **macro_id**: id from the reference macro taxonomy.
+  - **macro_name**: name from the reference macro taxonomy.
+  - **rationale**: \leq 20 words; brief justification of the chosen macro category.
+
+Here is an example of your output:
+```markdown
+|technology|category_id|category_name|macro_id|macro_name|rationale|
+|-|-|-|-|-|-|
+|TECH_A|7|...|3|...|...|
+```
+- Output table should be in English only.
+- Normalize " & " to " and " in names.
+
+### Quality
+- Cover every input item exactly once.
+- Choose the strictest valid macro category; keep boundaries consistent.
+- Prioritize economic definitions.
+</requirements>
+
+<reference_table>
+|id|name|description|pos_examples|
+|-|-|-|-|
+|1|...|...|ex1; ex2|
+</reference_table>
+
+<data>
+Format per line: technology||category_id||name||description
+TECH_A||1||Name A||Desc A
+TECH_B||2||Name B||Desc B
+</data>
+
+<questions>
+Q1: Return the assignments table that meets all requirements.
+</questions>
+
+<output>
+|technology|category_id|category_name|macro_id|macro_name|rationale|
+|-|-|-|-|-|-|
+</output>
+\end{Verbatim}
+
+
+
+\end{document}

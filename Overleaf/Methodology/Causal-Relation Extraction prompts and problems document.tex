@@ -1,0 +1,713 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+
+\usepackage{booktabs} 
+\usepackage{array}
+\usepackage{float}     
+\usepackage{placeins}  
+\usepackage{caption}
+\usepackage{xcolor}
+
+
+\usepackage{fvextra}
+\fvset{
+  fontsize=\small,
+  commandchars=\\\{\},
+  breaklines=true,
+  breakanywhere=true,
+  breaksymbol=\textcolor{gray}{\tiny\ensuremath{\hookrightarrow}},
+  breaksymbolsep=2pt
+}
+
+\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=blue}
+\setlist[itemize]{leftmargin=1.2em}
+\titleformat{\section}{\large\bfseries}{}{0em}{}
+
+\title{Causal--Effect Extraction Report}
+\author{Xingxu Chai}
+\date{2025.11.02}
+
+\begin{document}
+\maketitle
+
+    \section*{I.\;Overall Output Summary}
+    
+    % --- Overall extraction summary ---
+Using a keyword list derived from \textit{Bloom et al.} (2021, working paper) and conference call transcripts from 2002–2024, I constructed a corpus of \textbf{443{,}478} technology-related sentences (each containing at least one technology keyword). For each sentence, I expanded context by appending the surrounding \(\pm 3\) sentences, yielding a \textbf{7-sentence snippet} per instance. I then applied a large language model (LLM) to (i) judge whether the snippet is truly \emph{technology-relevant} and (ii) if so, determine whether it contains at least one \emph{causal statement} and extract the corresponding \emph{causal graph triples}. Full prompts are provided in Section~III (\emph{Technology Causality Extraction Prompts}, updated on 2025-10-30).
+
+All snippets were processed within \textbf{48 hours} via batched calls to deepseek-ai/DeepSeek-V3.1-Terminus on SiliconFlow. A high-level summary of outcomes is reported below.
+
+
+
+\begin{table}[H]
+\centering\small
+\caption{Overall extraction summary on the full sample}
+\label{tab:overall-summary}
+\begin{tabular}{lrr}
+\toprule
+Metric & \multicolumn{1}{c}{Count} & \multicolumn{1}{c}{Share (\%)} \\
+\midrule
+Total snippets                                                     & 443{,}478 & ---    \\
+Tech-relevant snippets                                             & 279{,}085 & 62.93  \\
+Causal snippets (within tech-relevant)                             & 187{,}647 & 67.24  \\
+Causal snippets (of all snippets)                                  & 187{,}647 & 42.31  \\
+\bottomrule
+\end{tabular}
+\begin{flushleft}\footnotesize
+Notes: “Tech-relevant” is the share of all snippets judged technology-related.  
+“Causal (within tech-relevant)” is the share of tech-relevant snippets that contain at least one causal relation.  
+“Causal (of all snippets)” is the share of the entire sample that contains at least one causal relation.
+\end{flushleft}
+\end{table}
+
+% --- Model configuration (for reproducibility) ---
+\begin{table}[H]
+\centering\small
+\caption{Model configuration used for extraction}
+\label{tab:model-params}
+\begin{tabular}{ll}
+\toprule
+Parameter      & Value \\ 
+\midrule
+Model          & \texttt{deepseek-ai/DeepSeek-V3.1-Terminus} \\
+Temperature    & 0.0 \\
+Top-$p$        & 1.0 \\
+Max tokens     & 1024 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\section*{II.\;Per-Tech Descriptive Results}
+
+% --- Table 1: Within-tech causal rate ---
+\begin{table}[H] 
+\centering\small
+\caption{Within-tech causal extraction rate (by Technology)}
+\label{tab:within-tech-causal}
+\begin{tabular}{lrrr}
+\toprule
+Technology & \multicolumn{1}{c}{$N$ (tech\_total)} & \multicolumn{1}{c}{Causal $N$} & \multicolumn{1}{c}{Causal \% (within tech)} \\
+\midrule
+Stent graft                              &    582 &   402 & 69.07 \\
+Software defined radio                   &    234 &   159 & 67.95 \\
+Fracking                                 &  6{,}441 & 4{,}261 & 66.15 \\
+Machine Learning AI                      & 31{,}873 & 20{,}376 & 63.93 \\
+Fingerprint sensor                       &    406 &   256 & 63.05 \\
+Autonomous Cars                          &  6{,}984 & 4{,}311 & 61.73 \\
+Search Engine                            &  7{,}605 & 4{,}617 & 60.72 \\
+Oled display                             & 13{,}005 & 7{,}737 & 59.49 \\
+3d printing                              &  7{,}177 & 4{,}262 & 59.38 \\
+Lithium battery                          &  6{,}243 & 3{,}639 & 58.29 \\
+Bispecific monoclonal antibody           &    993 &   548 & 55.19 \\
+Solar Power                              & 26{,}636 & 14{,}542 & 54.60 \\
+Millimeter wave                          &  2{,}485 & 1{,}344 & 54.08 \\
+Lane departure warning                   &    371 &   200 & 53.91 \\
+Rfid tags                                &  8{,}626 & 4{,}501 & 52.18 \\
+Wireless charging                        &    947 &   492 & 51.95 \\
+Mobile payment                           &  4{,}115 & 1{,}982 & 48.13 \\
+Touch screen                             &  2{,}958 & 1{,}406 & 47.53 \\
+Cloud computing                          &125{,}300 & 56{,}945 & 45.46 \\
+Wifi                                     & 15{,}147 & 6{,}629 & 43.76 \\
+Electronic gaming                        &  8{,}012 & 3{,}302 & 41.21 \\
+Social Networking                        & 33{,}714 & 13{,}134 & 38.95 \\
+Online streaming                         & 25{,}190 & 9{,}664 & 38.36 \\
+Computer vision                          &  3{,}355 & 1{,}090 & 32.49 \\
+Drug conjugates                          &  2{,}700 &   756 & 28.00 \\
+Virtual Reality                          &  4{,}549 & 1{,}256 & 27.61 \\
+Smart devices                            & 71{,}344 & 15{,}892 & 22.28 \\
+GPS                                      &    931 &   179 & 19.23 \\
+Hybrid vehicle electric car              & 25{,}555 & 3{,}759 & 14.71 \\
+\bottomrule
+\end{tabular}
+\begin{flushleft}\footnotesize
+Notes: Denominator is all snippets identified as technology-relevant (\emph{tech\_total}). Percent shows the share of those snippets that contain at least one causal relation.
+\end{flushleft}
+\end{table}
+
+% 如果你希望确保这一节的所有浮动在此处输出，也可以在这里加：
+% \FloatBarrier
+
+% --- Table 2: Composition among all causal snippets ---
+\begin{table}[H] % 强制就地放置
+\centering\small
+\caption{Share of causal snippets by Technology}
+\label{tab:tech-causal-composition}
+\begin{tabular}{lrr}
+\toprule
+Technology & \multicolumn{1}{c}{Causal $N$} & \multicolumn{1}{c}{Share of all causals (\%)} \\
+\midrule
+Cloud computing                          & 56{,}945 & 30.35 \\
+Machine Learning AI                      & 20{,}376 & 10.86 \\
+Smart devices                            & 15{,}898 &  8.47 \\
+Solar Power                              & 14{,}542 &  7.75 \\
+Social Networking                        & 13{,}134 &  7.00 \\
+Online streaming                         &  9{,}664 &  5.15 \\
+Oled display                             &  7{,}737 &  4.12 \\
+Wifi                                     &  6{,}629 &  3.53 \\
+Search Engine                            &  4{,}617 &  2.46 \\
+Rfid tags                                &  4{,}501 &  2.40 \\
+Autonomous Cars                          &  4{,}311 &  2.30 \\
+3d printing                              &  4{,}262 &  2.27 \\
+Fracking                                 &  4{,}261 &  2.27 \\
+Hybrid vehicle electric car              &  3{,}759 &  2.00 \\
+Lithium battery                          &  3{,}639 &  1.94 \\
+Electronic gaming                        &  3{,}302 &  1.76 \\
+Mobile payment                           &  1{,}982 &  1.06 \\
+Touch screen                             &  1{,}406 &  0.75 \\
+Millimeter wave                          &  1{,}344 &  0.72 \\
+Virtual Reality                          &  1{,}256 &  0.67 \\
+Computer vision                          &  1{,}090 &  0.58 \\
+Drug conjugates                          &    756 &  0.40 \\
+Bispecific monoclonal antibody           &    548 &  0.29 \\
+Wireless charging                        &    492 &  0.26 \\
+Stent graft                              &    402 &  0.21 \\
+Fingerprint sensor                       &    256 &  0.14 \\
+Lane departure warning                   &    200 &  0.11 \\
+GPS                                      &    179 &  0.10 \\
+Software defined radio                   &    159 &  0.08 \\
+\bottomrule
+\end{tabular}
+\begin{flushleft}\footnotesize
+Notes: Denominator is the total number of causal snippets across all technologies ($187{,}647$). Values are rounded to two decimals.
+\end{flushleft}
+\end{table}
+
+\section{II.Technology Causality Extraction Prompts (Updated on 2025.10.30)}
+\begin{Verbatim}
+COT_PROMPT_HEADER = """Target technology: <<TECH>>
+
+You analyze a single conference-call snippet to decide if it discusses <<TECH>> and, if so, extract causal relations about <<TECH>>. Use ONLY the snippet; no outside knowledge. Present your findings in a structured JSON format. Think step by step INTERNALLY, but return FINAL JSON ONLY.
+
+Step-by-Step Instructions:
+
+1. Determine Technology Relevance (Q1):
+- Task: Decide whether the snippet is about <<TECH>> in a technology sense.
+- Criteria: An input snippet is relevant only if it meaningfully discusses <<TECH>> in a technology sense (co-occurs with "<<TECH>>"): the actual tech’s design/deployment/performance/limitations or dependencies/partnerships/adoption plans/effects — NOT generic words or unrelated senses.
+    - If relevant: set "identified_technology" = "<<TECH>>"; capture 1–4 evidence spans in "q1_evidence" showing how the snippet discusses <<TECH>> and in what technology sense.
+    - If not relevant: set "identified_technology" = "none", "q1_evidence" = [], set "detailed_causal_analysis" = "NO" and set Q3–Q6 arrays [].
+
+2. Identify Detailed Causal Analysis (Q2):
+- Task: Decide whether the snippet contains at least one technology sense causal statement of <<TECH>> (consider this only if Q1 is relevant).
+- Criteria: 
+- Evidence types (cues) include:
+    - Explicit causal: Verbs or phrases like cause/lead to/result in/drive/due to/because of/thanks to;
+    - Capability: enable/allow/make possible/support
+    - Counterfactual: if…, would…, so that…
+    - Constraint and Dependence: limit/constrain/require/depend on/need
+    - Change: increase/decrease due to X
+  - Purely correlational mentions (e.g., "associated with") WITHOUT direction or mechanism, treat as NOT causal for Q2.
+  - If the snippet contains causality but the causality does NOT involve <<TECH>> in a technology sense, set "NO".
+- Action:
+    - Provide a short reason demonstrating the in-depth analysis in "q2_reason", showing the cues that indicate causality AND how <<TECH>> is involved in one side.
+    - If there is at least one causal statement, set "detailed_causal_analysis" = "YES".
+    - If there is no causal statement, set "detailed_causal_analysis" = "NO" and leave Q3 and Q4 as [].
+
+3. Identify Causes of <<TECH>> (Q3):
+- Task: If a detailed causal analysis (Q2) exists, identify explicitly mentioned upstream events or factors that have affected, changed, influenced, constrained <<TECH>>. 
+- Action: List the most important causes or return an empty array [] if not applicable. 
+- Note: Focus on explicit upstream drivers (non-exhaustive, e.g., supply chain, human capital/talent, intangible assets/data/IP, regulation/approvals, R&D partnerships, pricing/subsidies, infrastructure/capacity). Do not infer or treat <<TECH>> (or its synonyms) as a cause of itself.
+
+4. Identify Outcomes from <<TECH>> (Q4):
+- Task: If a detailed causal analysis (Q2) exists, identify explicitly mentioned past, present, or definite outcomes/impacts of <<TECH>> on the company. 
+- Action: List the most important outcomes or return an empty array [] if not applicable. 
+- Note: Note: Focus on tangible results (non-exhaustive, e.g., revenue, costs/margins, efficiency/productivity, customer retention/churn, throughput, competitive position, market/share expansion). Do not treat <<TECH>> (or its synonyms) as an effect of itself.
+
+5. Determine the Tone (Q5):
+- Task: Assess the tone of the discussion about <<TECH>>. 
+- Options: "positive", "negative", "neutral". 
+- Note: If the tone is unclear, mark it as "neutral".
+
+6. Extract Causal Graph Triples (Q6):
+- Task: Based on the answers from Q3 (causes) and Q4 (outcomes), extract causal graph triples related to <<TECH>>. 
+- For each triple, provide:
+    - Triple: ["entity_1", "relation", "entity_2"]
+        - For each Q3 cause C: triple = [C, "relation" , "<<TECH>>"], tech_link="cause".
+        - For each Q4 outcome O: triple = ["<<TECH>>", "relation" , O], tech_link="effect".
+        - Do NOT create triples from entities outside Q3/Q4. 
+        - Relation normalization (map snippet verbs to one of): 
+ 			- promotes: enable/allow/make possible/support;
+            lead to/result in/due to/thanks to/caused by/driven by/powered by;
+            improve/raise/boost/accelerate/grow/expand/higher/more;
+ 			- suppresses: reduce/lower/erode/shrink/decline/slow/drop/fewer/less;
+            limit/restrict/hinder/block/cap/delay/bottleneck;
+            - Dependency cues like require/depend/need → if met/satisfied, map to promotes; if unmet/scarce/pending, map to suppresses.
+    - explanation: A brief reason citing specific words/phrases or the normalization logic.
+    - tone: "positive" | "negative" | "neutral"
+    - scope: "company" | "product" | "market" | "regulatory"(choose the narrowest applicable).
+
+7. Post-Review (Q7):
+- Task: If causal_graph_triples is non-empty, revisit the original snippet and verify each triple aligns with the snippet’s contextual meaning.
+- Action: 
+    - Drop any triple not explicitly supported by the snippet’s wording or logic.
+    - Drop any triple that doesn't include <<TECH>>. 
+    - Drop any triple that over-attributes causality to <<TECH>> (when another actor is the true cause/effect).
+    - Drop any triple that reveals self-causes or tautologies.
+"""
+
+COT_JSON_SCHEMA = """
+Return JSON ONLY:
+{
+  "all_results": [
+    {
+      "input_id": "<<INPUT_ID>>",
+      "identified_technology": "<<TECH>>" or "none",
+      "q1_evidence": ["evidence 1", "..."] or [],
+      "detailed_causal_analysis": "YES" or "NO",
+      "q2_reason": "A short reason showing the causal cues and how <<TECH>> is involved.",
+      "causes_of_tech": ["cause_1", "..."] or [],
+      "outcomes_from_tech": ["outcome_1", "..."] or [],
+      "tone": "positive" | "negative" | "neutral",
+      "causal_graph_triples": [
+        {
+          "triple": ["entity_1", "relation", "entity_2"],
+          "explanation": "Reason for identifying the causal relation, citing specific words or phrases or logical reasoning.",
+          "tech_link": "cause" | "effect",
+          "tone": "positive" | "negative" | "neutral",
+          "scope": "company" | "product" | "market" | "regulatory"
+        }
+      ] or []
+    }
+  ]
+}
+
+Snippet:
+---
+<<SNIPPET>>
+---
+"""
+\end{Verbatim}
+
+\section{IV.Culture Analysis Prompts from Li et al.}
+\begin{Verbatim}
+
+As an expert specializing in corporate culture and causal reasoning, your task is to analyze segments from analyst reports about corporate culture. Your goal is to extract and interpret information about a company's corporate culture and identify cause-effect relationships. Present your findings in a structured JSON format. Let's think step by step.
+
+Step-by-Step Instructions:
+
+1. Summarize the Corporate Culture (Q1):
+- Task: Determine the specific corporate culture being discussed in the segment.
+- Action: Summarize it in a short phrase starting with an adjective. If corporate culture is not explicitly mentioned, infer it from the context.
+- Note: Avoid using generic adjectives such as strong/weak or positive/negative culture. If more context from the report is needed for the analysis, output "I need more context" in the relevant JSON field.
+
+2. Classify the Corporate Culture (Q2):
+- Task: Categorize the identified corporate culture into one of the following six types:
+* Collaboration and People-Focused: Focusing on (or deficient in) collaboration, cooperation, teamwork, supportive, low levels of conflict, community, communication within an organization, employee well-being, employee equity sharing and compensation, diversity, inclusion, empowerment, or talent.
+* Customer-Oriented: Focusing on (or deficient in) sales, customer, customer service, listening to the customer, customer retention, customer experience, customer satisfaction, user experience, client service, being brand-driven, quality of product, quality of service, quality of solution, or taking pride in service.
+* Innovation and Adaptability: Focusing on (or deficient in) innovation, creativity, technology, entrepreneurship, adaptability, transformations, flexibility, agility, willingness to experiment, beyond tradition, disruption, fast-moving, quick to take advantage of opportunities, resilience to change, or taking initiative.
+* Integrity and Risk Management: Focusing on (or deficient in) integrity, high ethical standards, being honest, being transparent, accountability, do the right thing, fair practices, being trustworthy, risk management, risk control, compliance, discipline, or financial prudence.
+* Performance-Oriented: Focusing on (or deficient in) high expectations for performance, sales growth, achievement, competitiveness, results, hard work, efficiency, productivity, consistency in executing tasks, setting clear goals, following goals best practices, striving for operational excellence, or exceeding benchmarks.
+* Miscellaneous: Non-specific corporate culture, or corporate culture that does not easily fit into the above types. For example, "strong culture", "weak culture", "positive culture", "negative culture", or "cultural change" (without details on the company's culture).
+
+3. Identify Detailed Causal Analysis (Q3):
+- Task: Determine if the segment contains a detailed causal analysis of corporate culture.
+- Criteria: Look for explicit causal reasoning statements with trigger words like affect, cause, influence, lead to, result in, fosters, driven by, because, thanks to, due to, through, or using.
+- Action:
+- If yes, provide a short reason demonstrating the in-depth analysis.
+- If no, the answers for Questions 4 and/or 5 should be an empty array [].
+- If more context is needed, output "I need more context" in the relevant JSON field.
+
+4. Identify Causes of Corporate Culture (Q4):
+- Task: If a detailed causal analysis exists, identify explicitly mentioned events or factors that have shaped, changed, or will change the corporate culture.
+- Action: List the most important causes or return an empty array [] if not applicable.
+- Note: Do not list other corporate culture types as causes. Focus on specific people, systems, or events. Avoid implicit or indirect causes.
+
+5. Identify Outcomes from Corporate Culture (Q5):
+- Task: If a detailed causal analysis exists, identify explicitly mentioned past, present, or future outcomes or impacts of the corporate culture on the company.
+- Action: List the most important outcomes or return an empty array [] if not applicable.
+- Note: Do not list other corporate culture types as outcomes. Focus on specific results, business outcomes, or tangible impacts. Avoid implicit or indirect outcomes.
+
+6. Determine the Tone (Q6):
+- Task: Assess the tone of the discussion about corporate culture.
+- Options: "positive", "negative", "neutral".
+- Note: If the tone is unclear, mark it as "neutral".
+
+7. Extract Causal Graph Triples (Q7):
+- Task: Based on the answers from Q1 (the specific corporate culture), Q4 (causes of corporate culture), and Q5 (outcomes from corporate culture), extract causal graph triples related to that specific culture.
+- Format: For each triple, provide:
+- Triple: ["entity_1", "relation", "entity_2"]
+- Explanation: A brief reason citing specific words or phrases or logical reasoning.
+- Criteria:
+- "entity_1" or "entity_2": Must be the specific corporate culture identified from Q1.
+- "relation": A clear and simple verb phrase conveying the cause-effect direction.
+- The Other Entity: Should be a cause (people, systems, or events) or outcome (result, impact) for the specific corporate culture, not another corporate culture.
+- Avoid: Both entities being corporate culture.
+
+
+\end{Verbatim}
+
+\section*{III.\;Problem Types and Case Examples from a 100-Sample Audit}
+
+I audited \textbf{100} randomly sampled outputs that were identified as containing at least one causal relation (``causal-identified''). 
+Approximately \textbf{80\%} seems satisfied. Among the remainder, two error types still exists:
+
+\begin{itemize}
+  \item \textbf{False positives} (\textit{12/100; 12\%}): the snippet is not genuinely about the target technology or the alleged causal link is not explicitly supported by the text.
+  \item \textbf{Directionality issues} (\textit{7/100; 7\%}): cause and effect are reversed, or the technology is assigned to the wrong side of the causal pair.
+\end{itemize}
+
+\noindent\textit{Note:} A single output can exhibit multiple error types.
+
+\begin{table}[H]
+\centering\small
+\caption{Quality summary of the 100-sample audit}
+\label{tab:sample-audit}
+\begin{tabular}{lrr}
+\toprule
+Category & \multicolumn{1}{c}{Count} & \multicolumn{1}{c}{Share (\%)} \\
+\midrule
+Meets quality bar & 81 & 81.0 \\
+False positives   & 12 & 12.0 \\
+Directionality issues & 7 & 7.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The following pages list each snippet together with the specific problematic causal chain(s) for the flagged cases.
+
+
+\section{1.False Positive of Causality}
+\textit{Definition: the snippet contains no technology-sense causal statement, but the extraction incorrectly infers or attributes causality (often over-attributing it to the technology).}
+
+\subsection*{Case: 00346458}
+\textbf{Snippet:}
+\begin{quote}\small
+Growth was supported by data customer additions of 126,000, an incremental usage per customer, as the traffic growth was strong at 34.9\%. Base revenue was up 12.9\% to ZAR 1.3 billion, the performance was supported by strong growth in the DRC and Mozambique. Mozambique [lapped] with the introduction of peer-to-peer charges in the quarter, but we still delivered local currency growth of 22.4\%. M-Pesa momentum in Tanzania continues to be hampered by the mobile money levies introduced during July 2021. The impact of the levies and service revenue was ZAR 250 million or 4.4 percentage points of international service revenue growth. By engaging with the Tanzanian authorities to assess the impact of the levies on the industry on -- and the impact of the financial inclusion in the wider economy. On the regulated front, the key focus here remains spectrum in South Africa with the auction scheduled for March, we are working with government, ICASA and the other telcos to unlock the economic tailwind of high demand pactum.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item mobile money levies in Tanzania $\to$ \textit{suppresses} $\to$ Mobile payment
+\item Mobile payment $\to$ \textit{suppresses} $\to$ service revenue growth
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item \textbf{Problematic chain:} \emph{Mobile payment $\to$ suppresses $\to$ service revenue growth}. The passage attributes the revenue drag to \emph{levies}, which \emph{hampered} mobile money and reduced growth. The actor should be the \emph{levies}, not “Mobile payment.” 
+% \item “levies $\to$ suppresses $\to$ Mobile payment” aligns with “hampered by the mobile money levies,” so it is acceptable.
+\end{itemize}
+
+\subsection*{Case: 00298614}
+\textbf{Snippet:}
+\begin{quote}\small
+The high mix of solar grade sales had a dramatic impact on total average polysilicon prices realized, which decreased by 22.8\% during the quarter. As Tore noted, however, semiconductor grade polysilicon sales prices increased by 9\%, and this was in part due to the impact of tariffs imposed by China on sales prices for the highest quality Float Zone grades, which increased by 6.1\%. And then in addition, average prices for semiconductor polysilicon increased due to a higher mix of FZ grade as a percentage of semiconductor polysilicon sold. Silicon gas sales volumes decreased by 10.2\%, as Tore pointed out, mainly as a result of lower shipments in China -- into China, primarily for solar PV and older technology flat panel displays as China attempts to disengage from supply arrangements with United States where possible. Outside of China, primarily in semiconductor and high-end flat panel display applications, shipment volumes remained strong due to improvements in technology and the commissioning of new capacity. As a result, average prices for silane gas increased by 3.4\%. EBITDA contributed by the Semiconductor Materials segment was \$7.3 million, down from \$9.4 million in the prior quarter, and this decrease can be attributed to the lower sales of silicon gases.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item China's disengagement from US supply arrangements $\to$ \textit{suppresses} $\to$ Solar Power
+\item Solar Power $\to$ \textit{suppresses} $\to$ silicon gas sales volumes
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item \textbf{Problematic chain:} \emph{Solar Power $\to$ suppresses $\to$ silicon gas sales volumes}. The text states that China’s \emph{disengagement from US supply} reduced shipments into China (especially for solar PV), which drove lower silicon gas volumes. The actor is \emph{policy/sourcing changes}, not the “Solar Power” technology.
+% \item “China’s disengagement … $\to$ suppresses $\to$ Solar Power” is conceptually broad (it equates supply-chain disentangling with suppressing the \emph{technology} itself), but it does not reverse direction.
+\end{itemize}
+
+\subsection*{Case: 00101019}
+\textbf{Snippet:}
+\begin{quote}\small
+In Q3, Devices & Services overall non-IFRS gross margin was positively impacted by approximately 110 basis points related to foreign currency exchange, compared to the guidance I provided last quarter of approximately 150 basis points positive impact. At the present time, we expect a 40 basis points positive impact to Q4 gross margin related to hedging activities, assuming static foreign currency rates at the end of Q3 levels. But this could change due to intra-quarter fluctuations in rates. In Q3, on a sequential basis, Smart Devices gross margin decreased from 1.7\% to negative 3.5\%. During the quarter, we recognized approximately EUR120 million of allowances in Smart Devices, related to excess component inventory due to purchase commitments and inventory reevaluation. These allowances relate to our current Lumia products, as we have further identified certain components on our books and components we have committed to purchase that we now believe we will not be able to use. In addition, we have reduced the carrying value of some of our inventory.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item excess component inventory $\to$ \textit{suppresses} $\to$ Smart devices
+\item purchase commitments $\to$ \textit{suppresses} $\to$ Smart devices
+\item Smart devices $\to$ \textit{suppresses} $\to$ gross margin
+\item Smart devices $\to$ \textit{suppresses} $\to$ EUR120 million allowances
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item The first two chains treat operational factors (“excess component inventory,” “purchase commitments”) as suppressing the \emph{technology itself} (“Smart devices”), which is a \textbf{technology-sense false positive}. The passage discusses inventory/commitments driving allowances and margins, not suppressing the smart device technology.
+\item The last two chains incorrectly use “Smart devices” as the causal actor that suppresses margin or causes allowances. In the text, allowances/inventory issues lead to margin decline, not the technology. This reflects a \textbf{wrong actor and tendency toward direction error}, but the core issue here is still false attribution of technology causality.
+\end{itemize}
+
+\subsection*{Case: 00134808}
+\textbf{Snippet:}
+\begin{quote}\small
+Our ability to drive discovery through PowerUp Rewards and our knowledgeable associates coupled with our unique form of trade currency will help us continue to grow this business. I also would like to update you on our Spawn division. GameStop has made the business decision to shut down Spawn Labs based on the lack of demand from customers to adopt this type of streaming game service at a strong enough level to build a sustainable business. As GameStop believes cloud-based delivery of video games is innovative and could be a supplemental way to play video games, we will focus our efforts on selling next gen game streaming services such as the newly announced PlayStation Now through our retail channels. GameStop remains committed to providing gamers access to the latest video gaming innovation anyway, anywhere and anyhow they want it. Turning to mobile, our business grew 51\% for the full year driven by both our new acquisitions as well as our continued expansion of our re-commerce business. We are applying the learnings from our GameStop buy-sell-trade model to our new businesses as we are now accepting trades in all of our brands and selling pre-owned devices in GameStop, Simply Mac and Cricket.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item lack of demand from customers to adopt streaming game service $\to$ \textit{suppresses} $\to$ Electronic gaming
+\item Electronic gaming $\to$ \textit{suppresses} $\to$ shut down Spawn Labs
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item \textbf{Problematic chain:} \emph{Electronic gaming $\to$ suppresses $\to$ shut down Spawn Labs}. The text states that \emph{lack of demand} caused the shutdown, \textbf{not} “Electronic gaming.” This misidentifies the causal actor and reverses direction.
+\item The chain “lack of demand … $\to$ suppresses $\to$ Electronic gaming” over-generalizes from weak demand for a specific \emph{streaming} model to the entire “Electronic gaming” domain (overbroad concept), though its direction is not reversed.
+\end{itemize}
+
+
+\subsection*{Case: 00140776}
+\textbf{Snippet:}
+\begin{quote}\small
+Nexgate provides a cloud-based security and compliance suite for enterprise's social media communication channels, enabling their customers to competently engage across these important new channels, while not only protecting their brands from compromise, abuse, hacking, and malware, but also ensuring that they are operating within their compliance requirements. With this acquisition, Proofpoint customers can effectively protect their online brand presence and social media communication infrastructure by automatically identifying and immediately remediating fraudulent social media accounts, social account hacks, and social media content that contains malware, spam, and abusive language. In addition, the Nexgate solution monitors authorized accounts and posts for compliance, with a wide range of social media regulatory requirements, including FINRA, HIPAA, PHI, SEC, ABA, and more. By combining the Nexgate platform with Proofpoint's existing capabilities in advanced threat, privacy, and archiving, we will be able to provide a comprehensive solution that enables enterprises to safely and securely leverage social media across the Internet without putting their brand at risk, while at the same time extending the same world-class security and compliance capabilities currently protecting their e-mail infrastructure to these new forms of engagement beyond the firewall, all in a single unified cloud-based system. We believe that this solution is a must-have capability for all enterprises across all verticals, as organizations inevitably adopt social media as a fundamental vehicle to engage with their constituencies. Although it is a young, emerging market, we currently believe the TAM in 2014 to be over 125 million and growing rapidly, at over 50% annually. Similar to previous acquisitions, Nexgate is the type of acquisition that Proofpoint has successfully completed in the past: a technology-related purchase, accompanied by small, phenomenal team of developers, who are excited to have their work incorporated in the Proofpoint SaaS platform.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item acquisition of Nexgate $\to$ \textit{promotes} $\to$ Social Networking
+\item combination with Proofpoint's existing capabilities $\to$ \textit{promotes} $\to$ Social Networking
+\item Social Networking $\to$ \textit{promotes} $\to$ safe and secure leverage of social media
+\item Social Networking $\to$ \textit{promotes} $\to$ protection of online brand presence
+\item Social Networking $\to$ \textit{promotes} $\to$ compliance with regulatory requirements
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item Last three edges \textbf{mis-attribute causality to the technology domain}. Security/compliance capabilities cause the outcomes, not “Social Networking” as a technology.
+\end{itemize}
+
+\subsection*{Case: 00231629}
+\textbf{Snippet:}
+\begin{quote}\small
+Yes. The way that contactless payments or token at contactless payments get enabled on a device is two different models. There's particular element, which is our methodology, which is a hardware on play where that's secured, and then there's a software on play. The software piece is predominantly done in the Smartphone [brand] because of the amount of processing power. You see that in Samsung Pay and Android Pay as an example. On the secured element, we're the first and remain only integrated, what they call, token request or token service provider for Visa, and MasterCard and Discover that can enable us on other device OEMs. And so in that particular area, to date, we're the only service available.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item processing power of Smartphones $\to$ \textit{promotes} $\to$ Smart devices
+\item Smart devices $\to$ \textit{promotes} $\to$ enabling contactless payments on other device OEMs
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item \textbf{Problematic chain:} processing power enables the \emph{software tokenization model}, not the existence of “Smart devices.” 
+\end{itemize}
+
+\subsection*{Case: 00044977}
+\textbf{Snippet:}
+\begin{quote}\small
+In addition, this expansion has enhanced capabilities to serve the automotive, architectural and photovoltaic markets in China and in the Asia region. We continue to focus on encapsulants technology for the photovoltaic area. Just a few weeks ago we announced our new Saflex Radiant White PA27 encapsulant. This breakthrough technology will help increase the efficiency of the solar module by reflecting the light that is not initially absorbed, back through the module. In addition, this unique formulation reduces electrical leakage, further boosting efficiency. Incorporating reflective benefits into the encapsulant helps to drive down the cost and maximize the productivity for the module manufacturers, further reducing their per watt cost. Let's move on to films.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item encapsulants technology $\to$ \textit{promotes} $\to$ Solar Power
+\item reflective benefits $\to$ \textit{promotes} $\to$ Solar Power
+\item unique formulation $\to$ \textit{promotes} $\to$ Solar Power
+\item Solar Power $\to$ \textit{promotes} $\to$ increased efficiency of solar modules
+\item Solar Power $\to$ \textit{suppresses} $\to$ electrical leakage
+\item Solar Power $\to$ \textit{suppresses} $\to$ cost for module manufacturers
+\item Solar Power $\to$ \textit{promotes} $\to$ productivity
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item Outcomes are attributed to the \emph{PA27 encapsulant’s properties}, not to the broad domain “Solar Power.” $\Rightarrow$ \textbf{false positive}.
+\end{itemize}
+
+\subsection*{Case: 00098851}
+\textbf{Snippet:}
+\begin{quote}\small
+The new Astro products carry retail price in the \$250 to \$300 range and a blended product margin in the mid 40\% range. The new A50 model has won numerous high-profile Editors Choice awards, including most recently Game Informer, the largest gaming industry publication in the US, with a circulation of over 8 million subscribers. With the investment in Astro, we've built a strong gaming platform, and are beginning to realize product design and operating synergies. We've recently launched the first of several Skullcandy gaming products, the Slayer wired headset at a retail price point of \$80. The early feedback has been positive, and we are currently expanding distribution into over 2,000 doors across a number of key retailers. We believe gaming represents a significant growth opportunity for the Company, and we are penetrating this market through a dual-brand strategy with Astro and Skullcandy. Astro will continue to target the ultra-premium segment, while Skullcandy will target the mainstream segment of the market.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item investment in Astro $\to$ \textit{promotes} $\to$ Electronic gaming
+\item Electronic gaming $\to$ \textit{promotes} $\to$ strong gaming platform
+\item Electronic gaming $\to$ \textit{promotes} $\to$ product design and operating synergies
+\item Electronic gaming $\to$ \textit{promotes} $\to$ significant growth opportunity
+\item Electronic gaming $\to$ \textit{promotes} $\to$ market penetration through dual-brand strategy
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item Company strategy/products cause outcomes; attributing them to the abstract technology \emph{Electronic gaming} is a \textbf{false positive}.
+\end{itemize}
+
+\subsection*{Case: 00438165}
+\textbf{Snippet:}
+\begin{quote}\small
+They would all use us to procure domain names that they need for their customers. And a few of them have already expressed interest that they might also buy such alternative products from us if you were to offer them on a fully automated level. So, where does this take us as the big picture we are currently at the stage. We've worked over the last couple of years to diminish our dependency on pairing social media users with search engine ads and we already see some progress here. So, the income from search engine ads is now below 60\% 57\% in the 12 months that have been reviewed here. And the social media part is still 52\% but so here we have a certain balance and here we've explained how we expect to grow this by developing a parallel content rich customer acquisition process that then runs in parallel to the well proven low content channels that we currently operate. And but you already see that we've got plenty of other suppliers from whom we source different services or users and many other channels that we expand.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item search engine ads dependency reduction strategy $\to$ \textit{promotes} $\to$ Social Networking
+\item Social Networking $\to$ \textit{promotes} $\to$ customer acquisition process growth
+\item Social Networking $\to$ \textit{promotes} $\to$ revenue diversification
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item Channel/mix strategy drives outcomes; mapping them to “Social Networking” (tech domain) is \textbf{over-broad} $\Rightarrow$ false positive.
+\end{itemize}
+
+\subsection*{Case: 00110014}
+\textbf{Snippet:}
+\begin{quote}\small
+The gross margin decline is primarily reflective of a less favorable mix of project margin, due to the declining impact of Agua Caliente, as this project heads towards completion. The write-down of certain refurbished module inventory during the quarter was also a factor. The total margin decrease was partially offset by a credit related to lower estimated future collection and recycling costs. Note, regarding our module end-of-life program, beginning in the fourth quarter of 2012, we made prospective changes to our solar module collection and recycling program outside of the EU. For new contracted sales, customers, as part of their overall power plant decommissioning obligation, will now be responsible for insuring modules are either recycled or responsibly disposed of at the end of their life. First Solar will offer competitively-priced term-based recycling services to customers to help them meet these obligations. This change supports our ongoing transition to being a premier provider of adaptable solar energy solutions for our power plant customers.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item declining impact of Agua Caliente project $\to$ \textit{suppresses} $\to$ Solar Power
+\item Solar Power $\to$ \textit{promotes} $\to$ transition to being a premier provider of adaptable solar energy solutions
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item Mis-assigned actor/target: margin mix and program changes are the drivers, not the tech domain “Solar Power.” $\Rightarrow$ \textbf{false positive}.
+\end{itemize}
+
+\subsection*{Case: 00011797}
+\textbf{Snippet:}
+\begin{quote}\small
+By following this strategy, SatCon will open up a number of companies it can sell to and use similar architectures to reduce costs while providing different components to different designers. SatCon is currently working with a hybrid electric drivetrain vendor on a high-voltage servo motor, amplifiers, a DC/DC converter, which is the alternator in the hybrid electric vehicle, and potentially a traction motor and controller. SatCon is currently using the relationship to qualify its products for the automotive market. SatCon is using the basic technologies developed for Chrysler's EPIC electric vehicle and updating it with current components and design. In distributed power, pulling off the development of work we had done for the DDX program, SatCon is developing products which support the distributed energy strategy of many large utilities and large commercial and industrial customers. As we move towards distributed power and increasing requirements for high-quality power is driving the need for better ways to control and manage power on small power grids. The introduction of renewable energy from solar and wind into these small networks also increases the need for an ability to manage the power flow strictly and reliably.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item increasing requirements for high-quality power $\to$ \textit{promotes} $\to$ Hybrid vehicle electric car
+\item introduction of renewable energy from solar and wind $\to$ \textit{promotes} $\to$ Hybrid vehicle electric car
+\item Hybrid vehicle electric car $\to$ \textit{promotes} $\to$ qualify its products for the automotive market
+\item Hybrid vehicle electric car $\to$ \textit{promotes} $\to$ reduce costs while providing different components to different designers
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item Causality discussed is about \emph{distributed power/control}; mapping it to “Hybrid vehicle electric car” is \textbf{false positive}.
+\end{itemize}
+
+\subsection*{Case: 00419897}
+\textbf{Snippet:}
+\begin{quote}\small
+I mean the BEVs increased share, roughly double from the end of 2022 to 2023. And as a result of that, that's had an impact on the combustion -- on our total margins, obviously. So the answer to your question is, truthfully, I expect a return to very similar margins to 2019. And by the way, that would include the impact, in my view, of battery electric vehicles and hybrid electric vehicles. How that happens is very much going to depend on how the OEMs are thinking about the mix of their BEVs, their hybrids and their combustion engines through the balance of this year and how they're going to achieve their targets. It's a very -- it is not an easy question to answer. So that's my best effort.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item OEM decisions about vehicle mix $\to$ \textit{promotes} $\to$ Hybrid vehicle electric car
+\item OEM targets achievement $\to$ \textit{promotes} $\to$ Hybrid vehicle electric car
+\item Hybrid vehicle electric car $\to$ \textit{suppresses} $\to$ total margins
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item Margin impact is attributed to \emph{BEV share increase}; using “Hybrid vehicle electric car” as the suppressor misidentifies the actor.
+\end{itemize}
+
+
+\section{2.Causality Direction Issue}
+\textit{Definition: 
+1.the snippet assigns causality to actor A $\to$ outcome B, but the output flips direction or assigns the wrong actor; or 2.The actual relation is 'promotes(suppresses)', but was assigned to 'suppresses(promotes)'}.
+
+
+
+
+\subsection*{Case: 00227395}
+\textbf{Snippet:}
+\begin{quote}\small
+But we've got a long way to go to get back into the high 80s as far as that goes. There's clearly a lot more interest and activity in the energy sector. You can read about a lot of the fracking and horizontal exploration going on especially in the U.S. and that's an indication of what there really is demand for finding additional oil. The interesting thing about fracking, if you know about it or pay attention, you can drill a well, say, deplete very quickly. On average, a fracked well has a life of about 4 years. And despite all of the technical change, which has improved the initial yield of the well, none of the technical change has made the wells last any longer. So you can drill a bunch of fracked wells, but 4 years later, you need to re-drill them somewhere else because the ones that you drilled have been depleted.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item technical change (improved initial yield) $\to$ \textit{promotes} $\to$ Fracking
+\item Fracking $\to$ \textit{suppresses} $\to$ well depletion
+\item Fracking $\to$ \textit{promotes} $\to$ need for re-drilling
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item \textbf{Problematic chain:} \emph{Fracking $\to$ suppresses $\to$ well depletion}. The text explains wells \emph{deplete quickly}; fracking and depletion are in a \textbf{positive} relationship (fracking leads to faster depletion). Using “suppresses” flips polarity and direction.
+\item “Fracking $\to$ promotes $\to$ need for re-drilling” matches “need to re-drill … because … depleted.”
+\item “technical change $\to$ promotes $\to$ Fracking” is an overgeneralization: the text says tech changes improve initial yield, but does not explicitly say they \emph{promote adoption of fracking}.
+\end{itemize}
+
+
+
+\subsection*{Case: 00398884}
+\textbf{Snippet:}
+\begin{quote}\small
+Our customers include well-known brands such as Electronic Arts, Ubisoft, Marvel Studios, Netflix, Siemens, Honeywell, and the United States Olympic team. Our channel partners include global leaders such as Mouser, Digi-Key, and Arrow Electronics, serving the automation and mobility market, as well as our growing network of focused regional distributors, system integrators and value-added resellers that extend our sales coverage globally, particularly in the entertainment and health and sports end markets. In the entertainment market, we believe Movella is the gold standard for Hollywood-quality motion capture. In the film and video game industry, Movella's Xsens motion capture technology has been used to create highly realistic and immersive experiences by digitizing the movements of actors and animating them in real-time. Our technology enables the lifelike movements of CGI characters and avatars that transport viewers to new and exciting worlds. Our products and technology have enabled recent blockbuster movies such as Black Panther, Avatar, and Lyle, Lyle, Crocodile, and continue to be the go-to solution for AAA video games. For example, leading game developer Ubisoft utilizes Movella's Xsens motion capture suits to improve time-to-market and reduce cost of production by digitizing movements of actors during takes of live scenes and providing precise movement data for real-time recording and previsualization of character movement.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item Electronic gaming $\to$ \textit{promotes} $\to$ highly realistic and immersive experiences
+\item Electronic gaming $\to$ \textit{promotes} $\to$ lifelike movements of CGI characters and avatars
+\item Electronic gaming $\to$ \textit{promotes} $\to$ improve time-to-market
+\item Electronic gaming $\to$ \textit{suppresses} $\to$ reduce cost of production
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item \textbf{Problematic chain:} \emph{Electronic gaming $\to$ suppresses $\to$ reduce cost of production}. The source says motion-capture technology helps \emph{reduce} production cost. Using “suppresses” shows opposite intention.
+% \item The other three chains correspond to “used to create/enables … improve time-to-market,” and are consistent with the passage.
+\end{itemize}
+
+\subsection*{Case: 00063737}
+\textbf{Snippet:}
+\begin{quote}\small
+I'd like to comment on this, to add for Mobile for some reason, while security tends to be regarded as smartphones but there's also laptops. Here, if there is anybody inputting everything with iPhones or with iPads and just giving up on laptops, then please raise your hand, but I don't think there's anyone here. So what I'd like to stress is that when it comes to smartphones, it's an extension of mobile computing. And people may give up on laptops, and eventually it maybe a table device or a smartphone that you switch to, in which case the security will change considerably, because smartphones or androids are not something that is safe from hacking. But if -- when those laptop information is transferred to tablets or smartphones, then there will be security issues, and so there is a new type of pricing that may have to come about and we will have to think about new methods of distribution, and we don't think that this will undermine our net sales or our profits. And also in Japan, our efforts at Trend Micro in android may seem to be behind others. But in regard to the efforts in Japan, we may have been overly cautious, but in the world, especially in America, Trend Micro has been fast to move forward.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item security vulnerabilities in smartphones/androids $\to$ \textit{promotes} $\to$ Smart devices
+\item Smart devices $\to$ \textit{promotes} $\to$ security issues
+\item Smart devices $\to$ \textit{promotes} $\to$ need for new pricing methods
+\item Smart devices $\to$ \textit{promotes} $\to$ need for new distribution methods
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item \textbf{Backward/ill-posed:} vulnerabilities don’t “promote” devices. Adoption shift leads to security issues; the first edge misstates direction and actor.
+\end{itemize}
+
+\subsection*{Case: 00173745}
+\textbf{Snippet:}
+\begin{quote}\small
+And we have also taken a number of additional steps to set us up for even more success. Let me just touch on a few of them. One, we led the upfront marketplace with double-digit price increases and healthy gains in volume. Next, our CBS All Access and Showtime OTT streaming services have surpassed 2 million subscribers, about evenly split, and well ahead of where we thought we would be this early in the game. We have licensed our Star Trek franchise in the international marketplace, guaranteeing our new series will be profitable even before it launches and begins driving subs here in the US and on CBS All Access. We greatly expanded our SVOD revenue for the CW, ensuring its profitability for years to come. We have just licensed our Carpool Karaoke series to Apple.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item Star Trek franchise licensing $\to$ \textit{promotes} $\to$ Online streaming
+\item content licensing agreements $\to$ \textit{promotes} $\to$ Online streaming
+\item Online streaming $\to$ \textit{promotes} $\to$ subscriber growth
+\item Online streaming $\to$ \textit{promotes} $\to$ profitability guarantee
+\item Online streaming $\to$ \textit{promotes} $\to$ SVOD revenue expansion
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item \textbf{Direction flip:} Profitability is guaranteed by \emph{licensing Star Trek internationally before launch}, not by “Online streaming.” The fourth edge reverses actor/outcome.
+\end{itemize}
+
+\subsection*{Case: 00433505}
+\textbf{Snippet:}
+\begin{quote}\small
+These SRAs have put restrictions on how much water can be injected. The industry has since pivoted to injections strictly targeting the shallower formations hoping to avoid some of the faulting issues. Although injection into shallow formations does work, it presents additional complexity for upstream operators who plan to develop overlapping oil and gas acreage, which they would now potentially be drilling through a more highly pressured zone. The other common solution for produced water today is to reuse or recycle that water for oil and gas completion activities, otherwise known as fracking. Upstream operators can use raw produced or lightly treated produced water to complete new wells. However, given the sheer amount of produced water volumes that come from the Permian, even if operators were to use only produced water in their completion activities, the Permian could still have north of 10 million barrels of produced water that would need to find a home. Turning to Slide 4.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item produced water availability $\to$ \textit{promotes} $\to$ Fracking
+\item water recycling/reuse capability $\to$ \textit{promotes} $\to$ Fracking
+\item Fracking $\to$ \textit{suppresses} $\to$ water disposal needs reduction
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item \textbf{Polarity error:} Using “suppresses” with the negated object “reduction” implies increasing disposal. Reuse/recycle \emph{promotes} disposal reduction (or \emph{suppresses} disposal volume), albeit insufficiently.
+\end{itemize}
+
+\subsection*{Case: 00051943}
+\textbf{Snippet:}
+\begin{quote}\small
+As J.D. just detailed, we had a very strong first half. Looking ahead, we continue to see proof point for the three major trends that support our growth strategy, and we're aggressively positioning the Company to benefit from these trends. In Cloud Computing, as more and more companies move to the Cloud, experience new performance and reliability challenges that are inherent in using the Internet. To address these challenges, we are partnering with companies big and small to make the Cloud work better. One such partnership for example is the Akamai Ready Initiative that IBM announced the at the Impact Conference in May. By pre-tuning IBM's WebSphere products to leverage Akamai technology, customers can see significant benefits for their enterprise applications delivered over the Internet.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item companies moving to the Cloud $\to$ \textit{promotes} $\to$ Cloud computing
+\item Cloud computing $\to$ \textit{suppresses} $\to$ performance and reliability challenges
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item \textbf{Direction issues:} (i) First edge is tautological. (ii) The passage says moving to the cloud \emph{introduces} challenges; mitigation comes from the \emph{Akamai–IBM pre-tuning} partnership, not Cloud computing itself.
+\end{itemize}
+
+\subsection*{Case: 00168734}
+\textbf{Snippet:}
+\begin{quote}\small
+However, with the further weakness in commodity prices since the beginning of 2016, we have seen a decrease in the amount of work available. As well, the profitability of the available work has continued to deteriorate. In response, since the beginning of 2016, we have stacked approximately 140,000 frac horsepower. And in total, we now have stacked slightly more than half of our fleet of more than 1 million hydraulic fracturing horsepower. We expect pressure pumping revenues will decline sequentially by approximately 25% in the first quarter. While the stacking of horsepower will negatively impact pressure pumping revenues, gross margin as a percentage of pressure pumping revenues is expected to remain relatively flat at 10% for the first quarter, because much of the horsepower that we have stacked was working at low margins. We believe it is prudent to be disciplined in the use of our assets, and we believe some competitors are working at significant cash operating losses, which will result in further attrition across the industry.
+\end{quote}
+\textbf{Output:}
+\begin{itemize}
+\item weakness in commodity prices $\to$ \textit{suppresses} $\to$ Fracking
+\item decrease in the amount of work available $\to$ \textit{suppresses} $\to$ Fracking
+\item deteriorating profitability of available work $\to$ \textit{suppresses} $\to$ Fracking
+\item Fracking $\to$ \textit{suppresses} $\to$ pressure pumping revenues
+\end{itemize}
+\textbf{Explanation:}
+\begin{itemize}
+\item \textbf{Direction flip:} Revenue decline is caused by \emph{stacking frac horsepower} due to weak prices/low work, not by “Fracking” suppressing revenue.
+\end{itemize}
+% \section{3.;Self-Referential}
+% \textit{Definition: the effect restates the technology itself or its desired state (A $\to$ make A mainstream), yielding a tautology rather than a concrete outcome.}
+
+
+
+\end{document}

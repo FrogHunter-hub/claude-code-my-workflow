@@ -1,0 +1,583 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+
+% 表格与浮动体
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{caption}
+\usepackage{xcolor}
+
+% 代码块排版
+\usepackage{fvextra}
+\fvset{
+  fontsize=\small,
+  commandchars=\\\{\},
+  breaklines=true,
+  breakanywhere=true,
+  breaksymbol=\textcolor{gray}{\tiny\ensuremath{\hookrightarrow}},
+  breaksymbolsep=2pt
+}
+
+\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=blue}
+\setlist[itemize]{leftmargin=1.2em}
+\titleformat{\section}{\large\bfseries}{}{0em}{}
+
+\title{Per-Technology TNT Prompt}
+\author{}
+\date{2025.11.19}
+
+\begin{document}
+\maketitle
+
+\section{System Prompt (applied to all calls)}
+\begin{Verbatim}
+"You are a careful assistant. Always follow the user's prompt format exactly. Reply in English only."
+\end{Verbatim}
+
+% =========================================================
+% I. Per-Technology TNT (Phase-I)
+% =========================================================
+\section{i.Per-Technology TNT (Phase-I) on 29 Techs}
+
+\subsection{CAUSE(EFFECT) — Generation}
+\begin{Verbatim}
+<instruction>
+**Goal**: Your goal is to cluster the input data into meaningful categories for the given use case.
+</instruction>
+<use_case>Classify short phrases describing technology-adoption causes (drivers/motives) in <<TECH>> extracted from earnings calls.</use_case>
+<requirements>
+### Format
+- Output clusters as a **markdown table** with each row as a category, with the following columns:
+  - **id**: category index starting from 1 in an incremental manner.
+  - **name**: category name should be **within 5 words**. It can be either *verb phrase* or *noun phrase*, whichever is more appropriate.
+  - **description**: category description should be **within 30 words**.
+  - **inclusion_rules**: 2–4 short rules; semicolon-separated; criteria that qualify a phrase for the category.
+  - **exclusion_rules**: 1–3 short rules; semicolon-separated; typical traps that should NOT be in the category.
+  - **pos_examples**: up to 3 phrases **copied verbatim from the provided input data** that clearly belong to this category; semicolon-separated.
+  - **near_misses**: up to 3 phrases **copied verbatim from the provided input data** that are borderline or often confused with this category but should go elsewhere; semicolon-separated.
+
+Here is an example of your output:
+```markdown
+|id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+|-|-|-|-|-|-|-|
+|category id|category name|category description|rule A; rule B|trap A|example 1; example 2|near 1; near 2|
+```
+- Total number of categories should be no more than 15.
+- Output table should be in English only.
+
+### Quality
+- **No overlap or contradiction** among the categories.
+- **Name** is a concise and clear label for the category. Use only phrases that are specific to each category and avoid those that are common to all categories.
+- **Description** differentiates one category from another.
+- **Name** and **description** can **accurately** and **consistently** classify new data points **without ambiguity**.
+- **Name** and **description** are *consistent with each other*.
+- Output clusters match the data as closely as possible,without missing important categories or adding unnecessary ones.
+- Output clusters serve the given use case well.
+- Output clusters should be specific and meaningful. Do not invent categories that are not in the data.
+</requirements>
+<data>
+|id|text|
+|-|-|
+|1|...|
+</data>
+<questions>
+Q1: Generate the taxonomy table that meets all requirements.
+Tips:
+- The cluster table should be a flat list of mutually exclusive categories. Sort them based on their semantic relatedness.
+- You can have fewer than 15 categories, but do not exceed the limit.
+- Be specific about each category. Do not include vague categories such as "Other", "General", "Unclear", "Miscellaneous" or "Undefined".
+- You can ignore low quality or ambiguous data points.
+Q2: Why did you cluster the data the way you did? Explain your reasoning within 120 words.
+</questions>
+<output>
+<cluster_table>
+|id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+|-|-|-|-|-|-|-|
+</cluster_table>
+<explanation></explanation>
+</output>
+\end{Verbatim}
+
+\subsection{CAUSE(EFFECT) — Update}
+\begin{Verbatim}
+<instruction>
+**Goal**: Your goal is to review the given reference table based on the input data for the specified use case, then update the reference table if needed.
+- You will be given a reference cluster table, which is built on existing data. The reference table will be used to classify new data points.
+- You will compare the input data with the reference table, output a rating score of the quality of the reference table, suggest potential edits, and update the reference table if needed.
+- Reference cluster table: markdown table with columns: id, name, description, inclusion_rules, exclusion_rules, pos_examples, near_misses.
+</instruction>
+<use_case>Classify short phrases describing technology-adoption causes (drivers/motives) in <<TECH>> extracted from earnings calls.</use_case>
+<requirements>
+### Format
+- Output clusters as a **markdown table** with each row as a category, with the following columns:
+  - **id**: category index starting from 1 in an incremental manner.
+  - **name**: category name should be **within 5 words**. It can be either *verb phrase* or *noun phrase*, whichever is more appropriate.
+  - **description**: category description should be **within 30 words**.
+  - **inclusion_rules**: 2–4 short rules; semicolon-separated; criteria that qualify a phrase for the category.
+  - **exclusion_rules**: 1–3 short rules; semicolon-separated; typical traps that should NOT be in the category.
+  - **pos_examples**: up to 3 phrases **copied verbatim from the provided input data** that clearly belong to this category; semicolon-separated.
+  - **near_misses**: up to 3 phrases **copied verbatim from the provided input data** that are borderline or often confused with this category but should go elsewhere; semicolon-separated.
+- Total number of categories should be no more than 15.
+- Output table should be in English only.
+
+### Quality
+- **No overlap or contradiction** among the categories.
+- Names are concise and specific; descriptions differentiate categories.
+- Categories can accurately and consistently classify new data without ambiguity.
+- No vague buckets such as Other, General, Unclear, Miscellaneous, Undefined.
+</requirements>
+<previous_errors>
+(Optional: only present when validation errors exist.)
+</previous_errors>
+<reference_table>
+|id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+|-|-|-|-|-|-|-|
+|1|...|...|...|...|...|...|
+</reference_table>
+<data>
+|id|text|
+|-|-|
+|1|...|
+</data>
+<questions>
+Q1. Review the given reference table and the input data and provide a rating score of the reference table. The rating score should be an integer between 0 and 100, higher rating score means better quality. You should consider the following factors when rating the reference cluster table:
+- Intrinsic quality:
+ - 1) if the cluster table meets the Requirements section, with clear and consistent category names and descriptions, and no overlap or contradiction among the categories;
+ - 2) if the categories in the cluster table are relevant to the given use case;
+ - 3) if the cluster table includes any vague categories such as "Other", "General", "Unclear", "Miscellaneous" or "Undefined".
+- Extrinsic quality:
+ - 1) if the cluster table can accurately and consistently classify the input data without ambiguity;
+ - 2) if there are missing categories in the cluster table that appear in the input data;
+ - 3) if there are unnecessary categories in the cluster table that do not appear in the input data.
+Q2. Explain your rating score in Q1 within 120 words.
+Q3. Based on your review, decide if you need to edit the reference table to improve its quality. If yes, suggest potential edits within 120 words. If no, please output "N/A".
+Tips:
+- You can edit the category name, description, or remove a category.
+- You can also merge or add new categories if needed. Your edits should meet the Requirements section.
+- You can edit inclusion_rules, exclusion_rules, pos_examples and near_misses if needed.
+- The cluster table should be a **flat list** of **mutually exclusive** categories. Sort them based on their semantic relatedness.
+- You can have *fewer than 15 categories*, but **do not exceed the limit**.
+- Be **specific** about each category. **Do not include vague categories** such as "Other", "General", "Unclear", "Miscellaneous" or "Undefined".
+- You can ignore low quality or ambiguous data points.
+Q4. If you decide to edit the reference table, please provide your updated reference table. If you decide not to edit the reference table, please output the original reference table.
+</questions>
+<output>
+<rating_score></rating_score>
+<explanation></explanation>
+<suggestions></suggestions>
+<cluster_table>
+|id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+|-|-|-|-|-|-|-|
+</cluster_table>
+</output>
+\end{Verbatim}
+
+\subsection{CAUSE(EFFECT) — Final Review}
+\begin{Verbatim}
+<instruction>
+**Goal**: Your goal is to review the given reference table based on the requirements and the specified use case, then update the reference table if needed.
+- You will be given a reference cluster table, which is built on existing data. The reference table will be used to classify new data points.
+- You will compare the reference table with the given requirements, output a rating score of the quality of the reference table, suggest potential edits, and update the reference table if needed.
+- Keep the 7-column header exactly: id, name, description, inclusion_rules, exclusion_rules, pos_examples, near_misses.
+</instruction>
+<use_case>Classify short phrases describing technology-adoption causes (drivers/motives) in <<TECH>> extracted from earnings calls.</use_case>
+<requirements>
+### Format
+- Output clusters as a **markdown table** with each row as a category, with the following columns:
+  - **id**: category index starting from 1 in an incremental manner.
+  - **name**: category name should be **within 5 words**. It can be either *verb phrase* or *noun phrase*, whichever is more appropriate.
+  - **description**: category description should be **within 30 words**.
+  - **inclusion_rules**: 2–4 short rules; semicolon-separated; criteria that qualify a phrase for the category.
+  - **exclusion_rules**: 1–3 short rules; semicolon-separated; typical traps that should NOT be in the category.
+  - **pos_examples**: up to 3 phrases **copied verbatim from the provided input data** that clearly belong to this category; semicolon-separated.
+  - **near_misses**: up to 3 phrases **copied verbatim from the provided input data** that are borderline or often confused with this category but should go elsewhere; semicolon-separated.
+- Total number of categories should be no more than 15.
+- Output table should be in English only.
+
+### Quality
+- **No overlap or contradiction** among the categories.
+- Names are concise and specific; descriptions differentiate categories.
+- Categories can accurately and consistently classify new data without ambiguity.
+- No vague buckets such as Other, General, Unclear, Miscellaneous, Undefined.
+</requirements>
+<previous_errors>
+(Optional: only present when validation errors exist.)
+</previous_errors>
+<reference_table>
+|id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+|-|-|-|-|-|-|-|
+|1|...|...|...|...|...|...|
+</reference_table>
+<questions>
+Q1. Review the given reference table and provide a rating score. The rating score should be an integer between 0 and 100, higher rating score means better quality. You should consider the same factors as in the update prompt.
+Q2. Explain your rating score in Q1 within 120 words.
+Q3. Based on your review, decide if you need to edit the reference table to improve its quality. If yes, suggest potential edits within 120 words. If no, please output "N/A".
+Tips:
+- You can edit the category name, description, or remove a category.
+- You can also merge or add new categories if needed. Your edits should meet the Requirements section.
+- You can edit inclusion_rules, exclusion_rules, pos_examples and near_misses if needed.
+- The cluster table should be a **flat list** of **mutually exclusive** categories. Sort them based on their semantic relatedness.
+- You can have *fewer than 15 categories*, but **do not exceed the limit**.
+- Be **specific** about each category. **Do not include vague categories** such as "Other", "General", "Unclear", "Miscellaneous" or "Undefined".
+- You can ignore low quality or ambiguous data points.
+Q4. If you decide to edit the reference table, please provide your updated reference table. If you decide not to edit the reference table, please output the original reference table.
+</questions>
+<output>
+<rating_score></rating_score>
+<explanation></explanation>
+<suggestions></suggestions>
+<cluster_table>
+|id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+|-|-|-|-|-|-|-|
+</cluster_table>
+</output>
+\end{Verbatim}
+
+\subsection{CAUSE(EFFECT) — A/B Evaluation}
+\begin{Verbatim}
+<instruction>
+Pick which taxonomy (1 or 2) better fits the validation data and meets all requirements.
+Return ONLY the number "1" or "2" in <choice>, followed by a brief explanation.
+</instruction>
+<use_case>Classify short phrases describing technology-adoption causes (drivers/motives) in <<TECH>> extracted from earnings calls.</use_case>
+<requirements>
+### Format
+- Output clusters as a **markdown table** with each row as a category, with the following columns:
+  - **id**: category index starting from 1 in an incremental manner.
+  - **name**: category name should be **within 5 words**. It can be either *verb phrase* or *noun phrase*, whichever is more appropriate.
+  - **description**: category description should be **within 30 words**.
+  - **inclusion_rules**: 2–4 short rules; semicolon-separated; criteria that qualify a phrase for the category.
+  - **exclusion_rules**: 1–3 short rules; semicolon-separated; typical traps that should NOT be in the category.
+  - **pos_examples**: up to 3 phrases **copied verbatim from the provided input data** that clearly belong to this category; semicolon-separated.
+  - **near_misses**: up to 3 phrases **copied verbatim from the provided input data** that are borderline or often confused with this category but should go elsewhere; semicolon-separated.
+- Total number of categories should be no more than 15.
+- Output table should be in English only.
+
+### Quality
+- **No overlap or contradiction** among the categories.
+- Names are concise and specific; descriptions differentiate categories.
+- Categories can accurately and consistently classify new data without ambiguity.
+- No vague buckets such as Other, General, Unclear, Miscellaneous, Undefined.
+</requirements>
+<taxonomy_1>
+|id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+|-|-|-|-|-|-|-|
+|1|...|...|...|...|...|...|
+</taxonomy_1>
+<taxonomy_2>
+|id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+|-|-|-|-|-|-|-|
+|1|...|...|...|...|...|...|
+</taxonomy_2>
+<data>
+|id|text|
+|-|-|
+|1|...|
+</data>
+<output>
+<choice>1 or 2</choice>
+<explanation>(<=80 words)</explanation>
+</output>
+\end{Verbatim}
+
+\subsection{CAUSE(EFFECT) — Quick Assignment}
+\begin{Verbatim}
+<instruction>
+Use the reference taxonomy to assign each item to ONE best-fitting category id.
+If none fits, set the category id to "Undefined".
+Return ONLY the assignments table below.
+</instruction>
+<reference_table>
+|id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+|-|-|-|-|-|-|-|
+|1|...|...|...|...|...|...|
+</reference_table>
+<data>
+|id|text|
+|-|-|
+|1|...|
+</data>
+<output>
+<assignments>
+|id|predicted_category_id|predicted_category_name|
+|-|-|-|
+</assignments>
+</output>
+\end{Verbatim}
+
+% \subsection{EFFECT — Generation}
+% \begin{Verbatim}
+% <instruction>
+% **Goal**: Your goal is to cluster the input data into meaningful categories for the given use case.
+% </instruction>
+% <use_case>Classify short phrases describing technology-adoption effects (outcomes/impacts) in <<TECH>> extracted from earnings calls.</use_case>
+% <requirements>
+% ### Format
+% - Output clusters as a **markdown table** with each row as a category, with the following columns:
+%   - **id**: category index starting from 1 in an incremental manner.
+%   - **name**: category name should be **within 5 words**. It can be either *verb phrase* or *noun phrase*, whichever is more appropriate.
+%   - **description**: category description should be **within 30 words**.
+%   - **inclusion_rules**: 2–4 short rules; semicolon-separated; criteria that qualify a phrase for the category.
+%   - **exclusion_rules**: 1–3 short rules; semicolon-separated; typical traps that should NOT be in the category.
+%   - **pos_examples**: up to 3 phrases **copied verbatim from the provided input data** that clearly belong to this category; semicolon-separated.
+%   - **near_misses**: up to 3 phrases **copied verbatim from the provided input data** that are borderline or often confused with this category but should go elsewhere; semicolon-separated.
+
+% Here is an example of your output:
+% ```markdown
+% |id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+% |-|-|-|-|-|-|-|
+% |category id|category name|category description|rule A; rule B|trap A|example 1; example 2|near 1; near 2|
+% ```
+% - Total number of categories should be no more than 15.
+% - Output table should be in English only.
+
+% ### Quality
+% - **No overlap or contradiction** among the categories.
+% - **Name** is a concise and clear label for the category. Use only phrases that are specific to each category and avoid those that are common to all categories.
+% - **Description** differentiates one category from another.
+% - **Name** and **description** can **accurately** and **consistently** classify new data points **without ambiguity**.
+% - **Name** and **description** are *consistent with each other*.
+% - Output clusters match the data as closely as possible,without missing important categories or adding unnecessary ones.
+% - Output clusters serve the given use case well.
+% - Output clusters should be specific and meaningful. Do not invent categories that are not in the data.
+% </requirements>
+% <data>
+% |id|text|
+% |-|-|
+% |1|...|
+% </data>
+% <questions>
+% Q1: Generate the taxonomy table that meets all requirements.
+% Tips:
+% - The cluster table should be a flat list of mutually exclusive categories. Sort them based on their semantic relatedness.
+% - You can have fewer than 15 categories, but do not exceed the limit.
+% - Be specific about each category. Do not include vague categories such as "Other", "General", "Unclear", "Miscellaneous" or "Undefined".
+% - You can ignore low quality or ambiguous data points.
+% Q2: Why did you cluster the data the way you did? Explain your reasoning within 120 words.
+% </questions>
+% <output>
+% <cluster_table>
+% |id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+% |-|-|-|-|-|-|-|
+% </cluster_table>
+% <explanation></explanation>
+% </output>
+% \end{Verbatim}
+
+% \subsection{EFFECT — Update}
+% \begin{Verbatim}
+% <instruction>
+% **Goal**: Your goal is to review the given reference table based on the input data for the specified use case, then update the reference table if needed.
+% - You will be given a reference cluster table, which is built on existing data. The reference table will be used to classify new data points.
+% - You will compare the input data with the reference table, output a rating score of the quality of the reference table, suggest potential edits, and update the reference table if needed.
+% - Reference cluster table: markdown table with columns: id, name, description, inclusion_rules, exclusion_rules, pos_examples, near_misses.
+% </instruction>
+% <use_case>Classify short phrases describing technology-adoption effects (outcomes/impacts) in <<TECH>> extracted from earnings calls.</use_case>
+% <requirements>
+% ### Format
+% - Output clusters as a **markdown table** with each row as a category, with the following columns:
+%   - **id**: category index starting from 1 in an incremental manner.
+%   - **name**: category name should be **within 5 words**. It can be either *verb phrase* or *noun phrase*, whichever is more appropriate.
+%   - **description**: category description should be **within 30 words**.
+%   - **inclusion_rules**: 2–4 short rules; semicolon-separated; criteria that qualify a phrase for the category.
+%   - **exclusion_rules**: 1–3 short rules; semicolon-separated; typical traps that should NOT be in the category.
+%   - **pos_examples**: up to 3 phrases **copied verbatim from the provided input data** that clearly belong to this category; semicolon-separated.
+%   - **near_misses**: up to 3 phrases **copied verbatim from the provided input data** that are borderline or often confused with this category but should go elsewhere; semicolon-separated.
+% - Total number of categories should be no more than 15.
+% - Output table should be in English only.
+
+% ### Quality
+% - **No overlap or contradiction** among the categories.
+% - Names are concise and specific; descriptions differentiate categories.
+% - Categories can accurately and consistently classify new data without ambiguity.
+% - No vague buckets such as Other, General, Unclear, Miscellaneous, Undefined.
+% </requirements>
+% <previous_errors>
+% (Optional: only present when validation errors exist.)
+% </previous_errors>
+% <reference_table>
+% |id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+% |-|-|-|-|-|-|-|
+% |1|...|...|...|...|...|...|
+% </reference_table>
+% <data>
+% |id|text|
+% |-|-|
+% |1|...|
+% </data>
+% <questions>
+% Q1. Review the given reference table and the input data and provide a rating score of the reference table. The rating score should be an integer between 0 and 100, higher rating score means better quality. You should consider the following factors when rating the reference cluster table:
+% - Intrinsic quality:
+%  - 1) if the cluster table meets the Requirements section, with clear and consistent category names and descriptions, and no overlap or contradiction among the categories;
+%  - 2) if the categories in the cluster table are relevant to the given use case;
+%  - 3) if the cluster table includes any vague categories such as "Other", "General", "Unclear", "Miscellaneous" or "Undefined".
+% - Extrinsic quality:
+%  - 1) if the cluster table can accurately and consistently classify the input data without ambiguity;
+%  - 2) if there are missing categories in the cluster table that appear in the input data;
+%  - 3) if there are unnecessary categories in the cluster table that do not appear in the input data.
+% Q2. Explain your rating score in Q1 within 120 words.
+% Q3. Based on your review, decide if you need to edit the reference table to improve its quality. If yes, suggest potential edits within 120 words. If no, please output "N/A".
+% Tips:
+% - You can edit the category name, description, or remove a category.
+% - You can also merge or add new categories if needed. Your edits should meet the Requirements section.
+% - You can edit inclusion_rules, exclusion_rules, pos_examples and near_misses if needed.
+% - The cluster table should be a **flat list** of **mutually exclusive** categories. Sort them based on their semantic relatedness.
+% - You can have *fewer than 15 categories*, but **do not exceed the limit**.
+% - Be **specific** about each category. **Do not include vague categories** such as "Other", "General", "Unclear", "Miscellaneous" or "Undefined".
+% - You can ignore low quality or ambiguous data points.
+% Q4. If you decide to edit the reference table, please provide your updated reference table. If you decide not to edit the reference table, please output the original reference table.
+% </questions>
+% <output>
+% <rating_score></rating_score>
+% <explanation></explanation>
+% <suggestions></suggestions>
+% <cluster_table>
+% |id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+% |-|-|-|-|-|-|-|
+% </cluster_table>
+% </output>
+% \end{Verbatim}
+
+% \subsection{EFFECT — Final Review}
+% \begin{Verbatim}
+% <instruction>
+% **Goal**: Your goal is to review the given reference table based on the requirements and the specified use case, then update the reference table if needed.
+% - You will be given a reference cluster table, which is built on existing data. The reference table will be used to classify new data points.
+% - You will compare the the reference table with the given requirements, output a rating score of the quality of the reference table, suggest potential edits, and update the reference table if needed.
+% - Keep the 7-column header exactly: id, name, description, inclusion_rules, exclusion_rules, pos_examples, near_misses.
+% </instruction>
+% <use_case>Classify short phrases describing technology-adoption effects (outcomes/impacts) in <<TECH>> extracted from earnings calls.</use_case>
+% <requirements>
+% ### Format
+% - Output clusters as a **markdown table** with each row as a category, with the following columns:
+%   - **id**: category index starting from 1 in an incremental manner.
+%   - **name**: category name should be **within 5 words**. It can be either *verb phrase* or *noun phrase*, whichever is more appropriate.
+%   - **description**: category description should be **within 30 words**.
+%   - **inclusion_rules**: 2–4 short rules; semicolon-separated; criteria that qualify a phrase for the category.
+%   - **exclusion_rules**: 1–3 short rules; semicolon-separated; typical traps that should NOT be in the category.
+%   - **pos_examples**: up to 3 phrases **copied verbatim from the provided input data** that clearly belong to this category; semicolon-separated.
+%   - **near_misses**: up to 3 phrases **copied verbatim from the provided input data** that are borderline or often confused with this category but should go elsewhere; semicolon-separated.
+% - Total number of categories should be no more than 15.
+% - Output table should be in English only.
+
+% ### Quality
+% - **No overlap or contradiction** among the categories.
+% - Names are concise and specific; descriptions differentiate categories.
+% - Categories can accurately and consistently classify new data without ambiguity.
+% - No vague buckets such as Other, General, Unclear, Miscellaneous, Undefined.
+% </requirements>
+% <previous_errors>
+% (Optional: only present when validation errors exist.)
+% </previous_errors>
+% <reference_table>
+% |id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+% |-|-|-|-|-|-|-|
+% |1|...|...|...|...|...|...|
+% </reference_table>
+% <questions>
+% Q1. Review the given reference table and provide a rating score. The rating score should be an integer between 0 and 100, higher rating score means better quality. You should consider the same factors as in the update prompt.
+% Q2. Explain your rating score in Q1 within 120 words.
+% Q3. Based on your review, decide if you need to edit the reference table to improve its quality. If yes, suggest potential edits within 120 words. If no, please output "N/A".
+% Tips:
+% - You can edit the category name, description, or remove a category.
+% - You can also merge or add new categories if needed. Your edits should meet the Requirements section.
+% - You can edit inclusion_rules, exclusion_rules, pos_examples and near_misses if needed.
+% - The cluster table should be a **flat list** of **mutually exclusive** categories. Sort them based on their semantic relatedness.
+% - You can have *fewer than 15 categories*, but **do not exceed the limit**.
+% - Be **specific** about each category. **Do not include vague categories** such as "Other", "General", "Unclear", "Miscellaneous" or "Undefined".
+% - You can ignore low quality or ambiguous data points.
+% Q4. If you decide to edit the reference table, please provide your updated reference table. If you decide not to edit the reference table, please output the original reference table.
+% </questions>
+% <output>
+% <rating_score></rating_score>
+% <explanation></explanation>
+% <suggestions></suggestions>
+% <cluster_table>
+% |id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+% |-|-|-|-|-|-|-|
+% </cluster_table>
+% </output>
+% \end{Verbatim}
+
+% \subsection{EFFECT — A/B Evaluation}
+% \begin{Verbatim}
+% <instruction>
+% Pick which taxonomy (1 or 2) better fits the validation data and meets all requirements.
+% Return ONLY the number "1" or "2" in <choice>, followed by a brief explanation.
+% </instruction>
+% <use_case>Classify short phrases describing technology-adoption effects (outcomes/impacts) in <<TECH>> extracted from earnings calls.</use_case>
+% <requirements>
+% ### Format
+% - Output clusters as a **markdown table** with each row as a category, with the following columns:
+%   - **id**: category index starting from 1 in an incremental manner.
+%   - **name**: category name should be **within 5 words**. It can be either *verb phrase* or *noun phrase*, whichever is more appropriate.
+%   - **description**: category description should be **within 30 words**.
+%   - **inclusion_rules**: 2–4 short rules; semicolon-separated; criteria that qualify a phrase for the category.
+%   - **exclusion_rules**: 1–3 short rules; semicolon-separated; typical traps that should NOT be in the category.
+%   - **pos_examples**: up to 3 phrases **copied verbatim from the provided input data** that clearly belong to this category; semicolon-separated.
+%   - **near_misses**: up to 3 phrases **copied verbatim from the provided input data** that are borderline or often confused with this category but should go elsewhere; semicolon-separated.
+% - Total number of categories should be no more than 15.
+% - Output table should be in English only.
+
+% ### Quality
+% - **No overlap or contradiction** among the categories.
+% - Names are concise and specific; descriptions differentiate categories.
+% - Categories can accurately and consistently classify new data without ambiguity.
+% - No vague buckets such as Other, General, Unclear, Miscellaneous, Undefined.
+% </requirements>
+% <taxonomy_1>
+% |id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+% |-|-|-|-|-|-|-|
+% |1|...|...|...|...|...|...|
+% </taxonomy_1>
+% <taxonomy_2>
+% |id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+% |-|-|-|-|-|-|-|
+% |1|...|...|...|...|...|...|
+% </taxonomy_2>
+% <data>
+% |id|text|
+% |-|-|
+% |1|...|
+% </data>
+% <output>
+% <choice>1 or 2</choice>
+% <explanation>(<=80 words)</explanation>
+% </output>
+% \end{Verbatim}
+
+% \subsection{EFFECT — Quick Assignment}
+% \begin{Verbatim}
+% <instruction>
+% Use the reference taxonomy to assign each item to ONE best-fitting category id.
+% If none fits, set the category id to "Undefined".
+% Return ONLY the assignments table below.
+% </instruction>
+% <reference_table>
+% |id|name|description|inclusion_rules|exclusion_rules|pos_examples|near_misses|
+% |-|-|-|-|-|-|-|
+% |1|...|...|...|...|...|...|
+% </reference_table>
+% <data>
+% |id|text|
+% |-|-|
+% |1|...|
+% </data>
+% <output>
+% <assignments>
+% |id|predicted_category_id|predicted_category_name|
+% |-|-|-|
+% </assignments>
+% </output>
+% \end{Verbatim}
+
+
+\end{document}

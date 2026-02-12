@@ -1,56 +1,47 @@
 ---
 name: compile-latex
-description: Compile a Beamer LaTeX slide deck with XeLaTeX (3 passes + bibtex). Use when compiling lecture slides.
+description: Compile the LaTeX manuscript with pdflatex (3 passes + bibtex). Use when compiling the paper.
 disable-model-invocation: true
-argument-hint: "[filename without .tex extension]"
+argument-hint: "[filename without .tex extension, default: 'main']"
 allowed-tools: ["Read", "Bash", "Glob"]
 ---
 
-# Compile Beamer LaTeX Slides
+# Compile LaTeX Manuscript
 
-Compile a Beamer slide deck using XeLaTeX with full citation resolution.
+Compile the manuscript using pdflatex with full citation resolution.
 
 ## Steps
 
-1. **Navigate to Slides/ directory** and compile with 3-pass sequence:
+1. **Navigate to Overleaf/ directory** and compile with 3-pass sequence:
 
-```bash
-cd Slides
-TEXINPUTS=../Preambles:$TEXINPUTS xelatex -interaction=nonstopmode $ARGUMENTS.tex
-BIBINPUTS=..:$BIBINPUTS bibtex $ARGUMENTS
-TEXINPUTS=../Preambles:$TEXINPUTS xelatex -interaction=nonstopmode $ARGUMENTS.tex
-TEXINPUTS=../Preambles:$TEXINPUTS xelatex -interaction=nonstopmode $ARGUMENTS.tex
+```powershell
+cd Overleaf
+pdflatex -interaction=nonstopmode $ARGUMENTS.tex
+bibtex $ARGUMENTS
+pdflatex -interaction=nonstopmode $ARGUMENTS.tex
+pdflatex -interaction=nonstopmode $ARGUMENTS.tex
 ```
 
-**Alternative (latexmk):**
-```bash
-cd Slides
-TEXINPUTS=../Preambles:$TEXINPUTS BIBINPUTS=..:$BIBINPUTS latexmk -xelatex -interaction=nonstopmode $ARGUMENTS.tex
-```
+If `$ARGUMENTS` is empty, default to `main`.
 
 2. **Check for warnings:**
-   - Grep output for `Overfull \\hbox` warnings
+   - Grep output for `Overfull \\hbox` warnings — count them
    - Grep for `undefined citations` or `Label(s) may have changed`
    - Report any issues found
 
-3. **Open the PDF** for visual verification:
-   ```bash
-   open Slides/$ARGUMENTS.pdf
-   ```
-
-4. **Report results:**
+3. **Report results:**
    - Compilation success/failure
    - Number of overfull hbox warnings
    - Any undefined citations
    - PDF page count
 
 ## Why 3 passes?
-1. First xelatex: Creates `.aux` file with citation keys
+1. First pdflatex: Creates `.aux` file with citation keys
 2. bibtex: Reads `.aux`, generates `.bbl` with formatted references
-3. Second xelatex: Incorporates bibliography
-4. Third xelatex: Resolves all cross-references with final page numbers
+3. Second pdflatex: Incorporates bibliography
+4. Third pdflatex: Resolves all cross-references with final page numbers
 
 ## Important
-- **Always use XeLaTeX**, never pdflatex
-- **TEXINPUTS** is required: your Beamer theme lives in `Preambles/`
-- **BIBINPUTS** is required: your `.bib` file lives in the repo root
+- Use **pdflatex** (not xelatex) — matches Overleaf's default compiler
+- Bibliography file is `references.bib` in the same directory
+- No special `TEXINPUTS` needed — all files are in `Overleaf/`

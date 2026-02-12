@@ -1,0 +1,275 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{caption}
+\renewcommand{\tablename}{TABLE}
+\renewcommand{\thetable}{\Roman{table}}
+\captionsetup[table]{
+  labelsep=newline,
+  justification=centering,
+  singlelinecheck=false,
+  skip=6pt,
+  labelfont=sc,
+  textfont=sc
+}
+
+\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=blue}
+\setlist[itemize]{leftmargin=1.2em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesubsection}{\thesection.\Alph{subsection}}
+
+\title{Methodology Part for Technology Diffusion}
+\author{Xingxu Chai}
+\date{\today}
+
+\begin{document}
+\maketitle
+\section{Data}
+
+We use transcripts of quarterly earnings conference calls held by publicly listed firms to construct measures of technology cause–effect narratives. These transcripts are available from Refinitiv Eikon. We collect the complete set of 450,095 English-language transcripts from January 1, 2002, to December 31, 2024, for 19,469 firms headquartered in 94 countries.
+%=========================================================
+\section{Measuring Technology Cause--Effect Narratives}
+%=========================================================
+
+In this section, we introduce our measures of technology cause–effect narratives. To separate measurement from interpretation, we proceed in three steps.
+We begin by defining a set of discussions
+that are truly about a target technology and contain an explicit, directional statement about why the technology is adopted
+(causes) or what it delivers (effects).
+In a second step, we organize extracted causes and effects into interpretable categories.
+Finally, we map all technology-specific categories into a shared set of macro categories,
+so that the resulting measures are comparable across technologies, firms, industries, and time.
+
+\subsection{Identifying Technology-Relevant Discussion}
+
+We begin with a simple objective: identify parts of an earnings call that truly discuss a target
+technology, rather than merely containing a keyword.
+Earnings calls are noisy: many keyword hits are generic (no relationship to technology adoption) or refer to
+non-technology meanings (e.g., ``cloud'' as a metaphor instead of referring to  ``cloud computing'' technology).
+Because of this, a keyword count alone does not cleanly measure technology discussion.
+
+Let $i$ index firms and $t$ index earnings calls (or firm-quarters). Let $T_{it}$ denote the transcript text.
+We study a set of $K=29$ disruptive technologies, indexed by $k \in \{1,\dots,K\}$.
+For each technology $k$, we start from a technology keyword list $W_k$ based on Bloom et al.\ (2021). In Bloom et al. (2021), they identified 29 disruptive technologies and their keyword list (technical bigrams) using the full text of U.S. patents awarded between 1976 and 2016. 
+We scan each transcript for keyword hits and obtain a corpus of 
+443{,}478 keyword-hit sentences (each containing at least one technology keyword).
+We construct a local context window around each hit: that is, a seven-sentence window centered on the keyword-hit sentence (the hit sentence plus up to three preceding and up to three following sentences), restricting the window to sentences spoken by the same speaker. This design reduces the risk of mixing distinct topics across speaker turns and helps the model attribute causes and effects to the correct technology while retaining local context.
+
+% We use short, local snippets as the extraction unit for two reasons. First, large language models are known to perform less reliably on long documents, and shorter inputs help align the model's output with the source text.
+% Second, earnings calls often discuss multiple technologies and business topics.
+% A local, technology-relevant snippet reduces the risk that the model attributes
+% a cause or effect to the wrong technology. In practice, the $\pm 3$ surrounding sentences typically provide sufficient context for interpretation.
+
+
+Let $s_{ithk}$ denote snippet $h$ for firm $i$, call $t$, and technology $k$, and let $H_{itk}$ denote the number
+of keyword-hit snippets for $(i,t,k)$.
+
+To filter out false positives, we apply an LLM-based relevance screen.
+Define an indicator
+\begin{equation}
+R_{ithk} \;=\; \mathbf{1}\{\text{snippet } s_{ithk} \text{ is truly about technology } k\},
+\end{equation}
+where ``truly'' means the snippet discusses the technology in a technology sense (e.g., design,
+deployment, performance, limitations, dependencies, adoption plans, or business use), rather than
+generic language or an unrelated sense of the keyword.
+We refer to snippets with $R_{ithk}=1$ as \emph{technology-relevant snippets}. This screen yields 279{,}085 technology-relevant snippets.
+
+
+
+\subsection{Extracting Cause--Effect Statements and Causal Triples}
+
+Our goal is not only to measure whether a technology is discussed, but also how it is discussed.
+In particular, we capture the \emph{narratives} that call participants use to explain why a technology is adopted and what it delivers.
+We adapt the prompt-based extraction approach in Li et al.\ (2025) to our setting and use a large language model to extract perceived cause--effect relations from each technology-relevant snippet.
+The model is instructed to (i) determine whether the snippet contains an explicit directional statement involving the target technology and, if so, (ii) extract the upstream drivers (causes) and downstream outcomes (effects) and return them in a structured triple format.
+Prompt templates and examples are provided in the Online Appendix.
+
+
+Let $\mathcal{G}(s_{ithk})$ denote the set of extracted causal triples from snippet $s_{ithk}$.
+
+Each triple takes the form
+\[
+\tau \;=\; (\text{entity}_1,\; \text{relation},\; \text{entity}_2),
+\]
+where the relation is normalized by the model to one of two labels:
+\textit{promotes} (positive directional effect) or \textit{suppresses} (negative directional effect).
+We restrict attention to triples that explicitly include the technology as one endpoint:
+either $\text{entity}_2$ is the technology (a \emph{cause of technology adoption}), or
+$\text{entity}_1$ is the technology (an \emph{effect from technology adoption}).
+A post-review step drops any triple that is not supported by the snippet text, does not include the target technology, or is tautological (e.g., the technology ``causes itself''). This procedure yields 187{,}647 technology-relevant snippets that contain at least one valid causal triple. Because a snippet may contain multiple causal statements, it can generate more than one triple. Aggregating across all snippets and all technologies, we obtain 197{,}818 technology-relevant cause spans and 385{,}418 technology-relevant effect spans.
+
+Importantly, we interpret these extracted cause--effect statements as \emph{narrative attributions} made by call participants about why a technology is adopted and what it delivers. They are not intended to recover \emph{structural} causal effects in the econometric sense; rather, they capture the perceived drivers and outcomes that managers and analysts explicitly articulate in earnings-call discourse.
+
+
+\begin{table}[H]
+\centering\small
+\caption{Causal Triple Extraction Rate By Technology}
+\label{tab:within-tech-causal}
+\begin{tabular}{lrrr}
+\hline\hline
+Technology & \multicolumn{1}{c}{Number of snippets} & \multicolumn{1}{c}{Number of causal snippets} & \multicolumn{1}{c}{Share (\%)} \\
+\hline
+Machine Learning AI                      & 24{,}649 & 20{,}376 & 82.66 \\
+Smart devices                            & 20{,}161 & 15{,}898 & 78.86 \\
+Online streaming                         & 12{,}719 &  9{,}664 & 75.98 \\
+Electronic gaming                        &  4{,}450 &  3{,}302 & 74.20 \\
+Computer vision                          &  1{,}567 &  1{,}090 & 69.56 \\
+Stent graft                              &    581 &    402 & 69.19 \\
+Cloud computing                          & 82{,}746 & 56{,}945 & 68.82 \\
+Software defined radio                   &    234 &    159 & 67.95 \\
+Social Networking                        & 19{,}404 & 13{,}134 & 67.69 \\
+Fracking                                 &  6{,}350 &  4{,}261 & 67.10 \\
+Hybrid vehicle electric car              &  5{,}776 &  3{,}759 & 65.08 \\
+Mobile payment                           &  3{,}063 &  1{,}982 & 64.71 \\
+Fingerprint sensor                       &    406 &    256 & 63.05 \\
+Oled display                             & 12{,}274 &  7{,}737 & 63.04 \\
+Autonomous Cars                          &  6{,}857 &  4{,}311 & 62.87 \\
+Search Engine                            &  7{,}382 &  4{,}617 & 62.54 \\
+3d printing                              &  6{,}960 &  4{,}262 & 61.24 \\
+Lithium battery                          &  6{,}112 &  3{,}639 & 59.54 \\
+Drug conjugates                          &  1{,}271 &    756 & 59.48 \\
+Solar Power                              & 25{,}279 & 14{,}542 & 57.53 \\
+Rfid tags                                &  8{,}054 &  4{,}501 & 55.89 \\
+Bispecific monoclonal antibody           &    982 &    548 & 55.80 \\
+Lane departure warning                   &    367 &    200 & 54.50 \\
+Millimeter wave                          &  2{,}471 &  1{,}344 & 54.39 \\
+Touch screen                             &  2{,}598 &  1{,}406 & 54.12 \\
+Wifi                                     & 12{,}498 &  6{,}629 & 53.04 \\
+Wireless charging                        &    936 &    492 & 52.56 \\
+Virtual Reality                          &  2{,}486 &  1{,}256 & 50.52 \\
+GPS                                      &    452 &    179 & 39.60 \\
+\hline
+Total                                    & 279{,}085 & 187{,}647 & 67.24 \\
+\hline\hline
+\end{tabular}
+
+\begin{flushleft}\footnotesize
+Notes: Denominator is total number of technology-relevant snippets. Percent shows the share of those snippets that contain at least one causal relation.
+\end{flushleft}
+\end{table}
+
+\subsection{Creating Interpretable Categories}
+
+The causal extraction step produces a large number of short text spans that describe \emph{why} a technology is adopted (causes) and \emph{what} the technology delivers (effects).
+These spans are informative, but they are too granular to summarize across firms and across the 29 technologies.
+Transforming short, unstructured text into structured categories is therefore a key step in our measurement.
+
+A central challenge is that the extracted spans are short and often contain strong technology-domain cues.
+In short-text settings, similarity-based clustering, whether bag-of-words topic models such as LDA and NMF or embedding-based methods such as BERTopic, tends to be driven by salient domain nouns (e.g., engineering terms) rather than by the underlying cross-technology economic mechanism (e.g., demand, regulation, costs).
+For example, the phrase “demand for services over multiple networks and devices” may be grouped with other “networks/devices” phrases, even though the mechanism of interest is demand.
+
+Given this mismatch between the clustering objective and our measurement goal, we adopt the \textsc{TnT-LLM} framework (Wan et al., 2024), which uses large language models
+to generate an interpretable label taxonomy and assign labels with minimal human input.
+A key advantage in our setting is that we can explicitly instruct the model to form categories in
+\emph{economic} terms and to avoid technology-specific wording, thereby improving comparability across technologies.
+
+\paragraph{Per-technology taxonomies.}
+Fix a technology $k$.
+From the extracted causal triples, we construct two corpora for two sides ($s$):
+(i) \emph{raw causes}, where the technology appears on the right-hand side of a triple,
+and (ii) \emph{raw effects}, where the technology appears on the left-hand side of a triple.
+We deduplicate spans within $(k,s)$ before taxonomy creation to reduce the influence of repeated phrasing.
+To balance coverage and computational cost, we cap the sample at 3{,}000 unique spans per technology-side:
+if the deduplicated corpus contains more than 3{,}000 spans, we draw a simple random sample of 3{,}000 without replacement; otherwise we keep all spans.
+For each $(k,s)$, we then split the sampled spans into \textsc{Work}/\textsc{Validation}/\textsc{Test} sets using a 60/20/20 split.
+We fix this sample and split and reuse them across all taxonomy trials for the same $(k,s)$.
+
+\paragraph{Generate--update--review.}
+For each technology $k$ and each side $s\in\{\text{cause},\text{effect}\}$, we construct a technology-specific taxonomy with at most 15 categories.
+The workflow follows a \emph{generate--update--review} procedure using a structured output schema.
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Initial generation (generate).}
+We take the first \textsc{Work} minibatch (200 spans) and prompt the LLM to propose an initial taxonomy table.
+The prompt constrains the taxonomy to contain no more than 15 categories and requires a fixed set of fields for each category:
+\emph{(i)} a short category name,
+\emph{(ii)} a short description,
+\emph{(iii)} inclusion rules and exclusion rules,
+and \emph{(iv)} positive examples and ``near-miss'' examples copied verbatim from the minibatch.
+The prompt aims to produce mutually exclusive categories that can be applied to unseen spans for the same technology.
+
+\item \textbf{Iterative refinement (update).}
+We then process the remaining \textsc{Work} minibatches sequentially (minibatch size 200) and use an update prompt to refine the taxonomy.
+In each update step, the LLM: \emph{(i)} evaluates how well the current taxonomy fits the new minibatch,
+\emph{(ii)} identifies issues such as overlap, overly broad categories, inconsistent naming, or uncovered spans, and
+\emph{(iii)} proposes a revised taxonomy through targeted edits (e.g., merging near-synonyms, splitting overloaded categories, renaming for clarity, and refining definitions and rules).
+
+
+To discipline updates and reduce drift, we apply an acceptance test based on held-out validation data.
+After each proposed update, we compare the incumbent taxonomy and the candidate taxonomy on a random validation sample of 150 spans.
+We randomize which taxonomy is presented as option 1 versus option 2 and repeat the comparison four times.
+We accept the update only if the candidate taxonomy wins a strict majority of votes.
+
+\item \textbf{Independent review (review).}
+After exhausting the \textsc{Work} minibatches, we apply a separate review prompt to improve formatting and clarity.
+This review step enforces the fixed schema, standardizes naming and descriptions, and reduces residual overlap where possible,
+without materially changing the taxonomy structure.
+\end{enumerate}
+
+To reduce sensitivity to any single run, we repeat the full generate--update--review procedure 10 times for each $(k,s)$.
+Across trials, we hold fixed the span sample and the \textsc{Work}/\textsc{Validation}/\textsc{Test} split described above.
+We select the final taxonomy using a pairwise comparison on the validation set. In each comparison, we present two candidate taxonomies (with randomized order) and ask the LLM
+which one is clearer, has less overlap, and provides better coverage of the validation spans. We repeat the comparison multiple times and keep the majority winner.
+% Throughout, we use deterministic decoding for evaluation and review (temperature $=0$) and modest stochasticity for generation and updates (temperature set to $0.5$ and $0.2$ separately) to explore alternative category structures.
+
+The technology-specific taxonomies are intentionally tailored to each technology. As a result, they can contain near-synonyms across technologies: that is, categories with different names but have similar definitions. To improve readability and reduce superficial heterogeneity, we create a harmonization prompt separately for causes and effects. First, the model proposes a concise reference list of recurring categories. Second, we map each technology-specific category (name, definition, and examples) to the reference list when there is a clear match; otherwise, we retain the original.
+
+Given the finalized taxonomy for technology $k$ and side $s$, we use the taxonomy as a reference table to assign each raw text span to \emph{exactly one} category.
+The assignment prompt instructs the model to return a sentinel value (``Undefined'') if no category is a reasonable match.
+
+\subsection{Creating macro categories across technologies}
+Even after harmonization, the per-technology step yields hundreds of distinct labels.
+To summarize first-order patterns that are comparable across technologies, we create a prompt that maps each technology-specific label
+into a shared set of macro categories with clear economic meaning.
+Concretely, the model takes as input each label's name, definition, and positive examples and assigns it to one macro category. In the end, we obtain five macro cause categories and five macro effect categories. Table~\ref{tab:macro-shares} reports the resulting macro-category shares.
+
+
+
+\begin{table}[H]
+\centering\small
+\caption{Macro category shares for technology-adoption causes and effects}
+\label{tab:macro-shares}
+\begin{tabular}{lr}
+\hline\hline
+Macro category & \multicolumn{1}{c}{Share (\%)} \\
+\hline
+\multicolumn{2}{l}{\textit{Panel A: Causes of technology adoption}} \\
+Technology Innovation and Advancement & 34.7 \\
+Market Demand and Consumer Behavior & 28.9 \\
+Strategic Partnerships and Investment & 17.6 \\
+Cost and Economic Viability & 12.7 \\
+Regulatory and Policy Drivers & 6.1 \\
+\hline
+\multicolumn{2}{l}{\textit{Panel B: Effects from technology adoption}} \\
+Market Expansion and Adoption & 29.3 \\
+Product and Service Innovation & 25.2 \\
+Revenue and Financial Growth & 22.2 \\
+Operational Efficiency and Automation & 12.3 \\
+Cost Reduction and Efficiency & 10.9 \\
+\hline\hline
+\end{tabular}
+
+\begin{flushleft}\footnotesize
+Notes. The unit of observation is a technology-relevant cause (Panel A) or effect (Panel B) phrase from an extracted causal triple, after taxonomy assignment and macro-category mapping. Shares are computed as the number of assigned items in a macro category divided by the total number of items on the same side (causes or effects) across all technologies and calls.
+\end{flushleft}
+\end{table}
+
+
+After conducting \textsc{TnT-LLM} and creating this mapping, our final output is a two-layer system: a technology-specific layer that preserves within-technology nuance for each of the 29 technology,
+and a macro layer that enables aggregation and comparison across technologies, firms, industries, and time.
+
+
+
+
+\end{document}
