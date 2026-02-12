@@ -1,0 +1,38 @@
+{
+  "script": "03_table_II_summary_stats.py",
+  "timestamp": "2026-02-12T18:49:18.664034",
+  "seed": 42,
+  "input_files": [
+    "data\\raw\\AllTech_2002-2024_with_LLM_results(with Causal and non-Causal snippets).csv",
+    "data\\raw\\Causal_Snippets_with_Categories.csv"
+  ],
+  "output_files": [
+    "results\\tables\\table_II_summary_stats.csv",
+    "Overleaf\\Tables\\summary_stats.tex",
+    "data_processed\\panel_ikt.csv"
+  ],
+  "row_counts": {
+    "alltech_total": 443478,
+    "alltech_tech_relevant": 279085,
+    "alltech_causal": 187647,
+    "causal_raw": 581449,
+    "causal_after_drop": 527725,
+    "causal_after_dedup": 402804,
+    "panel_obs": 13723,
+    "panel_firms": 2812,
+    "panel_techs": 29,
+    "panel_quarters": 92,
+    "panel_countries": 42
+  },
+  "parameters": {
+    "min_spans_threshold": 3,
+    "dedup_keys": [
+      "gvkey",
+      "technology",
+      "dateQ",
+      "side",
+      "input_id",
+      "macro_id"
+    ]
+  }
+}

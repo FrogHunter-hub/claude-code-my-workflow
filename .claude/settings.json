@@ -60,7 +60,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect-files.sh",
+            "command": "\"C:\\\\Program Files\\\\Git\\\\bin\\\\bash.exe\" \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect-files.sh",
             "timeout": 5
           }
         ]
@@ -71,7 +71,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pre-compact.sh",
+            "command": "\"C:\\\\Program Files\\\\Git\\\\bin\\\\bash.exe\" \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pre-compact.sh",
             "timeout": 5
           }
         ]
@@ -82,8 +82,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/log-reminder.py",
-            "timeout": 10
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Set-Location -LiteralPath $env:CLAUDE_PROJECT_DIR; conda run -n Technology python .claude\\\\hooks\\\\log-reminder.py\"",
+            "timeout": 30
           }
         ]
       }

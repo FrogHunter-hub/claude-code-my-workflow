@@ -86,7 +86,7 @@
 \DeclareMathOperator*{\E}{\mathbb{E}}
 \newcommand{\Lagr}{\mathcal{L}}
 \usepackage{titlesec}
-
+\newcommand{\note}[1]{}
 \makeatletter
 \makeatother
 \titlespacing{\subsubsection}{0pt}{\parskip}{-\parskip}
@@ -142,7 +142,7 @@ Vrije Universiteit Amsterdam}; Postal Address: De Boelelaan 1105, 1081 HV Amster
 {\setstretch{1.0} }
 \begin{spacing}{1.0}
 \begin{abstract}
-\noindent We extract the causal theories managers hold about new technologies from 450,000 quarterly earnings conference calls (2002--2024) covering 29 disruptive technologies across nearly 20,000 firms in 94 countries.  Using large language models, we identify explicit cause-and-effect claims and organize them into a two-layer taxonomy that distinguishes \emph{why} firms say they adopt a technology from \emph{what} they expect it to deliver.  We document four main findings.  First, managers hold heterogeneous causal theories about technology: after absorbing technology-by-time and industry-by-time fixed effects, much of the variation in cause and effect composition is at the firm level.  Second, these theories are persistent and portable: firms carry their causal frame from one technology to another.  Third, conditional on the same technology, industry, and time, firms whose managers hold growth-oriented theories invest more, while those whose managers hold efficiency-oriented theories restructure.  Fourth, when a manager's causal frame deviates from the frame that ex post characterizes the technology's actual trajectory, subsequent firm performance tends to be worse.  The results suggest that managerial beliefs about how technology works are a source of heterogeneity in firms' responses to technological change.
+\noindent We extract the causal theories managers hold about new technologies from 450,000 quarterly earnings conference calls (2002--2024) covering 29 disruptive technologies across nearly 20,000 firms in 94 countries.  Using large language models, we identify explicit cause-and-effect claims and organize them into a two-layer taxonomy that distinguishes \emph{why} firms say they adopt a technology from \emph{what} they expect it to deliver.  We document four main findings. First, managers hold heterogeneous causal theories about technology: after absorbing technology-by-time and industry-by-time fixed effects, much of the variation in cause and effect composition is at the firm level. Second, these theories are persistent and portable: firms carry their causal frame from one technology to another.  Third, conditional on the same technology, industry, and time, firms whose managers hold growth-oriented theories invest more, while those whose managers hold efficiency-oriented theories restructure.  Fourth, when a manager's causal frame deviates from the frame that ex post characterizes the technology's actual trajectory, subsequent firm performance tends to be worse. The results suggest that managerial beliefs about how technology works are a source of heterogeneity in firms' responses to technological change.
 
 \smallskip\noindent
 \textbf{Keywords:} managerial beliefs; technology adoption; diagnostic expectations; earnings calls; textual analysis; misallocation
@@ -166,11 +166,11 @@ We use this data set to establish four main findings.
 
 First, the causal theories managers hold about technology are heterogeneous at the firm level.  At the aggregate level, the cross-technology variation in cause and effect compositions lines up with economic priors: technologies such as hybrid vehicles and solar power, where adoption depends on policy mandates and subsidies, show high shares of regulatory causes; technologies such as machine learning, where adoption requires building new capabilities, show high shares of technology innovation causes; consumer-facing technologies such as mobile payments and online streaming are dominated by demand-related causes.  After absorbing technology-by-time and industry-by-time fixed effects, however, a substantial share of the variation in cause and effect shares remains.  Managers in the same industry, engaging with the same technology at the same time, articulate different theories about why the technology matters and what it will deliver.  This finding parallels the observation in \citet{Hassanetal2019} that most of the variation in firm-level political risk is at the firm rather than the aggregate or sector level.  But the object being measured here is different: not how much attention a firm pays to a phenomenon, but the composition of its causal reasoning about that phenomenon.
 
-Second, these theories are persistent and portable across technologies.  Because we observe the same firm discussing multiple technologies, we can estimate firm fixed effects in cause and effect shares after removing technology-specific and time-varying components.  A firm whose cloud-computing narrative emphasizes market demand as the adoption driver also tends to frame machine learning in demand-pull terms, even when the two technologies have different adoption patterns in the cross section.  When a firm begins discussing a technology for the first time, its initial causal frame resembles the frame it uses for technologies already in its portfolio.  This cross-technology persistence is consistent with models in which agents form beliefs by overweighting the most salient features of past experience (\citealt{GennaioliShleifer2010}; \citealt{BordaloGennaioli2018}).
+Second, these theories are persistent and portable across technologies.  Because we observe the same firm discussing multiple technologies, we can estimate firm fixed effects in cause and effect shares after removing technology-specific and time-varying components.  A firm whose cloud-computing narrative emphasizes market demand as the adoption driver also tends to frame machine learning in demand-pull terms, even when the two technologies have different adoption patterns in the cross-section.  When a firm begins discussing a technology for the first time, its initial causal frame resembles the frame it uses for technologies already in its portfolio.  This cross-technology persistence is consistent with models in which agents form beliefs by overweighting the most salient features of past experience (\citealt{GennaioliShleifer2010}; \citealt{BordaloGennaioli2018}).
 
 Third, causal theories predict firm actions.  Conditional on the same technology, industry, and time period, firms whose managers frame technology effects in terms of revenue expansion and market growth invest more, pursue more technology-related acquisitions, and hire more.  Firms whose managers frame effects in terms of cost reduction and operational efficiency are more likely to restructure and reduce headcount.  The identifying variation comes from within technology--industry--time cells.  We further exploit the distinction between management's prepared remarks and analysts' questions during the Q\&A session: when the analyst's causal frame diverges from the manager's, subsequent analyst forecast dispersion is higher and absolute forecast errors are larger.
 
-Fourth, beliefs that deviate from ex post benchmarks are associated with worse outcomes.  For each technology, we construct an ex post benchmark: the average causal frame that prevails several years after initial adoption, once early uncertainty has resolved.  Firms whose early causal theories deviate more from this benchmark experience worse subsequent performance, measured by investment efficiency and real outcomes such as technology-related job creation and patenting.  The cross-technology spillover in beliefs provides additional traction.  When a firm's initial causal frame for a new technology looks like a carryover from the technologies the firm already discusses, rather than reflecting the new technology's characteristics, outcomes tend to be worse.  These results are consistent with the view that heterogeneous beliefs about technology contribute to the dispersion of firm outcomes, a channel distinct from the financial frictions and policy distortions studied in the misallocation literature (\citealt{HsiehKlenow2009}).
+Fourth, beliefs that deviate from ex post benchmarks are associated with worse outcomes.  For each technology, we construct an ex post benchmark: the average causal frame that prevails several years after initial adoption, once early uncertainty has resolved. Firms whose early causal theories deviate more from this benchmark experience worse subsequent performance, measured by investment efficiency and real outcomes such as technology-related job creation and patenting.  The cross-technology spillover in beliefs provides additional traction.  When a firm's initial causal frame for a new technology looks like a carryover from the technologies the firm already discusses, rather than reflecting the new technology's characteristics, outcomes tend to be worse.  These results are consistent with the view that heterogeneous beliefs about technology contribute to the dispersion of firm outcomes, a channel distinct from the financial frictions and policy distortions studied in the misallocation literature (\citealt{HsiehKlenow2009}).
 
 Relative to earlier text-based measures of firm-level exposure (\citealt{Hassanetal2019}; \citealt{Sautneretal2023}; \citealt{Hassanetal2023RFS}), the main measurement contribution of this article is that we extract the \emph{structure} of beliefs rather than their level or direction.  Existing measures quantify how much attention a firm pays to a topic, and sometimes whether the sentiment is positive or negative.  Two firms can devote the same amount of earnings-call time to artificial intelligence yet hold different theories about why AI matters and what it will do.  Our method captures this difference.  A second advantage of our setting is that we observe the same firm reasoning about different technologies at the same point in time.  This within-firm, across-technology variation allows us to separate managerial belief styles from technology-specific factors.
 
@@ -188,34 +188,47 @@ The remainder of the article is organized as follows.  Section~II describes the 
 % ============================================================
 \section*{II. Data and Measurement}
 \label{sec:data}
-
+%Here it is important to understand and provide good reasons for any grouping that we do POST-TNT-LLM--we also need to start thinking about how to audit this stuff
 \note{This section describes (a)~the earnings-call corpus, (b)~the LLM-based causal-triple extraction pipeline, (c)~the two-layer TNT-LLM taxonomy construction, and (d)~the resulting panel.  Follow closely the methodology in the Chai (2025) presentation (slides 9--15).  Key subsections:}
 
 \subsection*{II.A. Earnings Conference Call Data}
-
+%We need to be precise about which technology data we are using; the working paper version or the published paper's. Please furnish the details so this can be made clear and ensure that the cites are consistent (e.g. dataset to wp and conceptual/findings to the qje)
 \note{Describe the corpus: 450,095 calls, 2002--2024, 19,469 firms, 94 countries, from Refinitiv Eikon.  Standard sample filters.  The 29 technologies come from Kalyani et al.\ (2025, QJE).  Describe keyword-based filtering and the 7-sentence context window.  Follow the level of detail in Hassan et al.\ (2019, Section II), which describes sample coverage, call structure, and data sources in compact paragraphs.}
 
 \subsection*{II.B. Extracting Causal Statements}
-
+%start thinking about audit procedures 
 \note{Detail the four-step LLM pipeline: (1)~technology relevance check, (2)~causal content check, (3)~extraction of upstream causes and downstream effects, (4)~normalization into triples with promotes/suppresses direction.  Give concrete examples (slide~11).  Report yield: 187,647 causal snippets, 197,818 cause spans, 385,418 effect spans.  This is the analog of the bigram-counting methodology in Hassan et al.\ (2019, Section III.A) but is more involved, so describe each step precisely and refer the reader to the Online Appendix for prompt text and LLM parameters.}
 
 \subsection*{II.C. Taxonomy Construction}
 
-\note{Describe the two-layer TNT-LLM approach.  Layer~1: technology-specific taxonomies ($\leq$15 cause and $\leq$15 effect categories per technology).  Layer~2: aggregation into 5 macro cause and 5 macro effect categories.  Present the 5+5 macro categories in a table (Table~I) with brief definitions and shares.  Full technology-specific taxonomies go in the Online Appendix.  The economic rationale for the macro categories should be stated briefly: the five causes map onto standard drivers of technology adoption (supply push, demand pull, policy, strategic choice, cost), and the five effects map onto standard outcomes (growth, cost savings, market share, innovation, efficiency).}
+\note{Describe the two-layer TNT-LLM approach.  Layer~1: technology-specific taxonomies ($\leq$15 cause and $\leq$15 effect categories per technology).  Layer~2: aggregation into 5 macro cause and 5 macro effect categories. Present the 5+5 macro categories in a table (Table~I) with brief definitions and shares.  Full technology-specific taxonomies go in the Online Appendix. The economic rationale for the macro categories should be stated briefly: the five causes map onto standard drivers of technology adoption (supply push, demand pull, policy, strategic choice, cost), and the five effects map onto standard outcomes (growth, cost savings, market share, innovation, efficiency).}
 
 \subsection*{II.D. Panel Construction}
 
-\note{Define the unit of observation: firm $\times$ technology $\times$ quarter.  Define key variables: shares of each macro-cause and macro-effect category, total snippet count, cause-to-effect ratio.  Provide summary statistics (Table~II).  Discuss how firms discussing multiple technologies are handled.  Follow the compact Table~I/Table~II format from Hassan et al.\ (2019).}
+The unit of observation in our analysis is a firm--technology--quarter triple $(i,k,t)$.  For each observation, we construct the following variables from the extracted causal statements described in Sections~II.B and~II.C.
+
+Let $n^{\text{cause}}_{ikt,c}$ denote the number of cause spans assigned to macro category $c \in \{1,\ldots,5\}$ for firm $i$, technology $k$, in quarter $t$, and let $N^{\text{cause}}_{ikt} = \sum_{c=1}^{5} n^{\text{cause}}_{ikt,c}$ denote the total number of cause spans.  We define the \emph{cause share} for category $c$ as
+\begin{equation}
+\label{eq:cause_share}
+s^{\text{cause}}_{ikt,c} = \frac{n^{\text{cause}}_{ikt,c}}{N^{\text{cause}}_{ikt}}.
+\end{equation}
+The five \emph{effect shares} $s^{\text{effect}}_{ikt,c}$ are defined analogously, where $N^{\text{effect}}_{ikt} = \sum_{c=1}^{5} n^{\text{effect}}_{ikt,c}$; in both cases $c$ indexes the five macro categories on the relevant side, with the mapping from index to category name differing between causes and effects as shown in Table~\ref{tab:macro-categories}.  By construction, the five cause shares sum to one for each observation, as do the five effect shares.  We also compute the \emph{total span count} $N_{ikt} = N^{\text{cause}}_{ikt} + N^{\text{effect}}_{ikt}$ and the \emph{cause-to-effect ratio} $N^{\text{cause}}_{ikt} / N^{\text{effect}}_{ikt}$, which serve as measures of the intensity and stage of a firm's engagement with a technology.
+
+To ensure that the share variables are well defined, we impose a minimum-evidence threshold: we require at least three spans on a given side (cause or effect) for an observation to enter the estimation sample.  We first deduplicate at the snippet level, so that each unique causal statement contributes at most one span per macro category.  We then collapse the span-level data to firm--technology--quarter counts, compute shares, and drop observations below the threshold.  Table~\ref{tab:summary-stats} reports summary statistics for the resulting panel.
+
+The estimation sample contains 13,723 firm--technology--quarter observations spanning 2,812 unique firms, all 29 technologies, and 92 calendar quarters (2002:Q1--2024:Q4) across 42 countries.  The median observation draws on 12 spans in total, with medians of 5 on the cause side and 7 on the effect side; the mean cause-to-effect ratio is 0.80, indicating that managers articulate somewhat more downstream effects than upstream causes.  Panels~C and~D of Table~\ref{tab:summary-stats} report the distribution of observation-level cause and effect shares.  On the cause side, Technology Innovation and Advancement (mean share 0.311) and Market Demand and Consumer Behavior (0.297) together account for over 60\% of the typical observation's causal narrative, while Regulatory and Policy Drivers is the least prevalent cause category (0.064).  The effect side is more evenly distributed, led by Market Expansion and Adoption (0.304) and Revenue and Financial Growth (0.243).  These observation-level means differ slightly from the pooled span-level shares in Table~\ref{tab:macro-categories}, which weight each span equally regardless of observation size.
+
+Because many firms discuss more than one of the 29 technologies during our sample period, the panel is not restricted to one observation per firm--quarter.  A firm that discusses both cloud computing and machine learning in the same quarter contributes two observations.  The typical firm contributes a modest number of observations---the median is two and the mean is 4.9---reflecting heterogeneity in both the breadth of technologies discussed and the duration of sample participation.  This within-firm, across-technology variation is a distinguishing feature of our data: it allows us to include firm fixed effects while still estimating the role of technology-specific belief composition, and it enables the cross-technology belief spillover tests in Section~IV.B.  We verify that our main results are robust to collapsing to the firm--quarter level by averaging shares across technologies (Online Appendix Table~XX).%TODO: replace XX with actual table number
 
 \subsection*{II.E. Speaker Identification}
-
+%We dont need this. However, we probably do need to know who made the causal statement to refine potential tests -- not sure whether this paper should be about individual managers or about the theoretical models of the tmt. Separating out Q\&A from presentation is too basic to be discussed in a subsection
 \note{Describe how prepared remarks are separated from Q\&A, and within Q\&A how manager responses are distinguished from analyst questions.  Define the disagreement variable: distance between the manager's cause/effect share vector and the analyst's cause/effect share vector (e.g., cosine distance or Euclidean distance in the 5-dimensional share space).  This parallels the management-presentation vs.\ Q\&A distinction in Hassan et al.\ (2019, Section III) and Sautner et al.\ (2023).}
 
 
 % ============================================================
 \section*{III. Validation}
 \label{sec:validation}
-
+%We probably need to make this more interesting than the validation stuff we did in prior work, shorten it (III.A-D) and move to appendix. Would be good to think about what audiences would find hard to believe and see if we can come up with ways to show evidence to reassure them
 \note{This section establishes that the measures capture what we claim.  Follow the validation logic of Hassan et al.\ (2019, Section IV) and Sautner et al.\ (2023, Section III): face validity of top-scoring transcripts, intuitive cross-sectional and time-series variation, correlation with external proxies, measurement error quantification.}
 
 \subsection*{III.A. Top-Scoring Transcripts}
@@ -235,7 +248,7 @@ The remainder of the article is organized as follows.  Section~II describes the 
 \note{Correlate measures with: (1)~Kalyani et al.\ (2025) technology mention counts in job postings, (2)~green job postings and green patents from Sautner et al.\ (2023) for climate-related technologies, (3)~R\&D expenditure, (4)~patent filings in relevant technology classes.  The measures should correlate positively with these proxies but contain significant incremental information (the composition of causation, not just the intensity of discussion).  Table~III.}
 
 \subsection*{III.E. Measurement Error}
-
+%This might be the only subsection that we report in the main text
 \note{Follow the AR(1) instrumental-variable approach from Hassan et al.\ (2019, Section V.D) and Sautner et al.\ (2023, Table VI).  Back out the implied share of variation attributable to measurement error.  Use an alternative text source (e.g., 10-K MD\&A filings) as the instrument.  Target: implied measurement error of similar order as in the political risk and climate exposure papers (5--10\%).  Table~IV.}
 
 
@@ -245,64 +258,32 @@ The remainder of the article is organized as follows.  Section~II describes the 
 
 \note{This is the main descriptive contribution.  The goal is to establish three properties of managerial beliefs about technology: (1)~most variation is at the firm level, (2)~beliefs are persistent and spill over across technologies, (3)~belief dynamics are consistent with diagnostic expectations.  This section parallels the ``Firm-Level Political Risk'' section (Section V) of Hassan et al.\ (2019), which was the paper's key descriptive contribution.}
 
+
 \subsection*{IV.A. Variance Decomposition}
 
-\note{Decompose the variation in cause and effect shares into time FE, technology FE, sector FE, sector $\times$ time FE, and firm FE.  Report incremental $R^2$ from each set of fixed effects (Table~V).  The key finding: after absorbing technology--time and industry--time effects, a large share of variance remains and is captured by firm FE.  \textbf{This is the analog of Table VIII in Hassan et al.\ (2019), which was the central new finding of that paper.}  Follow that table's format exactly.  Present results at different levels of industry granularity (2-digit, 3-digit, 4-digit SIC) as in the political risk paper.  \textbf{This test is the lynchpin.  If the firm component is small, the belief-style story weakens.  Run this early.}}
+A feature of the associations documented in Section~\ref{sec:validation} is that they hold even when we condition on technology and time fixed effects.  This finding may be unexpected if one views technology adoption as driven primarily by aggregate trends or by industry-specific shocks that affect all firms in a sector at roughly the same time.  To assess the relative contributions of aggregate, industry, technology, and firm-level variation to the measures, we conduct a simple analysis of variance, asking how much of the variation in cause and effect shares is accounted for by various sets of fixed effects.
 
-\begin{table}[!htbp]\centering
-\caption{Variance Decomposition of Macro Shares}
-\label{tab:vd_macroshares}
+For each of the five macro cause shares and five macro effect shares defined in Section~\ref{II.C}, we project the share on successive sets of fixed effects and record the incremental $R^2$ from each addition.  We then average the incremental $R^2$ values across the five cause shares and, separately, across the five effect shares.  Table~\ref{tab:var_decomp_cause} reports the results for cause shares and Table~\ref{tab:var_decomp_effect} for effect shares.  We present results at three levels of industry granularity: two-digit SIC (column~1), three-digit SIC (column~2), and four-digit SIC (column~3).
 
-\small
-\begin{tabular}{lccc}
-\hline\hline
-\multicolumn{1}{l}{Industry granularity} & 2-digit SIC & 3-digit SIC & 4-digit SIC \\
-& (1) & (2) & (3) \\
-\hline
-\multicolumn{4}{l}{\textsc{Panel A. Cause (mean across shares)}}\\
-Time FE                    & 1.89\% & 1.97\% & 1.91\% \\
-Industry FE                & 4.70\% & 6.23\% & 7.57\% \\
-Industry $\times$ time FE  & 6.32\% & 8.99\% & 12.37\% \\
-Technology FE              & 13.08\% & 12.00\% & 11.18\% \\
-Technology $\times$ time FE& 6.92\% & 6.83\% & 6.95\% \\
-``Firm-level''             & 67.09\% & 63.97\% & 60.02\% \\
-\quad \parbox[t]{0.62\linewidth}{Permanent differences across firms\\within industries (Firm FE)}
-                           & 18.55\% & 17.25\% & 16.39\% \\
-\quad \parbox[t]{0.62\linewidth}{Time-varying firm component\\(residual)}
-                           & 48.54\% & 46.72\% & 43.63\% \\
-Number of industries       & 32 & 63 & 94 \\
-\hline
-\multicolumn{4}{l}{\textsc{Panel B. Effect (mean across shares)}}\\
-Time FE                    & 1.17\% & 1.16\% & 1.20\% \\
-Industry FE                & 3.12\% & 4.55\% & 5.49\% \\
-Industry $\times$ time FE  & 6.21\% & 8.80\% & 11.83\% \\
-Technology FE              & 10.74\% & 9.82\% & 9.15\% \\
-Technology $\times$ time FE& 5.14\% & 5.12\% & 5.17\% \\
-``Firm-level''             & 73.62\% & 70.55\% & 67.15\% \\
-\quad \parbox[t]{0.62\linewidth}{Permanent differences across firms\\within industries (Firm FE)}
-                           & 18.34\% & 16.96\% & 16.13\% \\
-\quad \parbox[t]{0.62\linewidth}{Time-varying firm component\\(residual)}
-                           & 55.28\% & 53.59\% & 51.03\% \\
-Number of industries       & 51 & 128 & 173 \\
-\hline\hline
-\end{tabular}
+Consider first the cause shares (Table~\ref{tab:var_decomp_cause}).  Time fixed effects account for 1.89\% of the variation at the two-digit SIC level.  Industry fixed effects add 4.70\%, and industry-by-time interactions add another 6.32\%.  Technology fixed effects contribute 13.08\% and technology-by-time interactions 6.92\%.  Taken together, these observable dimensions account for about a third of the total variation.  The remaining 67.09\% is at the firm level.  Of this firm-level component, 18.55 percentage points reflect permanent differences across firms within industries (firm fixed effects) and 48.54 percentage points reflect time-varying, firm-specific variation (the residual).
 
-\vspace{0.25em}
-\begin{flushleft}\footnotesize
-\textit{Notes.} This table shows tabulations of the $R^{2}$ from projections of the cause (Panel A) and effect (Panel B) shares in a firm--technology--quarter cell on various sets of fixed effects. Column (1) corresponds to the specification using two-digit SIC industries. Columns (2) and (3) use three-digit and four-digit SIC industries, respectively. The ``firm-level'' variation is between 60\% and 74\% across the three columns.
-\end{flushleft}
-\end{table}
+As we move to finer industry definitions, the industry and industry-by-time components naturally absorb more variation.  At the four-digit SIC level, industry-by-time interactions account for 12.37\%, up from 6.32\% at the two-digit level.  But the firm-level component remains at 60.02\%, of which 16.39 percentage points are permanent and 43.63 are time varying.  Even at this level of granularity, the majority of the variation in what managers say drives technology adoption cannot be attributed to the technology, the industry, or the time period.
+
+The effect shares (Table~\ref{tab:var_decomp_effect}) show a similar pattern but with a somewhat larger firm-level component.  At the two-digit level, firm-level variation accounts for 73.62\% of the total; at four-digit, 67.15\%.  The permanent firm component is again stable across industry definitions, ranging from 16.13\% to 18.34\%.  The technology and technology-by-time components are slightly smaller for effect shares (about 15--16\% combined, compared with about 20\% for cause shares).  This difference is interpretable: why a technology gets adopted is more technology-determined (solar power really is adopted for different reasons than cloud computing), while what firms expect a technology to deliver depends more on the firm's own strategic orientation and the uses it has in mind.\footnote{These numbers can be compared with analogous decompositions in related work.  \citet{Hassanetal2019} report that 91.69\% of the variation in firm-level political risk is at the firm level at two-digit SIC granularity, falling to 78.33\% at four-digit SIC (their Table~VIII).  \citet{Sautneretal2023} report firm-level components of 70--96\% across their climate change exposure measures (their Table~V).  Our numbers are at the lower end of this range, which is expected: technology-specific factors absorb 11--16\% of the variation in our measures, whereas political risk and climate exposure lack a comparable technology dimension.  Once this technology component is accounted for, the remaining pattern is similar: firm-level variation dominates industry and time effects.}
+
+Two concerns about this finding merit discussion.  First, part of the firm-level variation might reflect measurement error rather than true heterogeneity in beliefs.  We address this concern in Section~\ref{sec:measurement_error}, where we estimate the share of variation attributable to measurement noise using the approach in \citet{Hassanetal2019}.  The associations between our measures and corporate outcomes documented in Sections~\ref{V and~VI} provide further evidence that the firm-level variation has economic content.  Second, some firm-level variation may reflect differences in objective circumstances that are not captured by industry-by-time interactions, such as differences in customer mix or competitive positioning.  We cannot fully rule out this possibility, but the stability of the permanent firm component across levels of industry granularity suggests that at least part of the variation reflects persistent differences in how managers reason about technology, rather than transient differences in circumstances.
+
 
 \subsection*{IV.B. Cross-Technology Belief Spillover}
 
-\note{For firms that discuss multiple technologies, estimate whether the firm's causal frame for technology $A$ predicts its causal frame for technology $B$, after absorbing technology FE and time FE.  Formally: regress firm $i$'s cause-share vector for technology $B$ on its cause-share vector for technology $A$, controlling for technology and time effects.  A positive and significant relationship means managers carry their causal frame across technologies.  Stronger test: when a firm begins discussing a new technology (first appearance in the data), does the initial cause-share vector resemble the firm's existing technology portfolio frame?  This is the most direct test of belief portability.  The diagnostic expectations prediction (\citealt{BordaloGennaioli2018}) is that spillover should be strongest for technologies that are superficially similar to the manager's existing portfolio (high representativeness) and weakest for dissimilar technologies.}
+\note{For firms that discuss multiple technologies, estimate whether the firm's causal frame for technology $A$ predicts its causal frame for technology $B$, after absorbing technology FE and time FE. Formally: regress firm $i$'s cause-share vector for technology $B$ on its cause-share vector for technology $A$, controlling for technology and time effects. A positive and significant relationship means managers carry their causal frame across technologies.  Stronger test: when a firm begins discussing a new technology (first appearance in the data), does the initial cause-share vector resemble the firm's existing technology portfolio frame?  This is the most direct test of belief portability.  The diagnostic expectations prediction (\citealt{BordaloGennaioli2018}) is that spillover should be strongest for technologies that are superficially similar to the manager's existing portfolio (high representativeness) and weakest for dissimilar technologies.}
 
 \subsection*{IV.C. Belief Dynamics}
 
 \note{Within a firm--technology pair, trace the trajectory of the cause-to-effect ratio over time.  Document the stylized fact that early engagement is cause-heavy and later engagement shifts toward effects.  Then document heterogeneity: some firms transition quickly, others slowly.  The speed of transition should correlate with the concentration of the initial causal frame (firms with a strong initial prior in a single cause category take longer to update).  This is consistent with stickier updating for more confident initial beliefs.}
 
 \subsection*{IV.D. Manager--Analyst Disagreement}
-
+%Again, not sure whether we want to do this
 \note{Define and characterize disagreement between the manager's causal frame (prepared remarks and manager responses in Q\&A) and the analyst's causal frame (analyst questions).  Show that disagreement varies across firms and technologies and is highest early in a technology's lifecycle and for technologies where the causal structure is ambiguous (e.g., AI).  This subsection sets up the predictive tests in Sections~V and~VI.}
 
 
@@ -321,13 +302,14 @@ Number of industries       & 51 & 128 & 173 \\
 \note{The causes a manager emphasizes should predict how the firm pursues the technology.  Firms emphasizing Market Demand invest in marketing and distribution.  Firms emphasizing Technology Innovation invest in R\&D and hire technical talent.  Firms emphasizing Strategic Partnerships pursue M\&A and joint ventures.  This is a more granular test, may require technology-specific outcome variables (patent filings, technology-related job postings from Burning Glass/Lightcast).  Table~VII.}
 
 \subsection*{V.C. Manager--Analyst Disagreement and Market Outcomes}
-
+%not sure whether we should go in this direction
 \note{Show that manager--analyst disagreement on the causal frame predicts: (a)~higher analyst forecast dispersion, (b)~larger absolute forecast errors, (c)~higher subsequent stock return volatility.  Control for total technology exposure and attention level.  Table~VIII.  The interpretation: when the manager's theory diverges from the market's theory (proxied by the analyst), uncertainty is higher.  \textbf{Challenge:} distinguishing genuine belief disagreement from strategic obfuscation.  The Q\&A-based measures help because the analyst forces the manager to respond to an alternative theory.}
 
 
 % ============================================================
 \section*{VI. Beliefs and Misallocation}
 \label{sec:misallocation}
+%This section is what econ journals care about--evidence the beliefs have market changing effects -- this needs to be as high-impact as we can go
 
 \note{This is the main payoff.  Do biased beliefs cause predictably worse outcomes?  Two approaches.  This section should have the most novel economic content and the cleanest identification.  It parallels the policy-crises analysis in Hassan et al.\ (2019, Section VI.B) and the demand-vs.-supply shock analysis in Hassan et al.\ (2023 RFS, Section 4.3) in that it uses the measurement innovation to shed light on a specific economic mechanism.}
 
@@ -353,64 +335,23 @@ Number of industries       & 51 & 128 & 173 \\
 \note{(1) We construct a new measurement of the causal theories managers hold about technology.  The resulting panel covers 29 technologies, 22 years, and nearly 20,000 firms across 94 countries.  (2) We document that these theories are heterogeneous at the firm level, persistent across time, and portable across technologies.  (3) Beliefs predict actions: growth-oriented and efficiency-oriented theories lead to different resource allocation decisions conditional on the same technology, industry, and time.  (4) Beliefs predict mistakes: firms whose early causal frames deviate from the technology's ex post trajectory, and firms that rely on analogies from past technologies, experience worse outcomes.  (5) Restate the three caveats.  (6) Directions for future research: the panel can be applied beyond the 29 technologies studied here; the measurement approach can be extended to other domains where agents hold causal theories about complex phenomena (e.g., macroeconomic policy, climate adaptation).}
 
 
-% ============================================================
-% Placeholder bibliography
-\newpage
-\small
-\bibliographystyle{econ}
+
+\clearpage
+\input{Appendix/appendix}
+
+\clearpage
+{
+\setstretch{0.7}
+\bibliographystyle{chicago}
 \bibliography{references}
+}
+\clearpage
+\input{Figures/allfigures}
+\clearpage
+\input{Tables/alltables}
+\clearpage
+\input{Appendix/online_appendix}
 
-% \begin{thebibliography}{99}
-
-% \bibitem[Acemoglu and Linn(2004)]{AcemogluLinn2004}
-% Acemoglu, Daron, and Joshua Linn, ``Market Size in Innovation: Theory and Evidence from the Pharmaceutical Industry,'' \textit{Quarterly Journal of Economics}, 119 (2004), 1049--1090.
-
-% \bibitem[Ben-David, Graham, and Harvey(2013)]{BenDavid2013}
-% Ben-David, Itzhak, John~R. Graham, and Campbell~R. Harvey, ``Managerial Miscalibration,'' \textit{Quarterly Journal of Economics}, 128 (2013), 1547--1584.
-
-% \bibitem[Bloom et~al.(2018)]{Bloometal2018}
-% Bloom, Nicholas, Erik Brynjolfsson, Lucia Foster, Ron Jarmin, Megha Patnaik, Itay Saporta-Eksten, and John Van~Reenen, ``What Drives Differences in Management Practices?'' \textit{American Economic Review}, 109 (2019), 1648--1683.
-
-% \bibitem[Bordalo, Gennaioli, and Shleifer(2018)]{BordaloGennaioli2018}
-% Bordalo, Pedro, Nicola Gennaioli, and Andrei Shleifer, ``Diagnostic Expectations and Credit Cycles,'' \textit{Journal of Finance}, 73 (2018), 199--227.
-
-% \bibitem[Coibion, Gorodnichenko, and Kumar(2018)]{Coibion2018}
-% Coibion, Olivier, Yuriy Gorodnichenko, and Saten Kumar, ``How Do Firms Form Their Expectations? New Survey Evidence,'' \textit{American Economic Review}, 108 (2018), 2671--2713.
-
-% \bibitem[Gennaioli and Shleifer(2010)]{GennaioliShleifer2010}
-% Gennaioli, Nicola, and Andrei Shleifer, ``What Comes to Mind,'' \textit{Quarterly Journal of Economics}, 125 (2010), 1399--1433.
-
-% \bibitem[Gennaioli and Shleifer(2018)]{GennaioliShleifer2018}
-% Gennaioli, Nicola, and Andrei Shleifer, \textit{A Crisis of Beliefs: Investor Psychology and Financial Fragility} (Princeton, NJ: Princeton University Press, 2018).
-
-% \bibitem[Griliches(1957)]{Griliches1957}
-% Griliches, Zvi, ``Hybrid Corn: An Exploration in the Economics of Technological Change,'' \textit{Econometrica}, 25 (1957), 501--522.
-
-% \bibitem[Hall(2006)]{Hall2006}
-% Hall, Bronwyn~H., ``Innovation and Diffusion,'' in Jan Fagerberg, David~C. Mowery, and Richard~R. Nelson, eds., \textit{The Oxford Handbook of Innovation} (Oxford: Oxford University Press, 2006).
-
-% \bibitem[Hassan et~al.(2019)]{Hassanetal2019}
-% Hassan, Tarek~A., Stephan Hollander, Laurence van~Lent, and Ahmed Tahoun, ``Firm-Level Political Risk: Measurement and Effects,'' \textit{Quarterly Journal of Economics}, 134 (2019), 2135--2202.
-
-% \bibitem[Hassan et~al.(2023)]{Hassanetal2023RFS}
-% Hassan, Tarek~A., Stephan Hollander, Laurence van~Lent, Markus Schwedeler, and Ahmed Tahoun, ``Firm-Level Exposure to Epidemic Diseases: COVID-19, SARS, and H1N1,'' \textit{Review of Financial Studies}, 36 (2023), 4919--4964.
-
-% \bibitem[Hsieh and Klenow(2009)]{HsiehKlenow2009}
-% Hsieh, Chang-Tai, and Peter~J. Klenow, ``Misallocation and Manufacturing TFP in China and India,'' \textit{Quarterly Journal of Economics}, 124 (2009), 1403--1448.
-
-% \bibitem[Kalyani et~al.(2025)]{Kalyanietal2025}
-% Kalyani, Aakash, Nicholas Bloom, Marcela Carvalho, Tarek Hassan, Josh Lerner, and Ahmed Tahoun, ``The Diffusion of New Technologies,'' \textit{Quarterly Journal of Economics}, 140 (2025), 1299--1365.
-
-% \bibitem[Malmendier and Tate(2005)]{Malmendier2005}
-% Malmendier, Ulrike, and Geoffrey Tate, ``CEO Overconfidence and Corporate Investment,'' \textit{Journal of Finance}, 60 (2005), 2661--2700.
-
-% \bibitem[Mansfield(1961)]{Mansfield1961}
-% Mansfield, Edwin, ``Technical Change and the Rate of Imitation,'' \textit{Econometrica}, 29 (1961), 741--766.
-
-% \bibitem[Sautner et~al.(2023)]{Sautneretal2023}
-% Sautner, Zacharias, Laurence van~Lent, Grigory Vilkov, and Ruishen Zhang, ``Firm-Level Climate Change Exposure,'' \textit{Journal of Finance}, 78 (2023), 1449--1498.
-
-% \end{thebibliography}
 
 
 \end{document}

@@ -25,4 +25,10 @@ When a mistake is corrected, append a `[LEARN:category] wrong → right` to MEMO
 
 ---
 
+## Data & Taxonomy
+
+- [LEARN:taxonomy] Macro category labels must match macro_id→macro_name in Causal_Snippets_with_Categories.csv. Cause macro_id=3 is "Regulatory and Policy Drivers" (NOT "Competitive Landscape Dynamics" — that is a fine-grained category_name). Effect macro_ids 1-5 are: Revenue & Financial Growth, Cost Reduction & Efficiency, Market Expansion & Adoption, Product & Service Innovation, Operational Efficiency & Automation. The Stata do-file (02_tableV_variance.do) originally had wrong labels: cause_3 used a fine-grained name, and all 5 effect-side labels were permuted. Fixed 2026-02-12.
+- [LEARN:data] AllTech CSV has 443,478 rows (text windows), not 12.6M. The 450,095 figure in the abstract is total earnings-call transcripts in Refinitiv, not text windows.
+- [LEARN:data] Panel after dedup + >=3 threshold + inner join: 13,723 obs, 2,812 firms, 29 techs, 92 quarters, 42 countries.
+
 <!-- Append new entries below. Most recent at bottom. -->
