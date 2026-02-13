@@ -43,15 +43,30 @@ paths:
 
 ## Paper Progression
 
-| § | Title | Core Question | Key Tables/Figures | Key Method |
-|---|-------|--------------|-------------------|------------|
-| I | Introduction | What are managerial theories of technology? | — | — |
-| II | Data & Measurement | How to extract causal theories at scale? | Table I (taxonomy), Table II (summary stats) | LLM chain-of-thought, TNT-LLM |
-| III | Validation | Do measures capture what we claim? | Table III (external proxies), Table IV (measurement error) | AR(1) IV, correlation |
-| IV | Structure of Beliefs | Are beliefs heterogeneous and persistent? | Table V (variance decomposition) | FE decomposition, cross-tech regression |
-| V | Beliefs & Actions | Do theories predict resource allocation? | Tables VI–VIII | Within tech-industry-time regressions |
-| VI | Beliefs & Misallocation | Do biased beliefs cause worse outcomes? | Tables IX–X | Ex post benchmarking, cross-tech spillover |
-| VII | Conclusion | — | — | — |
+| § | Title | Core Question | Key Tables/Figures | Key Method | Status |
+|---|-------|--------------|-------------------|------------|--------|
+| I | Introduction | What are managerial theories of technology? | — | — | Drafted |
+| II | Data & Measurement | How to extract causal theories at scale? | Table I (taxonomy), Table II (summary stats) | LLM chain-of-thought, TNT-LLM | II.D drafted |
+| III | Validation | Do measures capture what we claim? | Figs I–III, Table III (TODO), Table IV (TODO) | Face validity, cross-tech, time-series | III.A–C drafted |
+| IV | Structure of Beliefs | Are beliefs heterogeneous and persistent? | Table V (var decomp), Table VI (spillover), Table VII (persistence), Fig IV | FE decomposition, stacked regression, pyhdfe | IV.A–C drafted |
+| V | Beliefs & Actions | Do theories predict resource allocation? | Tables VIII–X (planned) | Within tech-industry-time regressions | Notes only |
+| VI | Beliefs & Misallocation | Do biased beliefs cause worse outcomes? | Tables XI–XII (planned) | Ex post benchmarking, cross-tech transfer | Notes only |
+| VII | Conclusion | — | — | — | Notes only |
+
+## Key Results (as of 2026-02-13)
+
+| Finding | Estimate | Table/Figure |
+|---------|----------|-------------|
+| Firm-level variation share (cause/effect) | 60–74% | Table V |
+| Spillover β (cause side, all techs) | 0.267*** | Table VI col I |
+| Spillover β (effect side, all techs) | 0.389*** | Table VI col I |
+| Persistence β (cause, all horizons) | 0.147*** | Table VII Panel A |
+| Persistence β (effect, all horizons) | 0.172*** | Table VII Panel B |
+| Persistence decay: cause short→long | 0.257 → 0.101 | Table VII cols II–IV |
+| Persistence decay: effect short→long | 0.268 → 0.115 | Table VII cols II–IV |
+| Tech-push dominant technologies | 20 of 26 | Figure II |
+| CER lifecycle hypothesis | Rejected (flat) | Exploration |
+| Cross-side persistence (cause→effect) | Negative (β ≈ −0.02) | Exploration |
 
 ## Benchmark Papers (Style & Method)
 

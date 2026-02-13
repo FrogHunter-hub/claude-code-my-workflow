@@ -31,4 +31,24 @@ When a mistake is corrected, append a `[LEARN:category] wrong → right` to MEMO
 - [LEARN:data] AllTech CSV has 443,478 rows (text windows), not 12.6M. The 450,095 figure in the abstract is total earnings-call transcripts in Refinitiv, not text windows.
 - [LEARN:data] Panel after dedup + >=3 threshold + inner join: 13,723 obs, 2,812 firms, 29 techs, 92 quarters, 42 countries.
 
+## Code Patterns
+
+- [LEARN:env] Windows GBK encoding breaks conda Python Unicode output. Always prefix: `set PYTHONIOENCODING=utf-8 &&` before `conda run`.
+- [LEARN:env] conda run does not support multiline Python `-c` commands (newline assertion error). Write to a temp .py file instead.
+- [LEARN:code] All stacked regressions use pyhdfe + statsmodels OLS with firm-clustered SEs. Pattern: residualize via `pyhdfe.create()`, then `sm.OLS().fit(cov_type="cluster")`.
+- [LEARN:code] Figure floats go in `Overleaf/Figures/allfigures.tex`, NOT inline in `main.tex`. Table inputs go in `Overleaf/Tables/alltables.tex`.
+
+## Analysis Decisions
+
+- [LEARN:analysis] CER lifecycle hypothesis (cause-heavy → effect-heavy over tenure) is NOT supported by data. CER is flat across firm-tech tenure. Section IV.C reframed around belief persistence instead.
+- [LEARN:analysis] Initial HHI → stickiness hypothesis is NOT supported. Positive correlation is mechanical (more concentrated → more room to drift).
+- [LEARN:analysis] Cross-side persistence (cause→effect, effect→cause) shows NEGATIVE β (≈ −0.02 to −0.04). Cause and effect are genuinely separate belief dimensions. Decision: not added to paper (tangent, ambiguous interpretation).
+- [LEARN:analysis] Effect beliefs are consistently more portable (IV.B: β=0.39 vs 0.27) AND more persistent (IV.C: β=0.17 vs 0.15) than cause beliefs. This asymmetry is a recurring theme.
+
+## Writing Conventions
+
+- [LEARN:writing] Use "and" not "&" in axis labels and category names in figures.
+- [LEARN:writing] "Snippet count" vs "span count" — be precise. A snippet is a text window; a span is a classified cause/effect unit within a snippet. Use "cause span count" when referring to N_cause.
+- [LEARN:writing] When referencing Schmookler/Schumpeter, use adjective forms ("Schumpeterian", "Schmooklerian") or describe as "technology-push versus demand-pull debate" to avoid needing formal citations.
+
 <!-- Append new entries below. Most recent at bottom. -->

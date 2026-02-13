@@ -13,29 +13,22 @@ claude
 
 ---
 
-## Paste This Prompt
+## Paste This Prompt (New Session Recovery)
 
-Copy and paste the block below into Claude Code:
+Copy and paste the block below into Claude Code at the start of a new session:
 
 ---
 
-> I am starting to work on **Managerial Theories of Technology** in this repo. We are writing an empirical finance paper that extracts causal theories managers hold about 29 disruptive technologies from 450,000 quarterly earnings calls (2002–2024) using LLMs. The paper documents that these beliefs are heterogeneous at the firm level, persistent across technologies, predict firm actions (investment, hiring, M&A), and that biased beliefs predict misallocation. We use Python (conda env `Technology`, Python 3.11) for data cleaning and NLP pipelines, Stata SE 19.5 for regressions, and LaTeX for the manuscript (Main file: Overleaf/main.tex; Bib: Overleaf/references.bib).
+> I am continuing work on **Managerial Theories of Technology**. This is an empirical finance paper that extracts causal theories managers hold about 29 disruptive technologies from 450,000 quarterly earnings calls (2002–2024) using LLMs. We use Python (conda env `Technology`, Python 3.11) for data cleaning and analysis, Stata SE 19.5 for selected regressions, and LaTeX (Overleaf) for the manuscript.
 >
-> I want our collaboration to be structured, precise, and rigorous. When creating tables and figures, everything must be publication-ready (JF/QJE style). When writing code, everything must be reproducible with deterministic seeds, manifests, and logs.
+> **Current state of the paper:**
+> - **Drafted:** Section I (Introduction), II.D (Panel Construction), III.A–C (Top-Scoring Transcripts, Cross-Technology Variation, Time-Series Patterns), IV.A–C (Variance Decomposition, Spillover, Belief Dynamics)
+> - **Tables completed:** Table I (macro taxonomy), Table II (summary stats), Table V (variance decomposition), Table VI (spillover), Table VII (persistence)
+> - **Figures completed:** Figure I (cross-tech bars), Figure II (tech-push vs demand-pull scatter), Figure III (time-series patterns), Figure IV (persistence decay)
+> - **Not yet started:** Sections II.A–C, II.E, III.D–E, IV.D, V, VI, VII
+> - **Section V** requires firm-level outcome data (Compustat, CRSP, I/B/E/S) not yet in the panel
 >
-> I've set up the Claude Code academic workflow (forked from `pedrohcgs/claude-code-my-workflow`). The configuration files are already in this repo. Please read them, understand the workflow, and then **update all configuration files to fit my project** — specifically:
->
-> 1. Adapt agents: replace R-focused agents with Python and Stata reviewers; replace Beamer/Quarto agents with manuscript-focused agents (empirical reviewer, identification critic).
-> 2. Adapt rules: replace R code conventions with Python and Stata conventions; replace Beamer/Quarto sync rules with manuscript writing conventions; update quality gates for `.py`, `.do`, and `.tex` files.
-> 3. Adapt skills: replace lecture-creation skills with paper-writing skills (`/run-python`, `/run-stata`, `/write-section`, `/build-table`, `/build-figure`); keep research skills (`/lit-review`, `/review-paper`, `/devils-advocate`, `/research-ideation`, `/interview-me`).
-> 4. Update the knowledge base with the paper's notation, variable definitions, key empirical facts, and the 5+5 macro taxonomy.
-> 5. Update hooks and settings for Windows/PowerShell and the project's tool chain.
->
-> The paper's current state: Introduction (Section I) is fully drafted in `Overleaf/main.tex`. Sections II–VII have structural notes (`\note{...}` blocks) describing what each subsection should contain. Table V (variance decomposition) is drafted. The Python and Stata scripts in `src/` are scaffolded with manifest support but contain placeholder logic — real analysis code needs to be written.
->
-> After adapting the configuration, use the plan-first workflow for all non-trivial tasks. Once I approve a plan, switch to contractor mode — coordinate everything autonomously and only come back to me when there's ambiguity or a decision to make.
->
-> Enter plan mode and start by adapting the workflow configuration for this project.
+> Read CLAUDE.md, MEMORY.md, and the most recent plan in quality_reports/plans/ to understand the full context. Check `git log --oneline -10` for recent work. Then ask me what I'd like to work on.
 
 ---
 
@@ -43,32 +36,67 @@ Copy and paste the block below into Claude Code:
 
 Claude will:
 
-1. Read `CLAUDE.md` and all files in `.claude/` (rules, agents, skills, hooks)
-2. Understand that this is an empirical research paper, not a lecture course
-3. Systematically adapt every configuration file:
-   - **Agents:** Create `python-reviewer`, `stata-reviewer`, `empirical-critic`, `empirical-fixer` to replace `r-reviewer`, `quarto-critic`, `quarto-fixer`, `beamer-translator`, `slide-auditor`, `pedagogy-reviewer`, `tikz-reviewer`
-   - **Rules:** Create `python-code-conventions.md`, `stata-code-conventions.md`, `manuscript-conventions.md` to replace `r-code-conventions.md`, `beamer-quarto-sync.md`, `single-source-of-truth.md`, `no-pause-beamer.md`, `tikz-visual-quality.md`
-   - **Skills:** Create `/run-python`, `/run-stata`, `/write-section`, `/build-table`, `/build-figure` to replace `/compile-latex`, `/deploy`, `/extract-tikz`, `/translate-to-quarto`, `/qa-quarto`, `/slide-excellence`, `/create-lecture`, `/visual-audit`
-   - **Knowledge base:** Fill in notation registry, variable definitions, paper progression, and anti-patterns
-   - **Hooks & settings:** Update `.claude/settings.json` for PowerShell, Python, Stata, conda permissions
-4. Present a plan for your approval
-5. After approval, implement all changes autonomously
-6. Present a summary of what was adapted
+1. Read `CLAUDE.md` (project configuration, paper structure, conventions)
+2. Read `MEMORY.md` (persistent corrections and learned facts)
+3. Check recent git history to understand what was last completed
+4. Optionally read the most recent plan file for context on in-progress work
+5. Ask what you'd like to work on next
 
-## After the First Session
+---
 
-For subsequent sessions, just describe your task:
-
-```
-Write the Python pipeline for extracting causal triples from earnings call transcripts.
-```
+## Example Tasks
 
 ```
 Draft Section II.B (Extracting Causal Statements) following the notes in main.tex.
 ```
 
 ```
-Build Table II (summary statistics) from the processed panel data.
+Build the external proxy correlation table for Section III.D.
 ```
 
-Claude will automatically use the plan-first workflow, run the relevant reviewers, and handle the orchestration.
+```
+Write Section V.A — I've added Compustat data to data/compustat_quarterly.csv.
+```
+
+```
+Create a figure showing the distribution of cause-effect ratios across technologies.
+```
+
+```
+Run /devils-advocate on Section IV to stress-test the identification strategy.
+```
+
+```
+Run /proofread on Section III.B.
+```
+
+Claude will automatically use the plan-first workflow for non-trivial tasks, run the relevant reviewers, and handle the orchestration.
+
+---
+
+## Key Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `CLAUDE.md` | Project config, paper structure, commands, conventions |
+| `MEMORY.md` | Persistent corrections (`[LEARN]` tags) |
+| `.claude/rules/` | 15 rule files (orchestrator, plan-first, quality gates, code conventions, etc.) |
+| `.claude/rules/knowledge-base-template.md` | Notation registry, taxonomy, paper progression |
+| `work plans and summary/` | Methods summaries for each completed section |
+| `quality_reports/plans/` | Saved plans that survive context compression |
+
+---
+
+## Python Pipeline Scripts
+
+| Script | Output | Section |
+|--------|--------|---------|
+| `01_clean.py` | `data_processed/panel_ikt.csv` | II.D |
+| `03_table_II_summary_stats.py` | Table II (summary_stats.tex) | II.D |
+| `04_table_IIIA_top_scoring.py` | Online Appendix top-scoring table | III.A |
+| `04b_figure_IIIB_techpush_demandpull.py` | Figure II (scatter plot) | III.B |
+| `05_figure_II_time_series.py` | Figure III (time-series panels) | III.C |
+| `06_table_IVB_spillover.py` | Table VI + robustness + by-category | IV.B |
+| `07_table_IVC_dynamics.py` | Table VII + Figure IV (persistence) | IV.C |
+
+All scripts: `set PYTHONIOENCODING=utf-8 && conda run -n Technology python src/py/<script>.py`
