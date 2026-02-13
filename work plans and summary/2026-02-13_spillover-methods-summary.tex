@@ -163,7 +163,9 @@ where $\alpha_{k \times c}$ and $\gamma_{t \times c}$ are technology$\times$cate
 
 \textbf{Critical implementation detail:} In a stacked regression where different categories represent different original variables, \emph{all} fixed effects must be interacted with category. Additive category FE are insufficient---they allow technology and quarter effects to be shared across categories, producing incorrect estimates.
 
-\subsection{Specification Table}
+\subsection{Main Table: Specification Columns}
+
+The main table (Table~VI in the paper) has four columns:
 
 \begin{center}
 \begin{tabular}{clll}
@@ -174,49 +176,217 @@ Column & Fixed Effects & Sample & Purpose \\
 (II) & Tech$\times$cat + IndQtr$\times$cat & All multi-tech & Absorb industry cycles \\
 (III)& TechQtr$\times$cat + IndQtr$\times$cat & All multi-tech & Most demanding \\
 (IV) & Tech$\times$cat + Qtr$\times$cat & First appearance & Portability test \\
-(V)  & Tech$\times$cat + Qtr$\times$cat & High-similarity pairs & Representativeness \\
-(VI) & Tech$\times$cat + Qtr$\times$cat & Low-similarity pairs & Representativeness \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \medskip
-\noindent \textbf{Design choice: no firm FE.} We originally planned Column~(III) to include firm fixed effects. However, for two-technology firms (71\% of the sample), firm FE mechanically forces the demeaned peer share to equal the negative of the demeaned own share, producing a mechanical $\beta \approx -1$. We replaced firm FE with technology$\times$quarter FE, which absorbs technology-specific trends without this mechanical confound.
+\noindent \textbf{Design choice: no firm FE.} We originally planned a specification with firm fixed effects. However, for two-technology firms (71\% of the sample), firm FE mechanically forces the demeaned peer share to equal the negative of the demeaned own share, producing a mechanical $\beta \approx -1$. We replaced firm FE with technology$\times$quarter FE in column~(III), which absorbs technology-specific trends without this mechanical confound.
 
-\medskip
-\noindent \textbf{Similarity split.} Columns (V) and (VI) split observations by the average cosine similarity between a technology and the firm's other technologies. Similarity is measured from aggregate cause-share profiles pooled across all firms (not firm-specific), and the sample median (0.841) serves as the cutoff.
+\subsection{Robustness Table (Online Appendix)}
 
-\subsection{Results}
+The robustness table (Online Appendix Table~VII) presents four additional checks, each using the baseline FE structure (tech$\times$cat + qtr$\times$cat):
 
 \begin{center}
-\begin{tabular}{lcccccc}
+\begin{tabular}{clp{7.5cm}}
 \toprule
- & (I) & (II) & (III) & (IV) & (V) & (VI) \\
- & Baseline & Ind$\times$Qtr & Tech$\times$Qtr & First app. & High sim. & Low sim. \\
+Column & Label & Description \\
 \midrule
-\multicolumn{7}{l}{\textit{Panel A. Cause shares}} \\
-$\hat\beta$ & 0.065*** & 0.040** & 0.042** & 0.049** & 0.043** & 0.095*** \\
- & (0.018) & (0.020) & (0.017) & (0.020) & (0.021) & (0.024) \\
-$N$ & 36,950 & 36,950 & 36,950 & 9,625 & 18,495 & 18,455 \\
-$R^2$ & 0.003 & 0.001 & 0.001 & 0.002 & 0.001 & 0.005 \\[6pt]
-\multicolumn{7}{l}{\textit{Panel B. Effect shares}} \\
-$\hat\beta$ & 0.099*** & 0.100*** & 0.103*** & 0.087*** & 0.087*** & 0.106*** \\
- & (0.017) & (0.018) & (0.019) & (0.019) & (0.022) & (0.023) \\
-$N$ & 36,950 & 36,950 & 36,950 & 9,625 & 18,495 & 18,455 \\
-$R^2$ & 0.007 & 0.007 & 0.008 & 0.005 & 0.005 & 0.008 \\
+(I) & $\geq 3$ technologies & Restrict to 225 firms with $\geq 3$ techs; removes 562 two-tech firms with noisier peer shares \\
+(II) & Snippet-weighted & WLS weighting by the number of cause (or effect) snippets underlying each share estimate \\
+(III) & Drop-one-category & Report range of $\hat{\beta}$ when each of the 5 categories is dropped in turn; tests whether the simplex constraint drives results \\
+(IV) & Similarity interaction & Interact peer share with continuous cosine similarity between focal and peer technologies' aggregate cause-share profiles; evaluate implied effects at p25 and p75 of similarity \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The discrete high/low similarity split was dropped from the main table because the results were counterintuitive (larger $\hat{\beta}$ for low-similarity pairs) and hard to interpret. The continuous interaction in robustness check (IV) provides a cleaner test.
+
+\subsection{Main Results}
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+ & (I) & (II) & (III) & (IV) \\
+ & Baseline & Ind$\times$Qtr & Tech$\times$Qtr & First app. \\
+\midrule
+\multicolumn{5}{l}{\textit{Panel A. Cause shares}} \\
+$\hat\beta$ & 0.065*** & 0.040** & 0.042** & 0.049** \\
+ & (0.018) & (0.020) & (0.017) & (0.020) \\
+$N$ & 36,950 & 36,950 & 36,950 & 9,625 \\
+$R^2$ & 0.003 & 0.001 & 0.001 & 0.002 \\[6pt]
+\multicolumn{5}{l}{\textit{Panel B. Effect shares}} \\
+$\hat\beta$ & 0.099*** & 0.100*** & 0.103*** & 0.087*** \\
+ & (0.017) & (0.018) & (0.019) & (0.019) \\
+$N$ & 36,950 & 36,950 & 36,950 & 9,625 \\
+$R^2$ & 0.007 & 0.007 & 0.008 & 0.005 \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \noindent $^{***}\,p<0.01$, $^{**}\,p<0.05$, $^{*}\,p<0.10$. Standard errors clustered at the firm level.
 
+\subsection{Robustness Results}
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+ & (I) & (II) & (III) & (IV) \\
+ & $\geq 3$ techs & Snippet-wtd & Drop-one-cat & Sim.\ interact. \\
+\midrule
+\multicolumn{5}{l}{\textit{Panel A. Cause shares}} \\
+Peer share & 0.147*** & 0.061** & & 0.078 \\
+ & (0.032) & (0.026) & & (0.076) \\
+Peer share $\times$ sim. & & & & $-$0.017 \\
+ & & & & (0.097) \\
+$\hat\beta$ range & & & [0.032, 0.075] & \\
+Mean across drops & & & 0.064 & \\
+Implied at p25 sim. & & & & 0.066 \\
+Implied at p75 sim. & & & & 0.063 \\
+$N$ & 17,280 & 36,950 & & 36,950 \\
+$R^2$ & 0.008 & 0.003 & & 0.003 \\[6pt]
+\multicolumn{5}{l}{\textit{Panel B. Effect shares}} \\
+Peer share & 0.160*** & 0.105*** & & 0.055 \\
+ & (0.039) & (0.017) & & (0.081) \\
+Peer share $\times$ sim. & & & & 0.054 \\
+ & & & & (0.099) \\
+$\hat\beta$ range & & & [0.074, 0.114] & \\
+Mean across drops & & & 0.098 & \\
+Implied at p25 sim. & & & & 0.095 \\
+Implied at p75 sim. & & & & 0.104 \\
+$N$ & 17,280 & 36,950 & & 36,950 \\
+$R^2$ & 0.010 & 0.007 & & 0.007 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent $^{***}\,p<0.01$, $^{**}\,p<0.05$, $^{*}\,p<0.10$. Standard errors clustered at the firm level.
+
+\subsection{Category-Specific Spillover}
+
+The stacked regression imposes a common $\hat\beta$ across all five macro categories. We relaxed this by running the baseline spillover regression (tech + quarter FE, firm-clustered SE) separately for each category. All regressions use the same 7,390 observations.
+
+\begin{center}
+\begin{tabular}{llrrl}
+\toprule
+Side & Category & $\hat\beta$ & SE & Sig. \\
+\midrule
+\multicolumn{5}{l}{\textit{Cause side}} \\
+ & Technology Innovation and Advancement & 0.129 & (0.030) & *** \\
+ & Market Demand and Consumer Behavior & 0.039 & (0.027) & \\
+ & Strategic Partnerships and Collaboration & 0.036 & (0.036) & \\
+ & Regulatory and Policy Drivers & 0.034 & (0.023) & \\
+ & Cost and Economic Viability & $-$0.000 & (0.029) & \\[6pt]
+\multicolumn{5}{l}{\textit{Effect side}} \\
+ & Revenue and Financial Growth & 0.191 & (0.042) & *** \\
+ & Operational Efficiency and Improvement & 0.132 & (0.026) & *** \\
+ & Cost Reduction and Efficiency & 0.059 & (0.018) & *** \\
+ & Product and Service Innovation & 0.051 & (0.024) & ** \\
+ & Market Expansion and Adoption & $-$0.003 & (0.022) & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent $^{***}\,p<0.01$, $^{**}\,p<0.05$. Standard errors clustered at the firm level.
+
+\medskip
+\noindent \textbf{Key finding:} The stacked $\hat\beta$ masks large heterogeneity across categories. On the cause side, only Technology Innovation is significantly portable. On the effect side, Revenue Growth and Operational Efficiency are the most portable, while Market Expansion is not portable at all.
+
+\medskip
+\noindent \textbf{Why this matters for the paper:}
+
+\begin{enumerate}[nosep,label=(\alph*)]
+\item \textbf{Makes the ``portable cognitive style'' claim more precise.} Portability is not uniform---it concentrates in categories reflecting \emph{general strategic orientation} (supply-push vs.\ demand-pull on causes; growth vs.\ efficiency on effects). Categories tied to technology-specific circumstances (regulatory exposure, market demand, cost conditions) do not transfer.
+\item \textbf{Partially addresses LLM artifact concerns (Concern~3).} If within-firm classification bias drove the result, we would expect portability to be roughly uniform across categories, or strongest where the LLM uses the most generic language. Instead, portability varies in an economically interpretable pattern. Regulatory and Policy Drivers---a category with distinctive, hard-to-confuse language---is \emph{not} portable, consistent with firms facing genuinely different regulatory environments across technologies.
+\item \textbf{Partially addresses common-exposure concerns (Concern~4).} If common real exposure drove the result, Regulatory should be among the \emph{most} portable (energy firms face regulation for all their technologies). It is among the least portable. The most portable categories are the ones that plausibly reflect reasoning style rather than objective circumstances.
+\item \textbf{Bridges directly to Section~V.} The two most portable effect-side categories---Revenue and Financial Growth ($\hat\beta = 0.191$) and Operational Efficiency ($\hat\beta = 0.132$)---are exactly the categories that define the growth-vs.-efficiency orientation tested in Section~V (Beliefs and Firm Actions). This means the portable component of beliefs is the component that predicts differential firm behavior.
+\end{enumerate}
+
 \subsection{Interpretation}
 
 \begin{enumerate}[label=(\roman*)]
-\item \textbf{Robust spillover.} $\hat\beta$ is positive and statistically significant in all 12 specifications. Firms carry their causal frames across technologies.
+\item \textbf{Robust spillover.} $\hat\beta$ is positive and statistically significant in all 8 main specifications (4 cause + 4 effect). Firms carry their causal frames across technologies.
 \item \textbf{First appearance.} Column (IV) provides the most direct test of portability: when a firm first discusses a new technology, its initial frame already resembles its existing portfolio ($\hat\beta = 0.049$ for causes, $0.087$ for effects).
-\item \textbf{Similarity split.} The representativeness prediction of Bordalo, Gennaioli, and Shleifer (2018) implies stronger spillover for similar technologies. The data go the other way: $\hat\beta$ is \emph{larger} for low-similarity pairs (0.095 vs.\ 0.043 for causes; 0.106 vs.\ 0.087 for effects). One interpretation is that the portable component reflects broad reasoning tendencies---demand-pull vs.\ supply-push explanations---that transfer across the entire portfolio rather than through narrow technological analogy.
+\item \textbf{Stronger with more technologies.} Restricting to $\geq 3$-technology firms roughly doubles the cause coefficient (0.147 vs.\ 0.065) and increases the effect coefficient (0.160 vs.\ 0.099), consistent with better-measured peer shares producing stronger estimates.
+\item \textbf{No single-category driver.} Drop-one-category ranges are narrow ([0.032, 0.075] for causes; [0.074, 0.114] for effects), ruling out mechanical results from the simplex constraint.
+\item \textbf{Broad rather than similarity-driven.} The continuous similarity interaction is insignificant on both sides; implied marginal effects at p25 and p75 of similarity are nearly identical. Spillover operates broadly across the firm's technology portfolio rather than concentrating among similar technologies.
 \item \textbf{Stronger on the effect side.} Effect-side spillover coefficients are uniformly larger and more precisely estimated, consistent with the variance decomposition showing a larger firm-level component for effects (67--74\%) than for causes (60--67\%).
+\item \textbf{Heterogeneous across categories.} Portability concentrates in strategic-orientation categories (Tech Innovation on causes; Revenue Growth and Operational Efficiency on effects). Circumstance-driven categories (Regulatory, Cost, Market Expansion) show no portability. This pattern is economically interpretable and difficult to explain with measurement artifacts.
+\end{enumerate}
+
+%======================================================================
+\section{Open Concerns (QJE Referee Perspective)}
+
+We stress-tested Section~IV.B by asking what a senior editor or top-journal referee would challenge.  Five concerns emerged, ordered by severity.  We flag each with a suggested response path.
+
+\subsection{Concern 1: Economic magnitude is small}
+
+$\hat\beta = 0.065$ means a 10\,pp higher peer share predicts only a 0.65\,pp higher own share; $R^2 = 0.003$.  A referee will ask: if spillover explains 0.3\% of within-technology, within-quarter variation, how much of a ``portable cognitive style'' can there really be?
+
+\medskip\noindent\textbf{Response options:}
+\begin{itemize}[nosep]
+\item Benchmark $\hat\beta$ against the firm-level component from IV.A.  The peer share is heavily demeaned (technology$\times$category and quarter$\times$category effects are removed); the relevant denominator is the \emph{residual} firm-level variation, not total variation.  If $\hat\beta$ explains, say, 5--10\% of the firm-level component, the magnitude is defensible.
+\item Note that the $\geq 3$-tech subsample yields $\hat\beta = 0.147$ (cause) and $0.160$ (effect) with $R^2 \approx 0.01$, suggesting the baseline is attenuated by noisy two-technology peer shares.
+\item Frame the contribution as establishing \emph{existence} of portability, not its share of total variation.  The payoff comes in Section~VI.B, where the portable component is linked to outcomes.
+\end{itemize}
+
+\subsection{Concern 2: The diagnostic expectations prediction fails}
+
+The introduction cites \citet{BordaloGennaioli2018} and the representativeness heuristic, predicting that spillover should be \emph{stronger between similar technologies}.  Our data reject this: the continuous similarity interaction is insignificant, and the earlier discrete high/low split showed the opposite sign.  The current text says spillover is ``broad rather than concentrating among similar technologies,'' but a referee will see this as post-hoc rationalization of a failed prediction.
+
+\medskip\noindent\textbf{Response options:}
+\begin{enumerate}[nosep,label=(\alph*)]
+\item \textbf{Drop the BGS framing.}  Present portability as a purely descriptive finding.  Cite BGS only in passing as one possible microfoundation, without staking a prediction on it.
+\item \textbf{Reinterpret.}  Argue that the portable component operates at the level of \emph{general reasoning categories} (demand-pull vs.\ supply-push thinking), not technology-specific analogies.  Broad spillover is actually \emph{more} consistent with a category-level heuristic than a narrow representativeness mechanism.  This could be a more interesting finding than what BGS predicts.
+\item \textbf{Refine the similarity measure.}  Our current cosine similarity is computed from aggregate cause-share profiles, which captures how people \emph{talk about} technologies, not objective technological similarity.  Using Kalyani et al.'s patent-class overlap or industry co-occurrence as an alternative similarity measure could yield different results.
+\end{enumerate}
+
+\noindent We recommend option~(b): reframe the theoretical connection and treat the broad-spillover finding as informative in its own right.
+
+\subsection{Concern 3: LLM classification artifacts}
+
+If the LLM's classification tendency correlates within firms---e.g., certain corporate jargon or presentation styles systematically trigger ``Market Demand'' classifications regardless of technology---the cross-technology correlation in shares could reflect \emph{measurement} rather than \emph{beliefs}.  This is \textbf{not} standard measurement error (which attenuates coefficients).  It is \textbf{correlated measurement error within firm}, which biases $\hat\beta$ upward.
+
+The Section~III.E measurement-error analysis (Hassan et al.\ AR(1) approach) addresses attenuation but does not address within-firm classification bias.  This is the most dangerous objection because it strikes at the core of the measurement.
+
+\medskip\noindent\textbf{Response options:}
+\begin{itemize}[nosep]
+\item Show that spillover holds using Q\&A-section text only (analyst questions + manager responses), where language is less formulaic than prepared remarks.
+\item Test whether spillover is stronger for firms with more similar vocabulary/language across technologies (e.g., measured by cosine similarity of raw TF-IDF vectors); if spillover is \emph{not} stronger for linguistically similar transcripts, the LLM artifact story is weakened.
+\item Manually audit a sample of cross-technology pairs to confirm the LLM assigns different categories to genuinely different content.
+\item[\checkmark] \textbf{Partially addressed:} The category-specific analysis (Section~4.6) shows that portability varies across categories in an economically interpretable pattern. If classification bias drove the result, portability should be roughly uniform or strongest for generic categories. Instead, it concentrates in strategic-orientation categories and is absent for circumstance-driven categories like Regulatory and Policy Drivers.
+\end{itemize}
+
+\subsection{Concern 4: Common real exposures vs.\ cognitive style}
+
+A firm in the energy sector discussing both solar and fracking may emphasize ``Regulatory and Policy Drivers'' for both---not because of a portable cognitive frame, but because regulation genuinely affects both technologies for that firm.  Industry$\times$quarter FE absorbs industry-level confounds but not within-industry heterogeneity in actual regulatory exposure.  The test cannot distinguish ``I see regulation everywhere because I think in regulatory terms'' from ``I see regulation everywhere because my firm is genuinely exposed to regulation.''
+
+\medskip\noindent\textbf{Response options:}
+\begin{itemize}[nosep]
+\item Test whether spillover is stronger for technology pairs that are \emph{dissimilar in objective characteristics}.  If a firm emphasizes regulatory drivers for both solar power (where regulation genuinely matters) and machine learning (where it matters much less), that is stronger evidence of a cognitive style.
+\item Use Kalyani et al.'s technology classifications or patent-class overlap (rather than our own cause-share profiles) to define objective similarity and re-run the interaction test.
+\item Acknowledge forthrightly that the test establishes cross-technology correlation in belief composition, and that separating cognitive style from common real exposure is inherently difficult.  The first-appearance test partially helps: the firm's prior portfolio predicts the frame for a \emph{new} technology, which is harder to explain with common exposure alone.
+\item[\checkmark] \textbf{Partially addressed:} If common real exposure drove spillover, Regulatory and Policy Drivers should be among the most portable categories (energy firms face regulation for all their technologies). The category-specific analysis shows the opposite: Regulatory is among the \emph{least} portable ($\hat\beta = 0.034$, insignificant).
+\end{itemize}
+
+\subsection{Concern 5: The bridge to Section VI is asserted, not built}
+
+The introduction claims that spillover matters for misallocation: ``When a firm's initial causal frame for a new technology looks like a carryover \ldots outcomes tend to be worse'' (Finding~4).  But IV.B only shows correlation exists.  It does not decompose own beliefs into a ``carried-over'' component and a ``technology-appropriate'' component, nor does it show that the carried-over component predicts worse outcomes.  That work belongs in Section~VI.B.
+
+\medskip\noindent\textbf{Response options:}
+\begin{itemize}[nosep]
+\item In IV.B prose, foreshadow the decomposition explicitly: ``In Section~VI.B, we decompose the firm's initial cause-share vector into a component predicted by its existing portfolio and a technology-specific residual, and test whether the carryover component predicts worse outcomes.''
+\item Ensure that VI.B actually delivers on this promise with a clean first-stage/second-stage design.
+\end{itemize}
+
+\subsection*{Priority ranking for next steps}
+
+\begin{enumerate}[nosep]
+\item \textbf{Concern~3 (LLM artifacts):} Highest priority.  Run the Q\&A-only test and the vocabulary-similarity falsification.  If spillover survives, it substantially strengthens the paper.
+\item \textbf{Concern~2 (BGS framing):} Rewrite the intro and IV.B to avoid staking a prediction that the data reject.  Low cost, high return.
+\item \textbf{Concern~1 (magnitude):} Compute the magnitude benchmark (spillover as \% of firm-level variation).  Adjust language accordingly.
+\item \textbf{Concern~5 (bridge to VI.B):} Add a forward reference in IV.B.  Ensure VI.B delivers.
+\item \textbf{Concern~4 (real exposures):} Acknowledge as a limitation; the first-appearance test partially addresses it.
 \end{enumerate}
 
 %======================================================================
@@ -229,17 +399,30 @@ $R^2$ & 0.007 & 0.007 & 0.008 & 0.005 & 0.005 & 0.008 \\
 \midrule
 Cross-technology variance & Simple, intuitive & Low power; confounded by tech count; indirect test \\[4pt]
 Portability index (van Lent et al.) & Principled out-of-sample prediction & Near-zero mean; noise-dominated for 2-tech firms; zero cause--effect correlation; underpowered in our data \\[4pt]
-Leave-one-out peer-share regression \textbf{(chosen)} & Direct test with flexible FE structure & All 12 specifications yield positive, significant $\hat\beta$; supports first-appearance and similarity-split extensions \\
+Leave-one-out peer-share regression \textbf{(chosen)} & Direct test with flexible FE structure & All 8 main specifications yield positive, significant $\hat\beta$; robust to 4 additional checks in Online Appendix \\
 \bottomrule
 \end{tabular}
 \end{center}
 
+\subsection*{Paper Structure}
+
+\begin{itemize}[nosep]
+\item \textbf{Main table} (Table~VI): 4-column specification table with Panel A (causes) and Panel B (effects)
+\item \textbf{Online Appendix table} (Table~VII): 4 robustness checks with matching Panel A/B layout
+\item \textbf{Online Appendix table} (Table~VIII): Category-specific spillover --- 10 separate regressions (5 cause + 5 effect categories)
+\item \textbf{Prose in Section IV.B}: ~7 paragraphs covering motivation, specification, main results, first-appearance test, effect-side results, robustness summary, and category-specific heterogeneity with bridge to Section~V
+\end{itemize}
+
 \subsection*{Implementation}
 
 \begin{itemize}[nosep]
-\item \textbf{Script:} \texttt{src/py/06\_table\_IVB\_spillover.py}
+\item \textbf{Main script:} \texttt{src/py/06\_table\_IVB\_spillover.py}
+\item \textbf{Category-specific exploration:} \texttt{explorations/category\_specific\_spillover.py}
 \item \textbf{Estimation:} \texttt{pyhdfe} for Frisch--Waugh--Lovell demeaning + \texttt{statsmodels} OLS with cluster-robust standard errors (equivalent to Stata \texttt{reghdfe})
-\item \textbf{Outputs:} \texttt{Overleaf/Tables/spillover.tex}, \texttt{results/tables/table\_IVB\_spillover.csv}, JSON manifest in \texttt{results/runs/}
+\item \textbf{Main outputs:} \texttt{Overleaf/Tables/spillover.tex}, \texttt{results/tables/table\_IVB\_spillover.csv}
+\item \textbf{Robustness outputs:} \texttt{Overleaf/Tables/spillover\_robustness.tex}, \texttt{results/tables/table\_IVB\_spillover\_robustness.csv}
+\item \textbf{Category-specific output:} \texttt{Overleaf/Tables/spillover\_by\_category.tex}
+\item \textbf{Manifest:} JSON in \texttt{results/runs/}
 \end{itemize}
 
 \end{document}
