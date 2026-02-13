@@ -1,0 +1,42 @@
+{
+  "script": "05_figure_II_time_series.py",
+  "timestamp": "2026-02-13T02:22:53.153004",
+  "seed": 42,
+  "input_files": [
+    "data_processed/panel_ikt.csv"
+  ],
+  "output_files": [
+    "Overleaf\\Figures\\figure_II_time_series.pdf",
+    "Overleaf\\Figures\\figure_II_time_series.png",
+    "results\\tables\\figure_II_time_series_data.csv"
+  ],
+  "row_counts": {
+    "panel_raw_total": 13723,
+    "panel_filtered": 7142,
+    "time_series_rows": 546,
+    "technologies": 6
+  },
+  "parameters": {
+    "technologies": {
+      "A": [
+        "Cloud computing",
+        "Machine Learning AI"
+      ],
+      "B": [
+        "Touch screen",
+        "Rfid tags"
+      ],
+      "C": [
+        "Solar Power",
+        "Hybrid vehicle electric car"
+      ]
+    },
+    "archetypes": {
+      "A": "platform_ramp",
+      "B": "feature_spike_decline",
+      "C": "policy_driven_waves"
+    },
+    "date_range": "2002Q1-2024Q4",
+    "metric": "n_unique_firms_per_quarter"
+  }
+}

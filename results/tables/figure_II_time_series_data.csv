@@ -1,0 +1,547 @@
+technology,dateQ,date,n_firms
+Cloud computing,2002Q2,2002-04-01,0
+Cloud computing,2002Q3,2002-07-01,0
+Cloud computing,2002Q4,2002-10-01,0
+Cloud computing,2003Q1,2003-01-01,0
+Cloud computing,2003Q2,2003-04-01,0
+Cloud computing,2003Q3,2003-07-01,0
+Cloud computing,2003Q4,2003-10-01,0
+Cloud computing,2004Q1,2004-01-01,0
+Cloud computing,2004Q2,2004-04-01,0
+Cloud computing,2004Q3,2004-07-01,0
+Cloud computing,2004Q4,2004-10-01,0
+Cloud computing,2005Q1,2005-01-01,0
+Cloud computing,2005Q2,2005-04-01,0
+Cloud computing,2005Q3,2005-07-01,0
+Cloud computing,2005Q4,2005-10-01,0
+Cloud computing,2006Q1,2006-01-01,0
+Cloud computing,2006Q2,2006-04-01,0
+Cloud computing,2006Q3,2006-07-01,0
+Cloud computing,2006Q4,2006-10-01,0
+Cloud computing,2007Q1,2007-01-01,0
+Cloud computing,2007Q2,2007-04-01,0
+Cloud computing,2007Q3,2007-07-01,0
+Cloud computing,2007Q4,2007-10-01,0
+Cloud computing,2008Q1,2008-01-01,1
+Cloud computing,2008Q2,2008-04-01,3
+Cloud computing,2008Q3,2008-07-01,0
+Cloud computing,2008Q4,2008-10-01,4
+Cloud computing,2009Q1,2009-01-01,6
+Cloud computing,2009Q2,2009-04-01,10
+Cloud computing,2009Q3,2009-07-01,15
+Cloud computing,2009Q4,2009-10-01,18
+Cloud computing,2010Q1,2010-01-01,31
+Cloud computing,2010Q2,2010-04-01,34
+Cloud computing,2010Q3,2010-07-01,27
+Cloud computing,2010Q4,2010-10-01,26
+Cloud computing,2011Q1,2011-01-01,39
+Cloud computing,2011Q2,2011-04-01,34
+Cloud computing,2011Q3,2011-07-01,38
+Cloud computing,2011Q4,2011-10-01,29
+Cloud computing,2012Q1,2012-01-01,40
+Cloud computing,2012Q2,2012-04-01,36
+Cloud computing,2012Q3,2012-07-01,42
+Cloud computing,2012Q4,2012-10-01,42
+Cloud computing,2013Q1,2013-01-01,43
+Cloud computing,2013Q2,2013-04-01,33
+Cloud computing,2013Q3,2013-07-01,42
+Cloud computing,2013Q4,2013-10-01,44
+Cloud computing,2014Q1,2014-01-01,47
+Cloud computing,2014Q2,2014-04-01,59
+Cloud computing,2014Q3,2014-07-01,67
+Cloud computing,2014Q4,2014-10-01,47
+Cloud computing,2015Q1,2015-01-01,53
+Cloud computing,2015Q2,2015-04-01,55
+Cloud computing,2015Q3,2015-07-01,59
+Cloud computing,2015Q4,2015-10-01,58
+Cloud computing,2016Q1,2016-01-01,68
+Cloud computing,2016Q2,2016-04-01,53
+Cloud computing,2016Q3,2016-07-01,80
+Cloud computing,2016Q4,2016-10-01,64
+Cloud computing,2017Q1,2017-01-01,69
+Cloud computing,2017Q2,2017-04-01,82
+Cloud computing,2017Q3,2017-07-01,86
+Cloud computing,2017Q4,2017-10-01,84
+Cloud computing,2018Q1,2018-01-01,85
+Cloud computing,2018Q2,2018-04-01,70
+Cloud computing,2018Q3,2018-07-01,78
+Cloud computing,2018Q4,2018-10-01,79
+Cloud computing,2019Q1,2019-01-01,88
+Cloud computing,2019Q2,2019-04-01,75
+Cloud computing,2019Q3,2019-07-01,74
+Cloud computing,2019Q4,2019-10-01,92
+Cloud computing,2020Q1,2020-01-01,86
+Cloud computing,2020Q2,2020-04-01,79
+Cloud computing,2020Q3,2020-07-01,108
+Cloud computing,2020Q4,2020-10-01,107
+Cloud computing,2021Q1,2021-01-01,124
+Cloud computing,2021Q2,2021-04-01,96
+Cloud computing,2021Q3,2021-07-01,92
+Cloud computing,2021Q4,2021-10-01,98
+Cloud computing,2022Q1,2022-01-01,111
+Cloud computing,2022Q2,2022-04-01,94
+Cloud computing,2022Q3,2022-07-01,103
+Cloud computing,2022Q4,2022-10-01,81
+Cloud computing,2023Q1,2023-01-01,112
+Cloud computing,2023Q2,2023-04-01,78
+Cloud computing,2023Q3,2023-07-01,82
+Cloud computing,2023Q4,2023-10-01,74
+Cloud computing,2024Q1,2024-01-01,81
+Cloud computing,2024Q2,2024-04-01,70
+Cloud computing,2024Q3,2024-07-01,60
+Cloud computing,2024Q4,2024-10-01,70
+Machine Learning AI,2002Q2,2002-04-01,0
+Machine Learning AI,2002Q3,2002-07-01,0
+Machine Learning AI,2002Q4,2002-10-01,0
+Machine Learning AI,2003Q1,2003-01-01,0
+Machine Learning AI,2003Q2,2003-04-01,0
+Machine Learning AI,2003Q3,2003-07-01,0
+Machine Learning AI,2003Q4,2003-10-01,0
+Machine Learning AI,2004Q1,2004-01-01,0
+Machine Learning AI,2004Q2,2004-04-01,0
+Machine Learning AI,2004Q3,2004-07-01,0
+Machine Learning AI,2004Q4,2004-10-01,0
+Machine Learning AI,2005Q1,2005-01-01,0
+Machine Learning AI,2005Q2,2005-04-01,0
+Machine Learning AI,2005Q3,2005-07-01,0
+Machine Learning AI,2005Q4,2005-10-01,0
+Machine Learning AI,2006Q1,2006-01-01,0
+Machine Learning AI,2006Q2,2006-04-01,0
+Machine Learning AI,2006Q3,2006-07-01,0
+Machine Learning AI,2006Q4,2006-10-01,0
+Machine Learning AI,2007Q1,2007-01-01,0
+Machine Learning AI,2007Q2,2007-04-01,0
+Machine Learning AI,2007Q3,2007-07-01,0
+Machine Learning AI,2007Q4,2007-10-01,0
+Machine Learning AI,2008Q1,2008-01-01,0
+Machine Learning AI,2008Q2,2008-04-01,0
+Machine Learning AI,2008Q3,2008-07-01,0
+Machine Learning AI,2008Q4,2008-10-01,0
+Machine Learning AI,2009Q1,2009-01-01,0
+Machine Learning AI,2009Q2,2009-04-01,0
+Machine Learning AI,2009Q3,2009-07-01,0
+Machine Learning AI,2009Q4,2009-10-01,0
+Machine Learning AI,2010Q1,2010-01-01,0
+Machine Learning AI,2010Q2,2010-04-01,0
+Machine Learning AI,2010Q3,2010-07-01,0
+Machine Learning AI,2010Q4,2010-10-01,0
+Machine Learning AI,2011Q1,2011-01-01,0
+Machine Learning AI,2011Q2,2011-04-01,0
+Machine Learning AI,2011Q3,2011-07-01,0
+Machine Learning AI,2011Q4,2011-10-01,0
+Machine Learning AI,2012Q1,2012-01-01,0
+Machine Learning AI,2012Q2,2012-04-01,0
+Machine Learning AI,2012Q3,2012-07-01,0
+Machine Learning AI,2012Q4,2012-10-01,0
+Machine Learning AI,2013Q1,2013-01-01,0
+Machine Learning AI,2013Q2,2013-04-01,0
+Machine Learning AI,2013Q3,2013-07-01,0
+Machine Learning AI,2013Q4,2013-10-01,0
+Machine Learning AI,2014Q1,2014-01-01,2
+Machine Learning AI,2014Q2,2014-04-01,1
+Machine Learning AI,2014Q3,2014-07-01,1
+Machine Learning AI,2014Q4,2014-10-01,2
+Machine Learning AI,2015Q1,2015-01-01,4
+Machine Learning AI,2015Q2,2015-04-01,2
+Machine Learning AI,2015Q3,2015-07-01,3
+Machine Learning AI,2015Q4,2015-10-01,4
+Machine Learning AI,2016Q1,2016-01-01,4
+Machine Learning AI,2016Q2,2016-04-01,5
+Machine Learning AI,2016Q3,2016-07-01,8
+Machine Learning AI,2016Q4,2016-10-01,12
+Machine Learning AI,2017Q1,2017-01-01,17
+Machine Learning AI,2017Q2,2017-04-01,28
+Machine Learning AI,2017Q3,2017-07-01,34
+Machine Learning AI,2017Q4,2017-10-01,31
+Machine Learning AI,2018Q1,2018-01-01,29
+Machine Learning AI,2018Q2,2018-04-01,23
+Machine Learning AI,2018Q3,2018-07-01,34
+Machine Learning AI,2018Q4,2018-10-01,35
+Machine Learning AI,2019Q1,2019-01-01,32
+Machine Learning AI,2019Q2,2019-04-01,14
+Machine Learning AI,2019Q3,2019-07-01,24
+Machine Learning AI,2019Q4,2019-10-01,16
+Machine Learning AI,2020Q1,2020-01-01,20
+Machine Learning AI,2020Q2,2020-04-01,9
+Machine Learning AI,2020Q3,2020-07-01,15
+Machine Learning AI,2020Q4,2020-10-01,21
+Machine Learning AI,2021Q1,2021-01-01,25
+Machine Learning AI,2021Q2,2021-04-01,22
+Machine Learning AI,2021Q3,2021-07-01,24
+Machine Learning AI,2021Q4,2021-10-01,19
+Machine Learning AI,2022Q1,2022-01-01,25
+Machine Learning AI,2022Q2,2022-04-01,18
+Machine Learning AI,2022Q3,2022-07-01,19
+Machine Learning AI,2022Q4,2022-10-01,14
+Machine Learning AI,2023Q1,2023-01-01,38
+Machine Learning AI,2023Q2,2023-04-01,65
+Machine Learning AI,2023Q3,2023-07-01,70
+Machine Learning AI,2023Q4,2023-10-01,30
+Machine Learning AI,2024Q1,2024-01-01,51
+Machine Learning AI,2024Q2,2024-04-01,35
+Machine Learning AI,2024Q3,2024-07-01,38
+Machine Learning AI,2024Q4,2024-10-01,18
+Touch screen,2002Q2,2002-04-01,0
+Touch screen,2002Q3,2002-07-01,0
+Touch screen,2002Q4,2002-10-01,0
+Touch screen,2003Q1,2003-01-01,0
+Touch screen,2003Q2,2003-04-01,0
+Touch screen,2003Q3,2003-07-01,0
+Touch screen,2003Q4,2003-10-01,0
+Touch screen,2004Q1,2004-01-01,0
+Touch screen,2004Q2,2004-04-01,1
+Touch screen,2004Q3,2004-07-01,0
+Touch screen,2004Q4,2004-10-01,0
+Touch screen,2005Q1,2005-01-01,1
+Touch screen,2005Q2,2005-04-01,1
+Touch screen,2005Q3,2005-07-01,0
+Touch screen,2005Q4,2005-10-01,1
+Touch screen,2006Q1,2006-01-01,1
+Touch screen,2006Q2,2006-04-01,0
+Touch screen,2006Q3,2006-07-01,0
+Touch screen,2006Q4,2006-10-01,1
+Touch screen,2007Q1,2007-01-01,0
+Touch screen,2007Q2,2007-04-01,1
+Touch screen,2007Q3,2007-07-01,1
+Touch screen,2007Q4,2007-10-01,1
+Touch screen,2008Q1,2008-01-01,1
+Touch screen,2008Q2,2008-04-01,0
+Touch screen,2008Q3,2008-07-01,0
+Touch screen,2008Q4,2008-10-01,0
+Touch screen,2009Q1,2009-01-01,1
+Touch screen,2009Q2,2009-04-01,2
+Touch screen,2009Q3,2009-07-01,1
+Touch screen,2009Q4,2009-10-01,3
+Touch screen,2010Q1,2010-01-01,1
+Touch screen,2010Q2,2010-04-01,4
+Touch screen,2010Q3,2010-07-01,1
+Touch screen,2010Q4,2010-10-01,1
+Touch screen,2011Q1,2011-01-01,3
+Touch screen,2011Q2,2011-04-01,2
+Touch screen,2011Q3,2011-07-01,4
+Touch screen,2011Q4,2011-10-01,3
+Touch screen,2012Q1,2012-01-01,3
+Touch screen,2012Q2,2012-04-01,2
+Touch screen,2012Q3,2012-07-01,6
+Touch screen,2012Q4,2012-10-01,4
+Touch screen,2013Q1,2013-01-01,2
+Touch screen,2013Q2,2013-04-01,3
+Touch screen,2013Q3,2013-07-01,3
+Touch screen,2013Q4,2013-10-01,3
+Touch screen,2014Q1,2014-01-01,2
+Touch screen,2014Q2,2014-04-01,2
+Touch screen,2014Q3,2014-07-01,1
+Touch screen,2014Q4,2014-10-01,1
+Touch screen,2015Q1,2015-01-01,3
+Touch screen,2015Q2,2015-04-01,2
+Touch screen,2015Q3,2015-07-01,4
+Touch screen,2015Q4,2015-10-01,2
+Touch screen,2016Q1,2016-01-01,1
+Touch screen,2016Q2,2016-04-01,1
+Touch screen,2016Q3,2016-07-01,1
+Touch screen,2016Q4,2016-10-01,1
+Touch screen,2017Q1,2017-01-01,2
+Touch screen,2017Q2,2017-04-01,2
+Touch screen,2017Q3,2017-07-01,1
+Touch screen,2017Q4,2017-10-01,2
+Touch screen,2018Q1,2018-01-01,1
+Touch screen,2018Q2,2018-04-01,1
+Touch screen,2018Q3,2018-07-01,0
+Touch screen,2018Q4,2018-10-01,0
+Touch screen,2019Q1,2019-01-01,0
+Touch screen,2019Q2,2019-04-01,0
+Touch screen,2019Q3,2019-07-01,0
+Touch screen,2019Q4,2019-10-01,0
+Touch screen,2020Q1,2020-01-01,0
+Touch screen,2020Q2,2020-04-01,0
+Touch screen,2020Q3,2020-07-01,0
+Touch screen,2020Q4,2020-10-01,0
+Touch screen,2021Q1,2021-01-01,0
+Touch screen,2021Q2,2021-04-01,0
+Touch screen,2021Q3,2021-07-01,1
+Touch screen,2021Q4,2021-10-01,1
+Touch screen,2022Q1,2022-01-01,1
+Touch screen,2022Q2,2022-04-01,0
+Touch screen,2022Q3,2022-07-01,1
+Touch screen,2022Q4,2022-10-01,0
+Touch screen,2023Q1,2023-01-01,0
+Touch screen,2023Q2,2023-04-01,0
+Touch screen,2023Q3,2023-07-01,1
+Touch screen,2023Q4,2023-10-01,0
+Touch screen,2024Q1,2024-01-01,1
+Touch screen,2024Q2,2024-04-01,0
+Touch screen,2024Q3,2024-07-01,0
+Touch screen,2024Q4,2024-10-01,1
+Rfid tags,2002Q2,2002-04-01,1
+Rfid tags,2002Q3,2002-07-01,0
+Rfid tags,2002Q4,2002-10-01,1
+Rfid tags,2003Q1,2003-01-01,3
+Rfid tags,2003Q2,2003-04-01,4
+Rfid tags,2003Q3,2003-07-01,4
+Rfid tags,2003Q4,2003-10-01,10
+Rfid tags,2004Q1,2004-01-01,10
+Rfid tags,2004Q2,2004-04-01,10
+Rfid tags,2004Q3,2004-07-01,11
+Rfid tags,2004Q4,2004-10-01,19
+Rfid tags,2005Q1,2005-01-01,14
+Rfid tags,2005Q2,2005-04-01,13
+Rfid tags,2005Q3,2005-07-01,13
+Rfid tags,2005Q4,2005-10-01,14
+Rfid tags,2006Q1,2006-01-01,8
+Rfid tags,2006Q2,2006-04-01,14
+Rfid tags,2006Q3,2006-07-01,10
+Rfid tags,2006Q4,2006-10-01,9
+Rfid tags,2007Q1,2007-01-01,5
+Rfid tags,2007Q2,2007-04-01,4
+Rfid tags,2007Q3,2007-07-01,7
+Rfid tags,2007Q4,2007-10-01,6
+Rfid tags,2008Q1,2008-01-01,5
+Rfid tags,2008Q2,2008-04-01,2
+Rfid tags,2008Q3,2008-07-01,2
+Rfid tags,2008Q4,2008-10-01,1
+Rfid tags,2009Q1,2009-01-01,2
+Rfid tags,2009Q2,2009-04-01,1
+Rfid tags,2009Q3,2009-07-01,2
+Rfid tags,2009Q4,2009-10-01,2
+Rfid tags,2010Q1,2010-01-01,2
+Rfid tags,2010Q2,2010-04-01,2
+Rfid tags,2010Q3,2010-07-01,5
+Rfid tags,2010Q4,2010-10-01,4
+Rfid tags,2011Q1,2011-01-01,2
+Rfid tags,2011Q2,2011-04-01,1
+Rfid tags,2011Q3,2011-07-01,1
+Rfid tags,2011Q4,2011-10-01,0
+Rfid tags,2012Q1,2012-01-01,1
+Rfid tags,2012Q2,2012-04-01,2
+Rfid tags,2012Q3,2012-07-01,3
+Rfid tags,2012Q4,2012-10-01,3
+Rfid tags,2013Q1,2013-01-01,4
+Rfid tags,2013Q2,2013-04-01,3
+Rfid tags,2013Q3,2013-07-01,1
+Rfid tags,2013Q4,2013-10-01,4
+Rfid tags,2014Q1,2014-01-01,2
+Rfid tags,2014Q2,2014-04-01,3
+Rfid tags,2014Q3,2014-07-01,2
+Rfid tags,2014Q4,2014-10-01,1
+Rfid tags,2015Q1,2015-01-01,3
+Rfid tags,2015Q2,2015-04-01,2
+Rfid tags,2015Q3,2015-07-01,2
+Rfid tags,2015Q4,2015-10-01,2
+Rfid tags,2016Q1,2016-01-01,1
+Rfid tags,2016Q2,2016-04-01,0
+Rfid tags,2016Q3,2016-07-01,1
+Rfid tags,2016Q4,2016-10-01,3
+Rfid tags,2017Q1,2017-01-01,1
+Rfid tags,2017Q2,2017-04-01,3
+Rfid tags,2017Q3,2017-07-01,3
+Rfid tags,2017Q4,2017-10-01,2
+Rfid tags,2018Q1,2018-01-01,3
+Rfid tags,2018Q2,2018-04-01,1
+Rfid tags,2018Q3,2018-07-01,2
+Rfid tags,2018Q4,2018-10-01,2
+Rfid tags,2019Q1,2019-01-01,2
+Rfid tags,2019Q2,2019-04-01,2
+Rfid tags,2019Q3,2019-07-01,3
+Rfid tags,2019Q4,2019-10-01,3
+Rfid tags,2020Q1,2020-01-01,4
+Rfid tags,2020Q2,2020-04-01,2
+Rfid tags,2020Q3,2020-07-01,3
+Rfid tags,2020Q4,2020-10-01,4
+Rfid tags,2021Q1,2021-01-01,2
+Rfid tags,2021Q2,2021-04-01,4
+Rfid tags,2021Q3,2021-07-01,3
+Rfid tags,2021Q4,2021-10-01,3
+Rfid tags,2022Q1,2022-01-01,4
+Rfid tags,2022Q2,2022-04-01,3
+Rfid tags,2022Q3,2022-07-01,2
+Rfid tags,2022Q4,2022-10-01,2
+Rfid tags,2023Q1,2023-01-01,4
+Rfid tags,2023Q2,2023-04-01,4
+Rfid tags,2023Q3,2023-07-01,2
+Rfid tags,2023Q4,2023-10-01,3
+Rfid tags,2024Q1,2024-01-01,3
+Rfid tags,2024Q2,2024-04-01,3
+Rfid tags,2024Q3,2024-07-01,1
+Rfid tags,2024Q4,2024-10-01,4
+Solar Power,2002Q2,2002-04-01,1
+Solar Power,2002Q3,2002-07-01,1
+Solar Power,2002Q4,2002-10-01,3
+Solar Power,2003Q1,2003-01-01,0
+Solar Power,2003Q2,2003-04-01,1
+Solar Power,2003Q3,2003-07-01,1
+Solar Power,2003Q4,2003-10-01,3
+Solar Power,2004Q1,2004-01-01,1
+Solar Power,2004Q2,2004-04-01,3
+Solar Power,2004Q3,2004-07-01,2
+Solar Power,2004Q4,2004-10-01,2
+Solar Power,2005Q1,2005-01-01,4
+Solar Power,2005Q2,2005-04-01,4
+Solar Power,2005Q3,2005-07-01,8
+Solar Power,2005Q4,2005-10-01,2
+Solar Power,2006Q1,2006-01-01,8
+Solar Power,2006Q2,2006-04-01,9
+Solar Power,2006Q3,2006-07-01,7
+Solar Power,2006Q4,2006-10-01,12
+Solar Power,2007Q1,2007-01-01,15
+Solar Power,2007Q2,2007-04-01,12
+Solar Power,2007Q3,2007-07-01,17
+Solar Power,2007Q4,2007-10-01,20
+Solar Power,2008Q1,2008-01-01,22
+Solar Power,2008Q2,2008-04-01,23
+Solar Power,2008Q3,2008-07-01,20
+Solar Power,2008Q4,2008-10-01,27
+Solar Power,2009Q1,2009-01-01,21
+Solar Power,2009Q2,2009-04-01,23
+Solar Power,2009Q3,2009-07-01,25
+Solar Power,2009Q4,2009-10-01,26
+Solar Power,2010Q1,2010-01-01,27
+Solar Power,2010Q2,2010-04-01,22
+Solar Power,2010Q3,2010-07-01,31
+Solar Power,2010Q4,2010-10-01,25
+Solar Power,2011Q1,2011-01-01,23
+Solar Power,2011Q2,2011-04-01,26
+Solar Power,2011Q3,2011-07-01,32
+Solar Power,2011Q4,2011-10-01,25
+Solar Power,2012Q1,2012-01-01,32
+Solar Power,2012Q2,2012-04-01,24
+Solar Power,2012Q3,2012-07-01,19
+Solar Power,2012Q4,2012-10-01,15
+Solar Power,2013Q1,2013-01-01,17
+Solar Power,2013Q2,2013-04-01,13
+Solar Power,2013Q3,2013-07-01,16
+Solar Power,2013Q4,2013-10-01,18
+Solar Power,2014Q1,2014-01-01,16
+Solar Power,2014Q2,2014-04-01,12
+Solar Power,2014Q3,2014-07-01,13
+Solar Power,2014Q4,2014-10-01,11
+Solar Power,2015Q1,2015-01-01,13
+Solar Power,2015Q2,2015-04-01,7
+Solar Power,2015Q3,2015-07-01,12
+Solar Power,2015Q4,2015-10-01,12
+Solar Power,2016Q1,2016-01-01,8
+Solar Power,2016Q2,2016-04-01,7
+Solar Power,2016Q3,2016-07-01,7
+Solar Power,2016Q4,2016-10-01,12
+Solar Power,2017Q1,2017-01-01,13
+Solar Power,2017Q2,2017-04-01,7
+Solar Power,2017Q3,2017-07-01,13
+Solar Power,2017Q4,2017-10-01,14
+Solar Power,2018Q1,2018-01-01,14
+Solar Power,2018Q2,2018-04-01,9
+Solar Power,2018Q3,2018-07-01,13
+Solar Power,2018Q4,2018-10-01,13
+Solar Power,2019Q1,2019-01-01,16
+Solar Power,2019Q2,2019-04-01,12
+Solar Power,2019Q3,2019-07-01,9
+Solar Power,2019Q4,2019-10-01,10
+Solar Power,2020Q1,2020-01-01,18
+Solar Power,2020Q2,2020-04-01,8
+Solar Power,2020Q3,2020-07-01,12
+Solar Power,2020Q4,2020-10-01,12
+Solar Power,2021Q1,2021-01-01,13
+Solar Power,2021Q2,2021-04-01,14
+Solar Power,2021Q3,2021-07-01,17
+Solar Power,2021Q4,2021-10-01,12
+Solar Power,2022Q1,2022-01-01,20
+Solar Power,2022Q2,2022-04-01,28
+Solar Power,2022Q3,2022-07-01,25
+Solar Power,2022Q4,2022-10-01,18
+Solar Power,2023Q1,2023-01-01,23
+Solar Power,2023Q2,2023-04-01,23
+Solar Power,2023Q3,2023-07-01,22
+Solar Power,2023Q4,2023-10-01,28
+Solar Power,2024Q1,2024-01-01,26
+Solar Power,2024Q2,2024-04-01,21
+Solar Power,2024Q3,2024-07-01,19
+Solar Power,2024Q4,2024-10-01,16
+Hybrid vehicle electric car,2002Q2,2002-04-01,0
+Hybrid vehicle electric car,2002Q3,2002-07-01,1
+Hybrid vehicle electric car,2002Q4,2002-10-01,1
+Hybrid vehicle electric car,2003Q1,2003-01-01,0
+Hybrid vehicle electric car,2003Q2,2003-04-01,0
+Hybrid vehicle electric car,2003Q3,2003-07-01,0
+Hybrid vehicle electric car,2003Q4,2003-10-01,1
+Hybrid vehicle electric car,2004Q1,2004-01-01,0
+Hybrid vehicle electric car,2004Q2,2004-04-01,0
+Hybrid vehicle electric car,2004Q3,2004-07-01,0
+Hybrid vehicle electric car,2004Q4,2004-10-01,1
+Hybrid vehicle electric car,2005Q1,2005-01-01,1
+Hybrid vehicle electric car,2005Q2,2005-04-01,4
+Hybrid vehicle electric car,2005Q3,2005-07-01,1
+Hybrid vehicle electric car,2005Q4,2005-10-01,0
+Hybrid vehicle electric car,2006Q1,2006-01-01,0
+Hybrid vehicle electric car,2006Q2,2006-04-01,1
+Hybrid vehicle electric car,2006Q3,2006-07-01,1
+Hybrid vehicle electric car,2006Q4,2006-10-01,0
+Hybrid vehicle electric car,2007Q1,2007-01-01,2
+Hybrid vehicle electric car,2007Q2,2007-04-01,0
+Hybrid vehicle electric car,2007Q3,2007-07-01,1
+Hybrid vehicle electric car,2007Q4,2007-10-01,2
+Hybrid vehicle electric car,2008Q1,2008-01-01,4
+Hybrid vehicle electric car,2008Q2,2008-04-01,2
+Hybrid vehicle electric car,2008Q3,2008-07-01,1
+Hybrid vehicle electric car,2008Q4,2008-10-01,4
+Hybrid vehicle electric car,2009Q1,2009-01-01,1
+Hybrid vehicle electric car,2009Q2,2009-04-01,5
+Hybrid vehicle electric car,2009Q3,2009-07-01,5
+Hybrid vehicle electric car,2009Q4,2009-10-01,3
+Hybrid vehicle electric car,2010Q1,2010-01-01,4
+Hybrid vehicle electric car,2010Q2,2010-04-01,6
+Hybrid vehicle electric car,2010Q3,2010-07-01,3
+Hybrid vehicle electric car,2010Q4,2010-10-01,6
+Hybrid vehicle electric car,2011Q1,2011-01-01,6
+Hybrid vehicle electric car,2011Q2,2011-04-01,2
+Hybrid vehicle electric car,2011Q3,2011-07-01,1
+Hybrid vehicle electric car,2011Q4,2011-10-01,0
+Hybrid vehicle electric car,2012Q1,2012-01-01,1
+Hybrid vehicle electric car,2012Q2,2012-04-01,2
+Hybrid vehicle electric car,2012Q3,2012-07-01,1
+Hybrid vehicle electric car,2012Q4,2012-10-01,1
+Hybrid vehicle electric car,2013Q1,2013-01-01,0
+Hybrid vehicle electric car,2013Q2,2013-04-01,0
+Hybrid vehicle electric car,2013Q3,2013-07-01,1
+Hybrid vehicle electric car,2013Q4,2013-10-01,2
+Hybrid vehicle electric car,2014Q1,2014-01-01,0
+Hybrid vehicle electric car,2014Q2,2014-04-01,1
+Hybrid vehicle electric car,2014Q3,2014-07-01,1
+Hybrid vehicle electric car,2014Q4,2014-10-01,2
+Hybrid vehicle electric car,2015Q1,2015-01-01,1
+Hybrid vehicle electric car,2015Q2,2015-04-01,0
+Hybrid vehicle electric car,2015Q3,2015-07-01,2
+Hybrid vehicle electric car,2015Q4,2015-10-01,0
+Hybrid vehicle electric car,2016Q1,2016-01-01,6
+Hybrid vehicle electric car,2016Q2,2016-04-01,1
+Hybrid vehicle electric car,2016Q3,2016-07-01,3
+Hybrid vehicle electric car,2016Q4,2016-10-01,5
+Hybrid vehicle electric car,2017Q1,2017-01-01,7
+Hybrid vehicle electric car,2017Q2,2017-04-01,3
+Hybrid vehicle electric car,2017Q3,2017-07-01,5
+Hybrid vehicle electric car,2017Q4,2017-10-01,8
+Hybrid vehicle electric car,2018Q1,2018-01-01,9
+Hybrid vehicle electric car,2018Q2,2018-04-01,4
+Hybrid vehicle electric car,2018Q3,2018-07-01,2
+Hybrid vehicle electric car,2018Q4,2018-10-01,2
+Hybrid vehicle electric car,2019Q1,2019-01-01,6
+Hybrid vehicle electric car,2019Q2,2019-04-01,7
+Hybrid vehicle electric car,2019Q3,2019-07-01,2
+Hybrid vehicle electric car,2019Q4,2019-10-01,4
+Hybrid vehicle electric car,2020Q1,2020-01-01,11
+Hybrid vehicle electric car,2020Q2,2020-04-01,0
+Hybrid vehicle electric car,2020Q3,2020-07-01,11
+Hybrid vehicle electric car,2020Q4,2020-10-01,6
+Hybrid vehicle electric car,2021Q1,2021-01-01,12
+Hybrid vehicle electric car,2021Q2,2021-04-01,9
+Hybrid vehicle electric car,2021Q3,2021-07-01,6
+Hybrid vehicle electric car,2021Q4,2021-10-01,8
+Hybrid vehicle electric car,2022Q1,2022-01-01,9
+Hybrid vehicle electric car,2022Q2,2022-04-01,6
+Hybrid vehicle electric car,2022Q3,2022-07-01,4
+Hybrid vehicle electric car,2022Q4,2022-10-01,4
+Hybrid vehicle electric car,2023Q1,2023-01-01,7
+Hybrid vehicle electric car,2023Q2,2023-04-01,1
+Hybrid vehicle electric car,2023Q3,2023-07-01,6
+Hybrid vehicle electric car,2023Q4,2023-10-01,8
+Hybrid vehicle electric car,2024Q1,2024-01-01,8
+Hybrid vehicle electric car,2024Q2,2024-04-01,4
+Hybrid vehicle electric car,2024Q3,2024-07-01,8
+Hybrid vehicle electric car,2024Q4,2024-10-01,10
