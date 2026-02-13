@@ -1,0 +1,431 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{natbib}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{xcolor}
+
+\title{Section IV.C Methods Summary:\\Belief Dynamics}
+\author{Working Notes --- \today}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Research Question}
+
+Sections IV.A and IV.B establish that firm-level variation accounts for 60--74\% of cause/effect share variation and that this firm component is portable across technologies.  Section IV.C asks: \emph{how persistent are these belief structures over time?}  Within a firm--technology pair, does the initial causal frame anchor beliefs for years, or do beliefs converge quickly to the technology-level consensus?
+
+This question matters for the paper's later sections.  If belief structures are transient---reflecting noise or one-off phrasing---they cannot drive persistent firm outcomes (Section~V) or predict misallocation (Section~VI).  Documenting temporal persistence completes the characterization of beliefs as a durable feature of the firm.
+
+\medskip
+\noindent\textbf{Sample:} 1,933 firm--technology pairs with $\geq 2$ quarterly observations (11,706 total observations from 13,723 in the full panel).  Of these, 933 pairs have $\geq 4$ observations (9,359 total obs) and 321 pairs have $\geq 10$ observations (5,946 total obs).
+
+%======================================================================
+\section{The Original Directive}
+
+The main.tex directive (line 356) proposed the following hypothesis:
+
+\begin{quote}
+\emph{Within a firm--technology pair, trace the trajectory of the cause-to-effect ratio over time.  Document the stylized fact that early engagement is cause-heavy and later engagement shifts toward effects.  Then document heterogeneity: some firms transition quickly, others slowly.  The speed of transition should correlate with the concentration of the initial causal frame (firms with a strong initial prior in a single cause category take longer to update).  This is consistent with stickier updating for more confident initial beliefs.}
+\end{quote}
+
+\noindent This directive embeds three testable predictions:
+\begin{enumerate}[label=(\alph*)]
+\item The cause-to-effect ratio (CER) declines over firm--technology tenure.
+\item Firms differ in the speed of this transition.
+\item Initial-frame concentration (HHI) predicts slower transition.
+\end{enumerate}
+
+%======================================================================
+\section{Exploratory Analysis: What the Data Show}
+
+\subsection{Prediction (a): CER Lifecycle --- \textbf{NOT SUPPORTED}}
+
+We computed the cause-to-effect ratio by firm--technology tenure (quarters since first mention) for all 1,933 pairs with $\geq 2$ observations:
+
+\begin{center}
+\begin{tabular}{rccr}
+\toprule
+Tenure (quarters) & Mean CER & Median CER & $N$ \\
+\midrule
+0  & 0.812 & 0.750 & 1,933 \\
+1  & 0.812 & 0.750 & 579 \\
+2  & 0.792 & 0.750 & 582 \\
+4  & 0.806 & 0.750 & 514 \\
+6  & 0.766 & 0.750 & 423 \\
+8  & 0.769 & 0.727 & 367 \\
+12 & 0.800 & 0.750 & 306 \\
+16 & 0.785 & 0.750 & 213 \\
+20 & 0.787 & 0.750 & 180 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The CER fluctuates between 0.75 and 0.81 with no systematic decline.  The median is locked at 0.750 across nearly all tenure bins.
+
+\medskip
+\noindent\textbf{Within-pair early-vs-late comparison} (933 pairs with $\geq 4$ observations):
+\begin{itemize}[nosep]
+\item Early-half mean CER: 0.781
+\item Late-half mean CER: 0.779
+\item Difference: 0.003 (essentially zero)
+\item Fraction of pairs where early $>$ late: 48.4\% (coin flip)
+\end{itemize}
+
+\medskip
+\noindent We also checked whether the CER pattern emerges at the \emph{technology aggregate lifecycle} level (years since the technology first appears in any transcript):
+
+\begin{center}
+\begin{tabular}{rccr}
+\toprule
+Tech age (quarters) & Mean CER & $N$ \\
+\midrule
+0--4   & 0.866 & 94 \\
+4--8   & 0.770 & 178 \\
+8--12  & 0.774 & 351 \\
+16--20 & 0.772 & 578 \\
+40--44 & 0.776 & 969 \\
+80--84 & 0.920 & 415 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent There is a small initial spike (0.87 in the technology's first year), but it flattens immediately and does not continue declining.  The very late increase (0.92 at tech age 80+) reflects composition effects (only the earliest-observed technologies, e.g., Wifi, have tenure $>80$ quarters).
+
+\medskip
+\noindent\textbf{Conclusion:} The ``early cause-heavy, later effect-heavy'' lifecycle pattern does not exist in the data, at either the firm or technology level.
+
+\subsection{Prediction (c): Concentrated Initial Beliefs $\to$ Slower Transition --- \textbf{NOT SUPPORTED}}
+
+We computed initial-frame HHI (sum of squared category shares at tenure 0) and correlated it with subsequent belief volatility and drift:
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+& Cause & Effect \\
+\midrule
+Corr(initial HHI, avg within-pair std) & 0.078 & 0.213 \\
+Corr(initial HHI, mean drift from initial, tenure $\geq 8$) & 0.296 & 0.393 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Both correlations are positive: more concentrated initial beliefs are associated with \emph{more} subsequent change, not less.  This is likely mechanical---firms that start with all weight in one category have more room to diversify.  But it contradicts the prediction that concentrated beliefs produce ``stickier updating.''
+
+\subsection{What IS Supported: Belief Persistence}
+
+\subsubsection{(i) Within-pair autocorrelation}
+
+Quarter-to-quarter autocorrelation of shares is moderate but substantial:
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+Category & Autocorrelation ($\rho$) & $N$ \\
+\midrule
+\multicolumn{3}{l}{\textit{Cause shares}} \\
+share\_cause\_1 (Technology Innovation) & 0.466 & 9,773 \\
+share\_cause\_2 (Market Demand) & 0.364 & 9,773 \\
+share\_cause\_3 (Strategic Partnerships) & 0.392 & 9,773 \\
+share\_cause\_4 (Regulatory Drivers) & 0.370 & 9,773 \\
+share\_cause\_5 (Cost \& Economic) & 0.425 & 9,773 \\[4pt]
+\multicolumn{3}{l}{\textit{Effect shares}} \\
+share\_effect\_1 (Revenue Growth) & 0.438 & 9,773 \\
+share\_effect\_2 (Cost Reduction) & 0.416 & 9,773 \\
+share\_effect\_3 (Market Expansion) & 0.355 & 9,773 \\
+share\_effect\_4 (Product Innovation) & 0.362 & 9,773 \\
+share\_effect\_5 (Operational Efficiency) & 0.423 & 9,773 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Autocorrelations range from 0.36 to 0.47.  For context, a pure-noise process would produce autocorrelations near zero; a fixed firm effect would produce autocorrelations near 1.  Values around 0.4 indicate moderately persistent beliefs with substantial updating.
+
+\subsubsection{(ii) Initial frame predicts later frames}
+
+Correlation between the initial (tenure 0) share and the current share, split by horizon:
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+& Tenure 1--4q & 5--8q & 9--12q & 13--20q \\
+& ($N = 2{,}162$) & ($N = 1{,}553$) & ($N = 1{,}181$) & ($N = 1{,}734$) \\
+\midrule
+Cause (avg across 5 categories) & 0.418 & 0.317 & 0.307 & 0.286 \\
+Effect (avg across 5 categories) & 0.398 & 0.343 & 0.288 & 0.266 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Even at 3--5 years out (tenure 13--20q), the initial-to-current correlation is 0.27--0.29.  Persistence decays slowly and remains meaningful at all horizons observed.
+
+\subsubsection{(iii) Gradual drift from initial frame}
+
+We computed the Euclidean distance between the current and initial share vectors at each tenure:
+
+\begin{center}
+\begin{tabular}{rccr}
+\toprule
+Tenure & Cause distance & Effect distance & $N$ \\
+\midrule
+0  & 0.000 & 0.000 & 1,933 \\
+1  & 0.480 & 0.415 & 579 \\
+2  & 0.528 & 0.441 & 582 \\
+4  & 0.531 & 0.446 & 514 \\
+8  & 0.551 & 0.451 & 367 \\
+12 & 0.545 & 0.472 & 306 \\
+16 & 0.572 & 0.475 & 213 \\
+20 & 0.575 & 0.490 & 180 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Most of the drift occurs in the first 1--2 quarters ($\sim 0.48$ for cause, $\sim 0.42$ for effect), then increases slowly.  The initial frame is never fully abandoned.
+
+\subsubsection{(iv) Cause beliefs drift more than effect beliefs}
+
+Within-pair drift comparison (933 pairs with $\geq 4$ observations, averaging over all post-initial observations):
+
+\begin{itemize}[nosep]
+\item Mean cause drift: 0.549; median: 0.520
+\item Mean effect drift: 0.472; median: 0.445
+\item Cause drift $>$ effect drift in 64.5\% of pairs
+\end{itemize}
+
+\noindent This is consistent with IV.B: effect beliefs are both more \emph{portable} across technologies (higher spillover $\hat\beta$) and more \emph{stable} over time (less drift).  The expectations about \emph{what technologies will deliver} appear to be a more durable feature of the firm's cognitive style than the attributions about \emph{why technologies are being adopted}.
+
+\subsubsection{(v) Partial convergence to technology aggregate}
+
+Distance between the firm's current share vector and the technology-level aggregate profile:
+
+\begin{center}
+\begin{tabular}{rccr}
+\toprule
+Tenure & Dist to agg (cause) & Dist to agg (effect) & $N$ \\
+\midrule
+0  & 0.466 & 0.404 & 1,933 \\
+1  & 0.430 & 0.368 & 579 \\
+4  & 0.424 & 0.365 & 514 \\
+8  & 0.414 & 0.359 & 367 \\
+12 & 0.413 & 0.361 & 306 \\
+16 & 0.424 & 0.360 & 213 \\
+20 & 0.421 & 0.380 & 180 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Firms converge slightly toward the technology consensus (cause distance drops from 0.47 to 0.41), but retain substantial idiosyncrasy even after 20 quarters.  They learn but do not fully converge.
+
+\subsubsection{(vi) HHI (concentration) over tenure}
+
+\begin{center}
+\begin{tabular}{rccr}
+\toprule
+Tenure & Cause HHI & Effect HHI & $N$ \\
+\midrule
+0  & 0.563 & 0.457 & 1,933 \\
+4  & 0.518 & 0.425 & 514 \\
+8  & 0.511 & 0.418 & 367 \\
+12 & 0.495 & 0.422 & 306 \\
+16 & 0.513 & 0.420 & 213 \\
+20 & 0.526 & 0.448 & 180 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Cause-side concentration declines modestly (from 0.56 to 0.50) as firms diversify their causal attributions over time.  Effect-side concentration is more stable.  This is consistent with cause beliefs being more volatile and effect beliefs being more stable.
+
+%======================================================================
+\section{Recommended Approach}
+
+\subsection{Reframing}
+
+The directive's CER lifecycle hypothesis is not supported.  We recommend reframing IV.C around the strong \textbf{belief persistence} finding:
+
+\begin{quote}
+\emph{Firm-level belief structures are persistent features, not transient snapshots.  Initial frames anchor subsequent beliefs for years, with slow partial updating.  Effect beliefs---the expectations about what technologies will deliver---are more stable than cause beliefs, consistent with the stronger effect-side portability documented in IV.B.  This persistence is what makes the belief-to-action predictions in Section~V credible.}
+\end{quote}
+
+\subsection{Proposed Specification}
+
+Stacked regression (same framework as IV.B for consistency).  Each observation is a firm--technology--quarter--category tuple $(i,k,t,c)$:
+
+\begin{equation}
+s_{ikt,c} = \beta \cdot s_{ik0,c} + \gamma_{k \times c} + \delta_{t \times c} + \varepsilon_{ikt,c}
+\end{equation}
+
+\noindent where $s_{ik0,c}$ is the firm's initial (first-quarter) share in category $c$ for technology $k$.  Fixed effects $\gamma_{k \times c}$ and $\delta_{t \times c}$ absorb technology-specific and time-specific levels for each category.  Standard errors clustered at the firm level.
+
+A positive $\beta$ indicates that the initial frame predicts later frames \emph{conditional on what other firms discussing the same technology at the same time think}.
+
+\subsection{Proposed Table Structure}
+
+Four columns, matching IV.B layout:
+
+\begin{center}
+\begin{tabular}{clp{7.5cm}}
+\toprule
+Column & Sample & Purpose \\
+\midrule
+(I)  & All later obs (tenure $\geq 1$) & Baseline persistence \\
+(II) & Tenure 1--4q & Short-horizon persistence \\
+(III)& Tenure 5--12q & Medium-horizon persistence \\
+(IV) & Tenure 13+q & Long-horizon persistence \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Panel A = Cause shares, Panel B = Effect shares.
+
+\subsection{Proposed Figure}
+
+\textbf{Figure III: Belief Persistence Decay.}  Plot the average cross-category correlation between initial shares and current shares by exact tenure quarter.  Two curves: cause (solid) and effect (dashed).  The slow downward slope visualizes the gradual decay of initial-frame influence.
+
+\subsection{Prose Statistics (No Separate Table)}
+
+The cause-vs-effect drift comparison is reported in text: mean cause drift = 0.549 vs.\ effect drift = 0.472, with cause $>$ effect in 64.5\% of pairs.
+
+%======================================================================
+\section{Final Results}
+
+\subsection{Persistence Regressions (Table~VII in paper)}
+
+All specifications include technology$\times$category and quarter$\times$category fixed effects.  Standard errors clustered at the firm level.
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+ & (I) & (II) & (III) & (IV) \\
+ & All horizons & Tenure 1--4q & Tenure 5--12q & Tenure 13+q \\
+\midrule
+\multicolumn{5}{l}{\textit{Panel A. Cause shares}} \\
+$\hat\beta$ & 0.147*** & 0.257*** & 0.151*** & 0.101*** \\
+ & (0.011) & (0.015) & (0.014) & (0.014) \\
+$N$ (stacked) & 48,865 & 10,810 & 13,670 & 24,385 \\
+$R^2$ & 0.024 & 0.071 & 0.026 & 0.012 \\[6pt]
+\multicolumn{5}{l}{\textit{Panel B. Effect shares}} \\
+$\hat\beta$ & 0.172*** & 0.268*** & 0.196*** & 0.115*** \\
+ & (0.012) & (0.015) & (0.016) & (0.016) \\
+$N$ (stacked) & 48,865 & 10,810 & 13,670 & 24,385 \\
+$R^2$ & 0.033 & 0.076 & 0.041 & 0.015 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent $^{***}\,p<0.01$, $^{**}\,p<0.05$, $^{*}\,p<0.10$. Standard errors clustered at the firm level.
+
+\subsection{Persistence Decay by Bucket (raw correlations)}
+
+Average cross-category correlation between initial and current shares:
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+ & Tenure 1--4q & Tenure 5--12q & Tenure 13+q \\
+\midrule
+Cause & 0.418 & 0.313 & 0.286 \\
+Effect & 0.398 & 0.319 & 0.272 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Interpretation}
+
+\begin{enumerate}[label=(\roman*)]
+\item \textbf{Strong persistence.}  $\hat\beta$ is positive and significant at the 1\% level in all 8 specifications.  Initial frames predict current frames conditional on technology$\times$quarter trends.
+\item \textbf{Monotonic decay.}  $\hat\beta$ decays as predicted: col~(II) $>$ col~(III) $>$ col~(IV) for both cause and effect sides.  The decay is gradual---even at 13+ quarters (3+ years), $\hat\beta \approx 0.10$--$0.12$.
+\item \textbf{Effect beliefs more persistent.}  Effect-side $\hat\beta$ exceeds cause-side $\hat\beta$ in all four columns.  This is consistent with IV.B's finding that effect beliefs are more portable across technologies.
+\item \textbf{The pooled OLS exploration overestimated $\hat\beta$.}  Exploration predicted $\hat\beta \approx 0.30$--$0.36$; the final estimates with FE are 0.15--0.17 (pooled).  The FE absorb technology-level and time-level persistence, leaving only the firm-idiosyncratic component.  This is the correct estimate.
+\item \textbf{Short-horizon R$^2$ is meaningful.}  At tenure 1--4q, $R^2 = 0.071$ (cause) and $0.076$ (effect).  The initial frame explains 7\% of within-technology, within-quarter variation in the first year---comparable to the spillover regression's explanatory power with $\geq 3$-tech firms ($R^2 = 0.008$--$0.010$).
+\item \textbf{CER lifecycle null confirmed.}  The one-sentence mention in the paper (``The cause-to-effect ratio itself does not exhibit a systematic lifecycle pattern'') is sufficient.  The evidence is in this methods summary, not in the paper itself.
+\end{enumerate}
+
+\subsection{Decisions Made During Implementation}
+
+\begin{enumerate}[label=\arabic*.]
+\item \textbf{Subsection title: kept ``Belief Dynamics.''}  While ``Belief Persistence'' is more accurate, ``Dynamics'' is the broader term and matches the original outline.  The text makes clear that the finding is persistence, not lifecycle.
+\item \textbf{Failed CER hypothesis: mentioned in one sentence.}  Follows recommendation (b) from the open questions.  Inoculates against referee question without dwelling on a negative result.
+\item \textbf{Both table and figure included in main text.}  Table provides the formal regression evidence; figure provides the visual decay curve.  Both are essential.
+\item \textbf{Drift statistics reported in prose only.}  The cause-vs-effect drift comparison (0.549 vs.\ 0.472, 64.5\% of pairs) is reported in the text with the metric defined as Euclidean distance.  No separate table needed.
+\end{enumerate}
+
+%======================================================================
+\section{Connection to Paper Narrative}
+
+\subsection{Completing the Section IV Trilogy}
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+Section & Question & Finding & Evidence \\
+\midrule
+IV.A & How much variation is firm-level? & 60--74\% & Table~V \\
+IV.B & Is it portable across technologies? & Yes ($\hat\beta > 0$, all specs) & Table~VI \\
+IV.C & Is it persistent over time? & Yes ($\hat\beta = 0.10$--$0.12$ at 3+ yr) & Table~VII, Fig.~III \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Together, these three findings characterize beliefs as a \emph{durable, portable, firm-level cognitive style}: large in magnitude, transferable across technologies, and persistent over time.
+
+\subsection{Bridge to Section V}
+
+The persistence finding directly supports Section~V (Beliefs and Firm Actions): if beliefs were transient noise, they could not predict firm outcomes measured over quarters or years.  That initial frames persist for 3+ years makes it plausible that they shape investment, hiring, and M\&A decisions.
+
+\subsection{Cause vs.\ Effect Asymmetry}
+
+The consistent finding across IV.B and IV.C that effect beliefs are more portable \emph{and} more stable strengthens the case for the growth-vs-efficiency framework in Section~V.A.  The two most portable effect categories (Revenue Growth and Operational Efficiency) are also the categories that define the growth/efficiency orientation.
+
+%======================================================================
+\section{Open Questions for Discussion}
+
+\begin{enumerate}[label=\arabic*.]
+\item \textbf{Should we keep the subsection title ``Belief Dynamics'' or rename it?}  Options: ``Belief Persistence,'' ``Persistence of Belief Structures,'' or ``Temporal Stability of Beliefs.''  ``Dynamics'' sets up a lifecycle expectation that the data reject.
+
+\item \textbf{Should we mention the failed CER hypothesis?}  Two approaches:
+\begin{enumerate}[label=(\alph*)]
+\item \textbf{Omit entirely.}  The CER lifecycle was a conjecture, not a prediction derived from theory.  Simply present the persistence results without mentioning what we did \emph{not} find.
+\item \textbf{Mention briefly.}  ``The cause-to-effect ratio does not exhibit a systematic lifecycle pattern; instead, the compositional structure of both cause and effect beliefs persists over time.''  This inoculates against a referee asking ``did you check the CER?''
+\end{enumerate}
+We recommend (b)---a single sentence to preempt the question.
+
+\item \textbf{Should IV.C include a table, a figure, or both?}  The persistence decay curve (figure) is visually compelling.  The regression table provides the formal evidence.  We recommend both, with the table in the main text and the figure either in the main text or appendix depending on space.
+
+\item \textbf{Technology-aggregate vs.\ firm-level dynamics.}  The technology-aggregate CER does show a small initial spike (0.87 in the first year, dropping to 0.77).  Should we report this as a minor aside, or does it distract from the main persistence story?
+
+\item \textbf{Survivorship bias.}  Firms observed at long tenure are selected (they kept discussing the technology).  If firms that ``figured it out'' stop discussing the technology, the long-tenure sample is enriched for firms with persistent uncertainty.  Should we address this?
+\end{enumerate}
+
+%======================================================================
+\section{Implementation (Completed)}
+
+\subsection*{Script}
+
+\texttt{src/py/07\_table\_IVC\_dynamics.py} --- all-in-one Python script: data prep, persistence regressions, figure generation, LaTeX table export, CSV export, JSON manifest.
+
+\subsection*{Outputs}
+
+\begin{itemize}[nosep]
+\item \texttt{Overleaf/Tables/persistence.tex} --- Table~VII (4-column persistence, Panel A/B)
+\item \texttt{Overleaf/Figures/figure\_III\_persistence.pdf} and \texttt{.png} --- Figure~III (decay curve)
+\item \texttt{results/tables/table\_IVC\_persistence.csv} --- underlying regression results
+\item \texttt{results/runs/07\_table\_IVC\_dynamics\_20260213\_143723.json} --- run manifest
+\end{itemize}
+
+\subsection*{Paper Structure}
+
+\begin{itemize}[nosep]
+\item \textbf{Main table} (Table~VII): 4-column persistence regressions, Panel A (causes) / Panel B (effects)
+\item \textbf{Main figure} (Figure~III): Persistence decay curve by tenure quarter, cause vs.\ effect
+\item \textbf{Prose in Section IV.C}: 6 paragraphs covering motivation, specification (Eq.~3), main results, figure discussion (with one-sentence CER null), cause-vs-effect asymmetry, and bridge to Section~V
+\item \textbf{Table added to} \texttt{Overleaf/Tables/alltables.tex} after spillover
+\end{itemize}
+
+\subsection*{Toolchain}
+
+\texttt{pyhdfe} for Frisch--Waugh--Lovell demeaning + \texttt{statsmodels} OLS with cluster-robust SE.  \texttt{matplotlib} for figure.  Same approach as \texttt{06\_table\_IVB\_spillover.py}.
+
+\end{document}

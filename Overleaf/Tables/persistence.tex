@@ -1,0 +1,32 @@
+\begin{table}[!htbp]\centering
+\caption{Belief Persistence}
+\label{tab:persistence}
+\begin{flushleft}\footnotesize
+\textit{Notes.} This table reports estimates from stacked regressions of a firm's current cause (Panel~A) or effect (Panel~B) share on its initial share from the first quarter in which the firm discusses the technology. Each observation is a firm--technology--quarter--category for quarters after first mention ($\text{tenure} \geq 1$), where categories are the five macro cause or effect groups defined in Section~II.D. All specifications include technology$\times$category and quarter$\times$category fixed effects. Column~(I) pools all post-initial observations. Columns~(II)--(IV) split by tenure horizon: 1--4~quarters, 5--12~quarters, and 13+~quarters since first mention. The sample consists of 1,933 firm--technology pairs observed in at least two quarters (9,773 post-initial observations; 48,865 stacked rows). Standard errors clustered at the firm level are in parentheses. $^{***}$~$p<0.01$, $^{**}$~$p<0.05$, $^{*}$~$p<0.10$.
+\end{flushleft}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccc}
+\hline\hline
+\multicolumn{5}{l}{\textsc{Panel A. Cause shares}}\\
+ & \parbox[b]{2.2cm}{\centering All horizons} & \parbox[b]{2.2cm}{\centering Tenure 1--4q} & \parbox[b]{2.2cm}{\centering Tenure 5--12q} & \parbox[b]{2.2cm}{\centering Tenure 13+q} \\
+ & (I) & (II) & (III) & (IV) \\
+\hline
+Initial share & 0.147*** & 0.257*** & 0.151*** & 0.101*** \\
+ & (0.011) & (0.015) & (0.014) & (0.014) \\[6pt]
+Technology $\times$ category FE & Yes & Yes & Yes & Yes \\
+Quarter $\times$ category FE & Yes & Yes & Yes & Yes \\
+Observations & 48,865 & 10,810 & 13,670 & 24,385 \\
+$R^2$ & 0.024 & 0.071 & 0.026 & 0.012 \\
+\hline
+\multicolumn{5}{l}{\textsc{Panel B. Effect shares}}\\
+ & (I) & (II) & (III) & (IV) \\
+\hline
+Initial share & 0.172*** & 0.268*** & 0.196*** & 0.115*** \\
+ & (0.012) & (0.015) & (0.016) & (0.016) \\[6pt]
+Observations & 48,865 & 10,810 & 13,670 & 24,385 \\
+$R^2$ & 0.033 & 0.076 & 0.041 & 0.015 \\
+\hline\hline
+\end{tabular}%
+}
+\vspace{0.25em}
+\end{table}

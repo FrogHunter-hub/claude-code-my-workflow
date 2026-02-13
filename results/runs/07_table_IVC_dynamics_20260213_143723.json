@@ -1,0 +1,112 @@
+{
+  "script": "07_table_IVC_dynamics.py",
+  "timestamp": "2026-02-13T14:37:23.469448",
+  "seed": 42,
+  "input_files": [
+    "data_processed/panel_ikt.csv"
+  ],
+  "output_files": [
+    "results\\tables\\table_IVC_persistence.csv",
+    "Overleaf\\Tables\\persistence.tex",
+    "Overleaf\\Figures\\figure_III_persistence.pdf",
+    "Overleaf\\Figures\\figure_III_persistence.png"
+  ],
+  "row_counts": {
+    "panel_raw": 13723,
+    "multi_obs_pairs": 1933,
+    "multi_obs_firms": 1536,
+    "later_observations": 9773,
+    "cause_stacked": 48865,
+    "effect_stacked": 48865
+  },
+  "drift_statistics": {
+    "pairs_with_3plus_later_obs": 933,
+    "mean_cause_drift": 0.5491101615983384,
+    "mean_effect_drift": 0.47189988034633634,
+    "frac_cause_gt_effect": 0.6452304394426581
+  },
+  "persistence_by_bucket": {
+    "cause_1-4q": 0.41762129986878566,
+    "cause_5-12q": 0.31267212303183517,
+    "cause_13+q": 0.28587767497848604,
+    "effect_1-4q": 0.39829211640304535,
+    "effect_5-12q": 0.3191895211922843,
+    "effect_13+q": 0.2717729265075338
+  },
+  "main_results": {
+    "cause_(I)": {
+      "n_obs": 48865,
+      "r2": 0.024470994833704407,
+      "beta": 0.1465843886521153,
+      "se": 0.010700975789591925,
+      "tstat": 13.698226361252724,
+      "pval": 1.0403460104469524e-42
+    },
+    "cause_(II)": {
+      "n_obs": 10810,
+      "r2": 0.07142356838687813,
+      "beta": 0.25693922117204715,
+      "se": 0.015211819072523992,
+      "tstat": 16.89076237017162,
+      "pval": 5.261867998618627e-64
+    },
+    "cause_(III)": {
+      "n_obs": 13670,
+      "r2": 0.0262284004827138,
+      "beta": 0.15116865546995983,
+      "se": 0.014492696555243616,
+      "tstat": 10.43067830018599,
+      "pval": 1.7960157094912863e-25
+    },
+    "cause_(IV)": {
+      "n_obs": 24385,
+      "r2": 0.011769351764264635,
+      "beta": 0.10115061503977575,
+      "se": 0.014372427113433736,
+      "tstat": 7.037824178299814,
+      "pval": 1.952648559757453e-12
+    },
+    "effect_(I)": {
+      "n_obs": 48865,
+      "r2": 0.03278362033360349,
+      "beta": 0.17229542243029414,
+      "se": 0.01209969299476241,
+      "tstat": 14.239652403153997,
+      "pval": 5.19849817837178e-46
+    },
+    "effect_(II)": {
+      "n_obs": 10810,
+      "r2": 0.07608867609146341,
+      "beta": 0.2684427622704321,
+      "se": 0.014868287336589965,
+      "tstat": 18.054719833790845,
+      "pval": 7.242848728829602e-73
+    },
+    "effect_(III)": {
+      "n_obs": 13670,
+      "r2": 0.0414358433304044,
+      "beta": 0.19622524955418297,
+      "se": 0.015557699910304194,
+      "tstat": 12.612741644683533,
+      "pval": 1.7963347000831054e-36
+    },
+    "effect_(IV)": {
+      "n_obs": 24385,
+      "r2": 0.014882236736246335,
+      "beta": 0.11476133837776822,
+      "se": 0.01649477037218698,
+      "tstat": 6.957437768959522,
+      "pval": 3.4651693052354364e-12
+    }
+  },
+  "parameters": {
+    "n_cause_categories": 5,
+    "n_effect_categories": 5,
+    "clustering": "firm (gvkey)",
+    "fe": [
+      "tech_cat",
+      "qtr_cat"
+    ],
+    "max_tenure_figure": 24
+  }
+}
