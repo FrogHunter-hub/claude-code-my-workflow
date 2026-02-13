@@ -42,8 +42,8 @@
 
 \DeclareCaptionLabelSeparator{none}{ }
 \captionsetup{labelsep=none}
-\captionsetup[figure]{labelsep=period,labelfont={bf},singlelinecheck=false,justification=centering,,skip=6pt}
-\captionsetup[table]{labelsep=none,labelfont={bf},singlelinecheck=false,justification=centering,,skip=6pt}
+\captionsetup[figure]{labelsep=period,labelfont={bf},singlelinecheck=false,justification=centering,skip=6pt}
+\captionsetup[table]{labelsep=none,labelfont={bf},singlelinecheck=false,justification=centering,skip=6pt}
 
 \linespread{1.5}
 
@@ -93,6 +93,7 @@
 
 
 \usepackage[titletoc]{appendix}
+\usepackage{pdfpages}
 
 \let\oldFootnote\footnote
 \newcommand\nextToken\relax
@@ -120,6 +121,12 @@
 \renewcommand{\thetable}{\Roman{table}}
 \captionsetup[table]{labelfont=sc,textfont=sc,labelsep=newline,
   justification=centering,singlelinecheck=false,skip=6pt}
+
+\renewcommand{\figurename}{FIGURE}
+\renewcommand{\thefigure}{\Roman{figure}}
+\captionsetup[figure]{labelfont=sc,textfont=sc,labelsep=newline,
+  justification=centering,singlelinecheck=false,skip=6pt}
+\graphicspath{{Figures/}}
 
 
 % ============================================================
@@ -233,11 +240,36 @@ Because many firms discuss more than one of the 29 technologies during our sampl
 
 \subsection*{III.A. Top-Scoring Transcripts}
 
-\note{Present examples of transcripts with high demand-pull cause shares vs.\ high technology-push cause shares for the same technology.  The reader should be able to verify that the taxonomy labels match the underlying text.  This is the analog of the top-scoring transcript tables in Hassan et al.\ (2019, Online Appendix Table XX) and Sautner et al.\ (2023, Table II).}
+We begin the validation by examining whether the LLM-assigned macro categories correspond to the actual content of the underlying transcript text.
+Following the face-validity exercises in \citet{Hassanetal2019} and \citet{Sautneretal2023}, we present in Online Appendix Table~\ref{tab:top-scoring} one \textit{Technology Innovation and Advancement} (``tech-push'') excerpt and, where available, one \textit{Market Demand and Consumer Behavior} (``demand-pull'') excerpt for each of the 29 technologies.
+We select only excerpts in which the extracted causal phrase appears verbatim in the surrounding sentence window, so that the reader can verify the category assignment directly.
+
+The contrast is immediately visible across technologies.
+For fracking, the tech-push excerpt describes ``technology advances in horizontal drilling and hydraulic fracturing techniques''---engineering innovation---while the demand-pull excerpt discusses ``sustained demand for hydraulic fracturing applications in the energy sector.''
+For cloud computing, the tech-push excerpt references ``advanced capabilities for continuously monitoring thousands of Kafka clusters,'' whereas the demand-pull excerpt highlights ``growing needs from professional asset and investment managers for data analytical tools.''
+For solar power, the tech-push excerpt describes ``Trimetasphere carbon nanomaterials technology'' aimed at improving organic solar cell efficiency, while the demand-pull excerpt describes ``robust demand for power supply equipment and PCS for mega solar power generation projects in Japan.''
+In each case, the same technology is discussed through qualitatively different causal lenses, and the taxonomy captures this distinction.
+
+Coverage is comprehensive: all 29 technologies have a clear tech-push excerpt, and 27 of 29 have a demand-pull excerpt (the exceptions---computer vision and drug conjugates---lack cause-side spans classified as Market Demand).
+Section~III.E provides a systematic assessment of measurement error.
 
 \subsection*{III.B. Cross-Technology Variation}
 
-\note{Show cause and effect compositions vary across technologies in expected ways: solar power = regulation-heavy causes, ML/AI = technology innovation-heavy, mobile payments = demand-heavy (Figure~I, bar chart or heat map).  The question to answer: does the taxonomy recover the known drivers of each technology without being told what to look for?  This parallels the sector-level variation checks in Hassan et al.\ (2019, Figure III) and the emissions-correlation checks in Sautner et al.\ (2023, Section III.B.3).}
+Figure~\ref{fig:cross-tech} reports the share of each macro cause category (Panel~A) and macro effect category (Panel~B) for every technology in the sample, pooled across firms and quarters.
+The taxonomy is constructed by the LLM without knowledge of each technology's economic context; the question is whether the resulting category shares recover the adoption drivers that domain knowledge would predict.
+
+On the cause side, the cross-technology variation aligns with economic priors.
+Technologies whose adoption is widely understood to be supply-driven show the largest shares of Technology Innovation and Advancement: drug conjugates, virtual reality, computer vision, and machine learning are dominated by this category, reflecting the central role of R\&D breakthroughs and platform capabilities in their diffusion.
+At the other end of the spectrum, technologies with strong demand-side narratives---mobile payments, social networking, wireless charging---show large shares of Market Demand and Consumer Behavior.
+Solar power and hybrid electric vehicles stand out for their substantial Regulatory and Policy Drivers shares, consistent with the well-documented role of government mandates and subsidies in clean-energy adoption.
+Fracking---whose spread depends on both drilling innovation and commodity economics---exhibits a characteristic mix of Technology Innovation and Cost and Economic Viability.
+
+The effect side exhibits similarly interpretable variation (Panel~B).
+Consumer-facing technologies such as mobile payments and social networking are dominated by Market Expansion and Adoption effects, reflecting growth-oriented expectations associated with network goods.
+R\&D-intensive technologies such as drug conjugates, computer vision, and solar power show large Product and Service Innovation shares.
+Technologies deployed primarily for operational improvement---fracking, RFID tags---have above-average Cost Reduction and Efficiency shares.
+These cross-technology patterns parallel the sector-level variation checks in \citet{Hassanetal2019} and the emissions-correlation checks in \citet{Sautneretal2023}: the taxonomy captures economically meaningful differences without being told what to look for.
+Online Appendix Figures~\ref{fig:app-pertech-cause} and~\ref{fig:app-pertech-effect} present the corresponding technology-specific time series of category shares.
 
 \subsection*{III.C. Time-Series Patterns}
 
