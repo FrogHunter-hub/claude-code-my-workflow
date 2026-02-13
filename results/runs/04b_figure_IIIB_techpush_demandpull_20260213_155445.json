@@ -1,0 +1,27 @@
+{
+  "script": "04b_figure_IIIB_techpush_demandpull.py",
+  "timestamp": "2026-02-13T15:54:45.417488",
+  "seed": 42,
+  "input_files": [
+    "data_processed/panel_ikt.csv"
+  ],
+  "output_files": [
+    "Overleaf\\Figures\\figure_techpush_demandpull.pdf",
+    "Overleaf\\Figures\\figure_techpush_demandpull.png",
+    "results\\tables\\figure_techpush_demandpull_data.csv"
+  ],
+  "row_counts": {
+    "panel_raw_total": 13723,
+    "technologies_total": 29,
+    "technologies_included": 26,
+    "technologies_excluded": 3,
+    "min_cause_spans": 100
+  },
+  "summary": {
+    "tech_push_dominant": 21,
+    "demand_pull_dominant": 5,
+    "tech_push_mean": 40.9296909633618,
+    "demand_pull_mean": 22.236730370826706,
+    "correlation": -0.622063529637078
+  }
+}
