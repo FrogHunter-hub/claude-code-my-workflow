@@ -1,0 +1,34 @@
+\begin{table}[!htbp]\centering
+\caption{Cross-Technology Belief Spillover}
+\label{tab:spillover}
+\begin{flushleft}\footnotesize
+\textit{Notes.} This table reports estimates from stacked regressions of a firm's own cause (Panel~A) or effect (Panel~B) share for technology~$k$ on the firm's leave-one-out peer share from its other technologies. Each observation is a firm--technology--quarter--category, where categories are the five macro cause or effect groups defined in Section~II.D. The peer share for firm~$i$ in category~$c$ excludes all observations for the same technology~$k$. All fixed effects are interacted with category. Column~(I) includes technology$\times$category and quarter$\times$category fixed effects. Column~(II) replaces quarter with industry$\times$quarter FE. Column~(III) further adds technology$\times$quarter FE, absorbing technology-specific trends. Column~(IV) restricts to the first quarter in which a firm discusses each technology. Standard errors clustered at the firm level are in parentheses. $^{***}$~$p<0.01$, $^{**}$~$p<0.05$, $^{*}$~$p<0.10$.
+\end{flushleft}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccc}
+\hline\hline
+\multicolumn{5}{l}{\textsc{Panel A. Cause shares}}\\
+ & \parbox[b]{2.2cm}{\centering Baseline} & \parbox[b]{2.2cm}{\centering Ind x Qtr} & \parbox[b]{2.2cm}{\centering Tech x Qtr} & \parbox[b]{2.2cm}{\centering First appear.} \\
+ & (I) & (II) & (III) & (IV) \\
+\hline
+Peer share & 0.065*** & 0.040** & 0.042** & 0.049** \\
+ & (0.018) & (0.020) & (0.017) & (0.020) \\[6pt]
+Technology $\times$ category FE & Yes & Yes & No & Yes \\
+Quarter $\times$ category FE & Yes & No & No & Yes \\
+Ind. $\times$ quarter $\times$ category FE & No & Yes & Yes & No \\
+Technology $\times$ quarter $\times$ category FE & No & No & Yes & No \\
+Observations & 36,950 & 36,950 & 36,950 & 9,625 \\
+$R^2$ & 0.003 & 0.001 & 0.001 & 0.002 \\
+\hline
+\multicolumn{5}{l}{\textsc{Panel B. Effect shares}}\\
+ & (I) & (II) & (III) & (IV) \\
+\hline
+Peer share & 0.099*** & 0.100*** & 0.103*** & 0.087*** \\
+ & (0.017) & (0.018) & (0.019) & (0.019) \\[6pt]
+Observations & 36,950 & 36,950 & 36,950 & 9,625 \\
+$R^2$ & 0.007 & 0.007 & 0.008 & 0.005 \\
+\hline\hline
+\end{tabular}%
+}
+\vspace{0.25em}
+\end{table}

@@ -1,0 +1,42 @@
+\begin{table}[!htbp]\centering
+\caption{Cross-Technology Belief Spillover: Robustness}
+\label{tab:spillover_robust}
+\begin{flushleft}\footnotesize
+\textit{Notes.} This table reports robustness checks for the spillover regressions in Table~\ref{tab:spillover}. All specifications include technology$\times$category and quarter$\times$category fixed effects with standard errors clustered at the firm level. Column~(I) restricts the sample to the 225 firms discussing at least three technologies. Column~(II) weights observations by the number of causal (effect) snippets underlying the share estimate. Column~(III) reports the range of the baseline coefficient when each of the five categories is dropped in turn from the stacked regression. Column~(IV) interacts the peer share with the continuous cosine similarity between the focal technology's and the peer technologies' aggregate cause-share vectors; implied effects are evaluated at the 25th and 75th percentiles of similarity. $^{***}$~$p<0.01$, $^{**}$~$p<0.05$, $^{*}$~$p<0.10$.
+\end{flushleft}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccc}
+\hline\hline
+\multicolumn{5}{l}{\textsc{Panel A. Cause shares}}\\
+ & \parbox[b]{2.2cm}{\centering $\geq 3$ technologies} & \parbox[b]{2.2cm}{\centering Snippet-weighted} & \parbox[b]{2.2cm}{\centering Drop-one-category} & \parbox[b]{2.2cm}{\centering Similarity interaction} \\
+ & (I) & (II) & (III) & (IV) \\
+\hline
+Peer share & 0.147*** & 0.061** & & 0.078 \\
+ & (0.032) & (0.026) & & (0.076) \\[6pt]
+Peer share $\times$ similarity & & & & $-$0.017 \\
+ & & & & (0.097) \\[6pt]
+$\hat{\beta}$ range & & & [0.032, 0.075] & \\
+Mean across drops & & & 0.064 & \\[6pt]
+Implied effect at p25 sim. & & & & 0.066 \\
+Implied effect at p75 sim. & & & & 0.063 \\[6pt]
+Observations & 17,280 & 36,950 & & 36,950 \\
+$R^2$ & 0.008 & 0.003 & & 0.003 \\
+\hline
+\multicolumn{5}{l}{\textsc{Panel B. Effect shares}}\\
+ & (I) & (II) & (III) & (IV) \\
+\hline
+Peer share & 0.160*** & 0.105*** & & 0.055 \\
+ & (0.039) & (0.017) & & (0.081) \\[6pt]
+Peer share $\times$ similarity & & & & 0.054 \\
+ & & & & (0.099) \\[6pt]
+$\hat{\beta}$ range & & & [0.074, 0.114] & \\
+Mean across drops & & & 0.098 & \\[6pt]
+Implied effect at p25 sim. & & & & 0.095 \\
+Implied effect at p75 sim. & & & & 0.104 \\[6pt]
+Observations & 17,280 & 36,950 & & 36,950 \\
+$R^2$ & 0.010 & 0.007 & & 0.007 \\
+\hline\hline
+\end{tabular}%
+}
+\vspace{0.25em}
+\end{table}

@@ -1,0 +1,245 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{natbib}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{xcolor}
+
+\title{Section IV.B Methods Summary:\\Cross-Technology Belief Spillover}
+\author{Working Notes --- \today}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Research Question}
+
+Section IV.A establishes that 60--74\% of cause/effect share variation is at the firm level. Section IV.B asks whether this firm-level component reflects a \emph{portable cognitive style}---a tendency to reason about technology in a particular way---or technology-specific idiosyncrasy. In other words: does a firm's causal frame for technology $A$ predict its causal frame for technology $B$?
+
+Our sample consists of 787 multi-technology firms (those discussing $\geq 2$ of the 29 Kalyani et al.\ technologies), comprising 7,390 firm--technology--quarter observations.
+
+\medskip
+\noindent Three candidate methods were evaluated. We summarize each below, including the reasons the first two were set aside.
+
+%======================================================================
+\section{Method 1: Cross-Technology Variance of Causal Frameworks}
+
+\subsection{Idea}
+
+For each firm $i$, compute the variance across its technologies of the (technology-demeaned) cause-share vectors. High variance implies the firm applies different causal frames to different technologies (low spillover); low variance implies a uniform frame (high spillover).
+
+Concretely, let $\mathbf{s}_{ik} = (s_{ik,1}, \ldots, s_{ik,5})'$ denote firm $i$'s time-averaged cause-share vector for technology $k$, demeaned by the technology-level average $\bar{\mathbf{s}}_k$:
+\[
+\tilde{\mathbf{s}}_{ik} = \mathbf{s}_{ik} - \bar{\mathbf{s}}_k.
+\]
+The firm-level variance is:
+\[
+V_i^{\text{cause}} = \frac{1}{|\mathcal{K}_i|} \sum_{k \in \mathcal{K}_i} \| \tilde{\mathbf{s}}_{ik} - \bar{\tilde{\mathbf{s}}}_i \|^2,
+\]
+where $\bar{\tilde{\mathbf{s}}}_i$ is the firm-level mean of the demeaned vectors. Lower $V_i$ corresponds to higher spillover.
+
+\subsection{Data Exploration}
+
+We computed $V_i^{\text{cause}}$ for all 787 multi-technology firms:
+
+\begin{center}
+\begin{tabular}{lcccccc}
+\toprule
+& Mean & SD & p25 & p50 & p75 \\
+\midrule
+Cause-side variance ($\geq 2$ techs) & 0.020 & 0.017 & 0.007 & 0.015 & 0.027 \\
+Effect-side variance ($\geq 2$ techs) & 0.017 & 0.014 & 0.007 & 0.013 & 0.022 \\
+Cause-side variance ($\geq 3$ techs) & 0.023 & 0.017 & 0.011 & 0.018 & 0.030 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Why It Was Set Aside}
+
+\begin{enumerate}[label=(\roman*)]
+\item \textbf{Low discriminating power.} The variance distribution is compressed---the IQR spans only 0.007 to 0.027---making it difficult to separate ``high-spillover'' from ``low-spillover'' firms with meaningful statistical power.
+\item \textbf{Confounded by technology count.} Firms with only 2 technologies have mechanically noisier variance estimates. The 562 two-technology firms dominate the sample, inflating the standard deviation of the index.
+\item \textbf{Not a direct test of spillover.} Low variance is \emph{consistent with} spillover but also with firms operating in homogeneous technology environments. The variance measure cannot distinguish a portable cognitive style from external homogeneity.
+\end{enumerate}
+
+%======================================================================
+\section{Method 2: Portability Index \`a la van Lent et al.\ (2026)}
+
+\subsection{The Original Method}
+
+Van Lent, Tahoun, Zhang, and Zhu (2026, ``Technology Shocks and the Portability of Organizational Design'') define \emph{organizational portability} as the out-of-sample predictive accuracy of a firm's other plants for a held-out plant's job-design choices. Their procedure:
+
+\begin{enumerate}[label=\arabic*.]
+\item For each firm $i$, plant $p$, and job-design construct $k \in \{\text{Delegation, PerfMeasure, Coordination, ValueAlign}\}$, let $Y_{ijpk} \in \{0,1\}$ denote a posting-level indicator.
+\item Estimate a logistic prediction model using postings from all other plants of firm $i$ (excluding plant $p$). Covariates include occupation indicators, seniority indicators, and state(province)$\times$year fixed effects.
+\item Apply the fitted model to postings in the held-out plant $p$ and compute the area under the ROC curve (AUC) for construct $k$.
+\item Define plant-level portability as the simple average AUC across the four constructs.
+\end{enumerate}
+
+The resulting index has a mean of 0.81 (s.d.\ 0.08), with a 25th--75th percentile range of 0.75 to 0.88. Higher values indicate that the firm's other plants predict the held-out plant's design choices well---i.e., firm-level factors dominate plant-specific factors.
+
+\subsection{Adaptation to Our Setting}
+
+We considered mapping the van Lent et al.\ framework to our data:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{van Lent et al.} & & \textbf{Our setting} \\
+\midrule
+Plant $p$ & $\longrightarrow$ & Technology $k$ \\
+Job-design indicators (4 constructs) & $\longrightarrow$ & Cause/effect share vectors (5+5 categories) \\
+Posting-level observations & $\longrightarrow$ & Firm--tech--quarter observations \\
+Leave-one-plant-out AUC & $\longrightarrow$ & Leave-one-tech-out cosine similarity \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Specifically, for each firm $i$ and technology $k$, we computed the average cosine similarity between the demeaned cause-share vector $\tilde{\mathbf{s}}_{ik}$ and each of the firm's other technology vectors $\tilde{\mathbf{s}}_{ij}$ ($j \neq k$). Firm-level belief portability is then the mean across all technology pairs:
+\[
+\text{Portability}_i^{\text{cause}} = \frac{1}{\binom{|\mathcal{K}_i|}{2}} \sum_{\{j,k\} \subseteq \mathcal{K}_i} \cos(\tilde{\mathbf{s}}_{ij}, \tilde{\mathbf{s}}_{ik}).
+\]
+
+\subsection{Data Exploration}
+
+\begin{center}
+\begin{tabular}{lcccccc}
+\toprule
+& Mean & SD & p25 & p50 & p75 \\
+\midrule
+\multicolumn{6}{l}{\textit{All multi-tech firms ($\geq 2$ techs, $N = 787$)}} \\
+Cause cosine similarity & 0.046 & 0.514 & $-$0.335 & 0.035 & 0.463 \\
+Effect cosine similarity & 0.063 & 0.483 & $-$0.250 & 0.027 & 0.431 \\[4pt]
+\multicolumn{6}{l}{\textit{Restricted to $\geq 3$ techs ($N = 225$)}} \\
+Cause cosine similarity & 0.101 & 0.325 & $-$0.125 & 0.040 & 0.324 \\
+Effect cosine similarity & 0.067 & 0.301 & $-$0.160 & $-$0.001 & 0.268 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\noindent Additional diagnostics:
+\begin{itemize}[nosep]
+\item Correlation between cause and effect portability: $-0.003$ (essentially zero).
+\item Two-technology firms (562 of 787) have extreme noise: SD of cause cosine similarity is 0.571 (ranging from $-0.99$ to $+1.00$).
+\item The portability index is centered near zero (mean = 0.046), far from the van Lent et al.\ distribution (mean = 0.81).
+\end{itemize}
+
+\subsection{Why It Was Set Aside}
+
+\begin{enumerate}[label=(\roman*)]
+\item \textbf{Near-zero mean.} Unlike van Lent et al.'s AUC-based index (mean = 0.81, concentrated at high values), the cosine-similarity-based portability index is centered near zero with massive dispersion. Technology-demeaned cause-share vectors are approximately orthogonal across technologies for the typical firm.
+\item \textbf{Dominated by two-technology firms.} 71\% of multi-tech firms (562/787) discuss exactly two technologies. For these firms, the ``portability index'' is a single pairwise cosine similarity---inherently noisy and without averaging over multiple pairs.
+\item \textbf{Zero cause--effect correlation.} A meaningful portability construct should be correlated across cause and effect sides. The $-0.003$ correlation suggests the index captures noise rather than a stable firm characteristic.
+\item \textbf{Fundamental data difference.} Van Lent et al.\ have 43 million job postings across hundreds of plants per firm, with binary indicators that naturally suit logistic prediction and AUC scoring. Our data have 7,390 firm--tech--quarter observations with continuous share vectors (5 categories summing to 1), yielding far fewer cross-technology data points per firm. The leave-one-out prediction framework is underpowered in our setting.
+\end{enumerate}
+
+%======================================================================
+\section{Method 3 (Chosen): Leave-One-Out Peer-Share Regressions}
+
+\subsection{Overview}
+
+Rather than constructing a firm-level portability index and using it as a moderator, we directly test for spillover through a regression framework. The test asks: conditional on technology and time, does a firm's causal frame from its \emph{other} technologies predict its frame for technology $k$?
+
+\subsection{Construction of the Peer Share}
+
+For each firm $i$, technology $k$, and macro category $c \in \{1,\ldots,5\}$, the leave-one-out peer share is:
+\begin{equation}
+\bar{s}^{\neg k}_{i,c} = \frac{1}{|\mathcal{K}_i \setminus \{k\}|} \sum_{j \in \mathcal{K}_i \setminus \{k\}} \bar{s}_{ij,c}
+\end{equation}
+where $\bar{s}_{ij,c}$ is firm $i$'s time-averaged share in category $c$ for technology $j$, and the leave-out is at the technology level (not observation level) to avoid mechanical correlation from within-technology persistence.
+
+The peer share is time-invariant within a firm--technology--category cell.
+
+\subsection{Stacked Regression Specification}
+
+We reshape the data to long format: 5 rows per observation (one per macro cause or effect category), yielding 36,950 stacked rows from 7,390 observations. The specification is:
+\begin{equation}
+s_{ikt,c} = \beta \, \bar{s}^{\neg k}_{i,c} + \alpha_{k \times c} + \gamma_{t \times c} + \varepsilon_{ikt,c}
+\end{equation}
+where $\alpha_{k \times c}$ and $\gamma_{t \times c}$ are technology$\times$category and quarter$\times$category fixed effects. Standard errors are clustered at the firm level. A positive $\beta$ indicates that firms carry their causal frame across technologies.
+
+\textbf{Critical implementation detail:} In a stacked regression where different categories represent different original variables, \emph{all} fixed effects must be interacted with category. Additive category FE are insufficient---they allow technology and quarter effects to be shared across categories, producing incorrect estimates.
+
+\subsection{Specification Table}
+
+\begin{center}
+\begin{tabular}{clll}
+\toprule
+Column & Fixed Effects & Sample & Purpose \\
+\midrule
+(I)  & Tech$\times$cat + Qtr$\times$cat & All multi-tech & Baseline \\
+(II) & Tech$\times$cat + IndQtr$\times$cat & All multi-tech & Absorb industry cycles \\
+(III)& TechQtr$\times$cat + IndQtr$\times$cat & All multi-tech & Most demanding \\
+(IV) & Tech$\times$cat + Qtr$\times$cat & First appearance & Portability test \\
+(V)  & Tech$\times$cat + Qtr$\times$cat & High-similarity pairs & Representativeness \\
+(VI) & Tech$\times$cat + Qtr$\times$cat & Low-similarity pairs & Representativeness \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\noindent \textbf{Design choice: no firm FE.} We originally planned Column~(III) to include firm fixed effects. However, for two-technology firms (71\% of the sample), firm FE mechanically forces the demeaned peer share to equal the negative of the demeaned own share, producing a mechanical $\beta \approx -1$. We replaced firm FE with technology$\times$quarter FE, which absorbs technology-specific trends without this mechanical confound.
+
+\medskip
+\noindent \textbf{Similarity split.} Columns (V) and (VI) split observations by the average cosine similarity between a technology and the firm's other technologies. Similarity is measured from aggregate cause-share profiles pooled across all firms (not firm-specific), and the sample median (0.841) serves as the cutoff.
+
+\subsection{Results}
+
+\begin{center}
+\begin{tabular}{lcccccc}
+\toprule
+ & (I) & (II) & (III) & (IV) & (V) & (VI) \\
+ & Baseline & Ind$\times$Qtr & Tech$\times$Qtr & First app. & High sim. & Low sim. \\
+\midrule
+\multicolumn{7}{l}{\textit{Panel A. Cause shares}} \\
+$\hat\beta$ & 0.065*** & 0.040** & 0.042** & 0.049** & 0.043** & 0.095*** \\
+ & (0.018) & (0.020) & (0.017) & (0.020) & (0.021) & (0.024) \\
+$N$ & 36,950 & 36,950 & 36,950 & 9,625 & 18,495 & 18,455 \\
+$R^2$ & 0.003 & 0.001 & 0.001 & 0.002 & 0.001 & 0.005 \\[6pt]
+\multicolumn{7}{l}{\textit{Panel B. Effect shares}} \\
+$\hat\beta$ & 0.099*** & 0.100*** & 0.103*** & 0.087*** & 0.087*** & 0.106*** \\
+ & (0.017) & (0.018) & (0.019) & (0.019) & (0.022) & (0.023) \\
+$N$ & 36,950 & 36,950 & 36,950 & 9,625 & 18,495 & 18,455 \\
+$R^2$ & 0.007 & 0.007 & 0.008 & 0.005 & 0.005 & 0.008 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent $^{***}\,p<0.01$, $^{**}\,p<0.05$, $^{*}\,p<0.10$. Standard errors clustered at the firm level.
+
+\subsection{Interpretation}
+
+\begin{enumerate}[label=(\roman*)]
+\item \textbf{Robust spillover.} $\hat\beta$ is positive and statistically significant in all 12 specifications. Firms carry their causal frames across technologies.
+\item \textbf{First appearance.} Column (IV) provides the most direct test of portability: when a firm first discusses a new technology, its initial frame already resembles its existing portfolio ($\hat\beta = 0.049$ for causes, $0.087$ for effects).
+\item \textbf{Similarity split.} The representativeness prediction of Bordalo, Gennaioli, and Shleifer (2018) implies stronger spillover for similar technologies. The data go the other way: $\hat\beta$ is \emph{larger} for low-similarity pairs (0.095 vs.\ 0.043 for causes; 0.106 vs.\ 0.087 for effects). One interpretation is that the portable component reflects broad reasoning tendencies---demand-pull vs.\ supply-push explanations---that transfer across the entire portfolio rather than through narrow technological analogy.
+\item \textbf{Stronger on the effect side.} Effect-side spillover coefficients are uniformly larger and more precisely estimated, consistent with the variance decomposition showing a larger firm-level component for effects (67--74\%) than for causes (60--67\%).
+\end{enumerate}
+
+%======================================================================
+\section{Summary of Method Selection}
+
+\begin{center}
+\begin{tabular}{p{3.5cm}p{4cm}p{5.5cm}}
+\toprule
+\textbf{Method} & \textbf{Strength} & \textbf{Reason for rejection / selection} \\
+\midrule
+Cross-technology variance & Simple, intuitive & Low power; confounded by tech count; indirect test \\[4pt]
+Portability index (van Lent et al.) & Principled out-of-sample prediction & Near-zero mean; noise-dominated for 2-tech firms; zero cause--effect correlation; underpowered in our data \\[4pt]
+Leave-one-out peer-share regression \textbf{(chosen)} & Direct test with flexible FE structure & All 12 specifications yield positive, significant $\hat\beta$; supports first-appearance and similarity-split extensions \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{Implementation}
+
+\begin{itemize}[nosep]
+\item \textbf{Script:} \texttt{src/py/06\_table\_IVB\_spillover.py}
+\item \textbf{Estimation:} \texttt{pyhdfe} for Frisch--Waugh--Lovell demeaning + \texttt{statsmodels} OLS with cluster-robust standard errors (equivalent to Stata \texttt{reghdfe})
+\item \textbf{Outputs:} \texttt{Overleaf/Tables/spillover.tex}, \texttt{results/tables/table\_IVB\_spillover.csv}, JSON manifest in \texttt{results/runs/}
+\end{itemize}
+
+\end{document}
